@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE grammatik [
+<!ELEMENT grammatik (name,n,t,s,p)>
+<!ELEMENT name (#PCDATA)>
+<!ELEMENT n (#PCDATA)>
+<!ELEMENT t (#PCDATA)>
+<!ELEMENT s (#PCDATA)>
+<!ELEMENT p (zeile+)>
+<!ELEMENT zeile (zelleStart, zelle+)>
+<!ELEMENT zelleStart (#PCDATA)>
+<!ELEMENT zelle (#PCDATA)> ]>
+<grammatik>
+    <name>Grammatik</name>
+    <n>S;A;B;C;D;E</n>
+    <t>a;b</t>
+    <s>S</s>
+    <p>
+        <zeile>
+            <zelleStart>S</zelleStart>
+            <zelle>aAa</zelle>
+            <zelle>bBb</zelle>
+            <zelle>A</zelle>
+            <zelle>"Eps"</zelle>
+        </zeile>
+        <zeile>
+            <zelleStart>A</zelleStart>
+            <zelle>C</zelle>
+            <zelle>a</zelle>
+        </zeile>
+        <zeile>
+            <zelleStart>B</zelleStart>
+            <zelle>A</zelle>
+            <zelle>b</zelle>
+        </zeile>
+        <zeile>
+            <zelleStart>C</zelleStart>
+            <zelle>CDE</zelle>
+            <zelle>"Eps"</zelle>
+        </zeile>
+        <zeile>
+            <zelleStart>D</zelleStart>
+            <zelle>A</zelle>
+            <zelle>B</zelle>
+            <zelle>ab</zelle>
+        </zeile>
+        <zeile>
+            <zelleStart>E</zelleStart>
+            <zelle>B</zelle>
+            <zelle>A</zelle>
+        </zeile>
+    </p>
+</grammatik>
