@@ -95,7 +95,7 @@ public class Input {
         }
     }*/
 
-    public String getNextProduction(String s) {
+    /*public String getNextProduction(String s) {
         NodeList productions = doc.getElementsByTagName("zelleStart");
         for (int i = 0 ; i < productions.getLength(); i++) {
             if (productions.item(i).getTextContent().equals(s)) {
@@ -122,6 +122,27 @@ public class Input {
         return 0;
     }
 
+    public void printSize() {
+        for (int i = 0; i < size.length; i++) {
+            System.out.println(size[i]);
+        }
+    }*/
+
+    // AB HIER
+    public String getRootElement() {
+        return doc.getElementsByTagName("s").item(0).getTextContent();
+    }
+
+    public int getProductionSize(String s) {
+        NodeList list = doc.getElementsByTagName("zelleStart");
+        for (int i = 0; i < list.getLength(); i++) {
+            if (list.item(i).getTextContent().equals(s)) {
+                return doc.getElementsByTagName("zeile").item(i).getChildNodes().getLength();
+            }
+        }
+        return 0;
+    }
+
     public Type getType(String s) {
         NodeList terminal = doc.getElementsByTagName("t");
         if (terminal.item(0).getTextContent().contains(s)) return Type.Terminal;
@@ -131,10 +152,12 @@ public class Input {
         return null;
     }
 
-    public void printSize() {
-        for (int i = 0; i < size.length; i++) {
-            System.out.println(size[i]);
+    public String getProduction(String s, int column) {
+        NodeList productions = doc.getElementsByTagName("zelleStart");
+        for (int i = 0; i < productions.getLength(); i++) {
+            if (productions.item(i).getTextContent().equals(s)) return doc.getElementsByTagName("zeile").item(i).getChildNodes().item(column).getTextContent();
         }
+        return null;
     }
 
 }

@@ -2,47 +2,58 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class Node {
-    private ArrayList<Element> list;
-    private Element element;
-    private Input input;
-    HashMap<String, Element> temp;
 
-    public Node(HashMap<String, Element> temp) {
-        list = new ArrayList<Element>();
+    private Input input;
+    private ArrayList<Element> list;
+    private HashMap<String, Element> temp;
+    private ArrayList<String> toProcess;
+
+    public Node(Input input, HashMap<String, Element> temp, ArrayList<String> toProcess) {
+        this.input = input;
+        list = new ArrayList<>();
         this.temp = temp;
+        this.toProcess = toProcess;
     }
 
-    public void addToNode(String s, Input input, ArrayList<String> touched) {
-        if (s.equals("\"Eps\"")) addTerminal("Epsilon");
-        else {
-            for (int i = 0; i < s.length(); i++) {
-                String split = String.valueOf(s.charAt(i));
-                if (input.getType(split) == Type.NonTerminal) {
-                    addNonTerminal(split,input, touched);
-                } else if (input.getType(split) == Type.Terminal) {
-                    addTerminal(split);
-                }
+    public void addToNode(String s) {
+        System.out.println("To split: " + s);
+        for (int i = 0; i < s.length(); i++) {
+            String split;
+            if (s.charAt(i) == '\"') {
+                i += 4;
+                split = "Epsilon";
+            }
+            else {
+                split = String.valueOf(s.charAt(i));
+            }
+            System.out.println("Splitted: " + split);
+            createNewElement(split);
+        }
+    }
+
+    private void createNewElement(String split) {
+        if(input.getType(split) == Type.NonTerminal) {
+            //wenn Element schon vorhanden, nur linken
+            if (temp.containsKey(split)) {
+                list.add(temp.get(split));
+                System.out.println("Vorhandenes Nicht-Terminal: " + split);
+            }
+            else {
+                System.out.println("Neues Nicht-Terminal: " + split);
+                Element element = new Element(split, input.getType(split));
+                list.add(element);
+                temp.put(split, element);
+                toProcess.add(split);
             }
         }
-    }
-
-    private void addTerminal(String split) {
-        element = new Element(split);
-        list.add(element);
-    }
-
-    private void addNonTerminal(String split,Input input, ArrayList<String> touched) {
-        if (!touched.contains(split)) {
-            touched.add(split);
-            temp.put(split, element = new Element(split, input, touched, temp));
+        else {
+            System.out.println("Terminal: " + split);
+            Element element = new Element(split, input.getType(split));
             list.add(element);
         }
-        else {
-            list.add(temp.get(split));
-        }
     }
 
-    public ArrayList<Element> getList() {
+    public ArrayList<Element> getNodeList() {
         return list;
     }
 }

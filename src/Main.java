@@ -9,5 +9,7 @@ public class Main {
         //i.read();
         Tree tree = new Tree();
         tree.buildTree();
+        System.out.println("_________");
+        tree.printTree();
     }
 }
