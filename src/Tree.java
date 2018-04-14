@@ -41,16 +41,8 @@ public class Tree {
         }
     }
 
-    public Element getRootElement() {
-        return root;
-    }
-
     public HashMap<String, Element> getMap() {
         return temp;
-    }
-
-    public String[] getNonTerminalList() {
-        return input.getNonTerminal();
     }
 
     public Node newNode(String character) {

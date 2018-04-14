@@ -7,12 +7,18 @@ public class Node {
     private ArrayList<Element> list;
     private HashMap<String, Element> temp;
     private ArrayList<String> toProcess;
+    private int length;
 
     public Node(Input input, HashMap<String, Element> temp, ArrayList<String> toProcess) {
         this.input = input;
         list = new ArrayList<>();
         this.temp = temp;
         this.toProcess = toProcess;
+        length = 0;
+    }
+
+    public Node() {
+        list = new ArrayList<>();
     }
 
     public void addToNode(String s) {
@@ -55,5 +61,20 @@ public class Node {
 
     public ArrayList<Element> getNodeList() {
         return list;
+    }
+
+    public void addElement(Element element) {
+        list.add(element);
+    }
+
+    public Element getNextElement() {
+        if(list.size() > length) {
+            return list.get(length++);
+        }
+        return null;
+    }
+
+    public int getNextElementIterator() {
+        return length;
     }
 }
