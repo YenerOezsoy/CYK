@@ -5,11 +5,7 @@ public class Main {
 
     public static void main (String args[]) {
 
-        //Input i = new Input();
-        //i.read();
-        Tree tree = new Tree();
-        tree.buildTree();
-        System.out.println("_________");
-        tree.printTree();
+        Model m = new Model();
+        m.start();
     }
 }

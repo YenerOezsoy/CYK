@@ -16,7 +16,7 @@ public class Node {
     }
 
     public void addToNode(String s) {
-        System.out.println("To split: " + s);
+        //System.out.println("To split: " + s);
         for (int i = 0; i < s.length(); i++) {
             String split;
             if (s.charAt(i) == '\"') {

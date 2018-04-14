@@ -1,5 +1,7 @@
+
 import java.util.ArrayList;
 import java.util.HashMap;
+
 
 public class Tree {
 
@@ -39,7 +41,25 @@ public class Tree {
         }
     }
 
-    /*public void printTree() {
+    public Element getRootElement() {
+        return root;
+    }
+
+    public HashMap<String, Element> getMap() {
+        return temp;
+    }
+
+    public String[] getNonTerminalList() {
+        return input.getNonTerminal();
+    }
+
+    public Node newNode(String character) {
+        node = new Node(input, temp, null);
+        node.addToNode(character);
+        return node;
+    }
+
+    public void printTree() {
         ArrayList<Element> touched = new ArrayList<>();
         touched.add(root);
         for (int i = 0; i < touched.size(); i++) {
@@ -53,6 +73,6 @@ public class Tree {
                 }
             }
         }
-    }*/
+    }
 
 }

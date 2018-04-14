@@ -28,5 +28,11 @@ public class Element {
         return type;
     }
 
+    public void setCharacter(String character) {
+        this.character = character;
+    }
 
+    public void setType(Type type) {
+        this.type = type;
+    }
 }
