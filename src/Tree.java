@@ -60,7 +60,7 @@ public class Tree {
             for (int j = 0; j < touched.get(i).getList().size(); j++) {
                 ArrayList<Element> nodelist = touched.get(i).getList().get(j).getNodeList();
                 for (int k = 0; k < nodelist.size(); k++) {
-                    System.out.println(nodelist.get(k).getElement());
+                    System.out.println("Index k: " + k + "   ::" + nodelist.get(k).getElement());
                     if (nodelist.get(k).getType() == Type.NonTerminal && !touched.contains(nodelist.get(k))) touched.add(nodelist.get(k));
                 }
             }

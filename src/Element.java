@@ -4,14 +4,12 @@ public class Element {
     private String character;
     private Type type;
     private ArrayList<Node> list;
-    private int nodeIterator;
 
 
     public Element(String character, Type type) {
         this.character = character;
         this.type = type;
         list = new ArrayList<>();
-        //nodeIterator = 0;
     }
 
     public void addNode(Node node) {
@@ -36,6 +34,17 @@ public class Element {
 
     public void setType(Type type) {
         this.type = type;
+    }
+
+    //Epsilon-Übergang nutzt diese Abfrage
+    public boolean hasChildren(String element) {
+        for (int i = 0; i < list.size(); i++) {
+            for (int j = 0; j < list.get(i).getNodeList().size(); j++) {
+                //liefere true nur wenn einzelnes Symbol in Liste
+                if (list.get(i).getNodeList().get(j).getElement().equals(element) && list.get(i).getNodeList().size() == 1) return true;
+            }
+        }
+        return false;
     }
 
     /*public Element getNextChildren() {
