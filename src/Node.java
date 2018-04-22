@@ -21,6 +21,10 @@ public class Node {
         list = new ArrayList<>();
     }
 
+    public Node(Node node) {
+        list = new ArrayList<>(node.getNodeList());
+    }
+
     public void addToNode(String s) {
         //System.out.println("To split: " + s);
         for (int i = 0; i < s.length(); i++) {
@@ -65,16 +69,5 @@ public class Node {
 
     public void addElement(Element element) {
         list.add(element);
-    }
-
-    public Element getNextElement() {
-        if(list.size() > length) {
-            return list.get(length++);
-        }
-        return null;
-    }
-
-    public int getNextElementIterator() {
-        return length;
     }
 }

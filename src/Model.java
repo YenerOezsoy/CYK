@@ -27,6 +27,10 @@ public class Model {
         System.out.println("===========");
         System.out.println("THIRD RULE");
         cnf.epsilonRule();
+        System.out.println("===========");
+        System.out.println("===========");
+        System.out.println("LAST RULE");
+        cnf.chainRule();
 
     }
 

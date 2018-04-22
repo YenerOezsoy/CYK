@@ -45,6 +45,10 @@ public class Tree {
         return temp;
     }
 
+    public Element getRootElement() {
+        return root;
+    }
+
     public Node newNode(String character) {
         node = new Node(input, temp, null);
         node.addToNode(character);

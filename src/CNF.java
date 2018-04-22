@@ -34,6 +34,13 @@ public class CNF {
         tree.printTree();
     }
 
+    public void chainRule() {
+        findCycle();
+        startIteration(4);
+        //cleanUp();
+        tree.printTree();
+    }
+
     private void startIteration(int rule) {
         List<String> list = new ArrayList<>(map.keySet());
         for (int i = 0; i < list.size(); i++) {
@@ -62,6 +69,9 @@ public class CNF {
                 actualRoot = element;
                 inspectChildren(nodes.get(i), 3);
             }
+            else if (rule == 4) {
+               // i = inspectForDependency(element, nodes.get(i), i);
+            }
         }
     }
 
@@ -72,7 +82,7 @@ public class CNF {
             }
             else if(rule == 2) {
                 if (node.getNodeList().get(j).getElement().equals("Epsilon")) {
-                    node.getNodeList().remove(j);
+                    actualRoot.getList().remove(node);
                     if(!epsilonStern.contains(actualRoot)) epsilonStern.add(actualRoot);
                 }
             }
@@ -83,6 +93,74 @@ public class CNF {
             }
         }
     }
+
+    /*private int inspectForDependency(Element root, Node node, int iterator) {
+
+    }*/
+
+    private void findCycle() {
+        ArrayList<Element> touched = new ArrayList<>();
+        touched.add(tree.getRootElement());
+        //iteriere ueber Elemente die nach Breitensuche hinzukommen
+        for (int i = 0; i < touched.size(); i++) {
+            elementIterator(0, touched.get(i), touched);
+        }
+        System.out.println();
+    }
+
+    private void elementIterator(int rule, Element element, ArrayList<Element> touched) {
+        for (int i = 0; i < element.getList().size(); i++) {
+            nodeListIterator(element.getList().get(i), touched);
+        }
+    }
+
+    private void nodeListIterator(Node node,ArrayList<Element> touched) {
+        for (int i = 0; i < node.getNodeList().size(); i++) {
+            ArrayList<Element> cycle = new ArrayList<>();
+            Element cycleRoot = node.getNodeList().get(i);
+            if (!touched.contains(node.getNodeList().get(i))) touched.add(node.getNodeList().get(i));
+            else isCycle(cycleRoot, node.getNodeList().get(i), cycle);
+
+        }
+    }
+
+    private boolean isCycle(Element cycleRoot, Element element, ArrayList<Element> cycle) {
+        ArrayList<Element> touched = new ArrayList<>();
+        boolean test = false;
+        for (int i = 0; i < element.getList().size(); i++) {
+            test = false;
+            if (element.getList().get(i).getNodeList().size() == 1) {
+                Element elem = element.getList().get(i).getNodeList().get(0);
+                if (touched.contains(elem)) return false;
+                touched.add(elem);
+                if (elem.getType() == Type.NonTerminal) {
+                    if (elem == cycleRoot) {
+                        cycle.add(element);
+                        return true;
+                    }
+                    else {
+                        if (isCycle(cycleRoot, elem, cycle)) {
+                            if (!cycle.contains(element)) cycle.add(element);
+                            test = true;
+                        }
+                    }
+                }
+
+            }
+
+        }
+        return test;
+    }
+
+
+
+
+
+
+
+
+
+
 
     private void replaceNonTerminal(Element element, ArrayList<Element> list , int j) {
         if (map.containsKey(element.getElement())) list.set(j, map.get(element.getElement()));
@@ -143,9 +221,57 @@ public class CNF {
             List<String> list = new ArrayList<>(map.keySet());
             for (int j = 0; j < list.size(); j++) {
                 Element nonTerminal = map.get(list.get(j));
-                if (nonTerminal.hasChildren(elem.getElement()) && !epsilonStern.contains(nonTerminal)) epsilonStern.add(nonTerminal);
+                if (nonTerminal.hasOnlyChildren(elem.getElement()) && !epsilonStern.contains(nonTerminal)) epsilonStern.add(nonTerminal);
             }
         }
     }
 
+    private void copyNodes(Element root, Node node) {
+        //Es wurde ein Node mit nur einem Element uebergeben -> kopiere alle Abbildungen dieses Elements
+        Element elem = node.getNodeList().get(0);
+        for (int i = 0; i < elem.getList().size(); i++) {
+            if (!checkDouble(root, elem.getList().get(i)) /*&& !checkForIdentity(root, elem.getList().get(i))*/) root.addNode(elem.getList().get(i));
+        }
+
+    }
+
+    private boolean checkForIdentity(Element root, Node node) {
+        if (node.getNodeList().size() == 1 && node.getNodeList().get(0) == root) return true;
+        return false;
+    }
+
+    private boolean checkDouble(Element root, Node node) {
+        boolean isEqual;
+        boolean isSet;
+        for (int i = 0; i < root.getList().size(); i++) {
+            isEqual = false;
+            isSet = false;
+            if (root.getList().get(i).getNodeList().size() == node.getNodeList().size()) {
+                for (int j = 0; j < node.getNodeList().size(); j++) {
+                    if (node.getNodeList().get(j) == root.getList().get(i).getNodeList().get(j) && !isSet) isEqual = isSet = true;
+                    else if (node.getNodeList().get(j) != root.getList().get(i).getNodeList().get(j)) isEqual = false;
+                }
+                if(isEqual) return true;
+            }
+        }
+        return false;
+    }
+
+    //nicht benoetigte Uebergaenge loeschen
+    /*private void cleanUp() {
+        ArrayList<Element> touched = new ArrayList<>();
+        touched.add(tree.getRootElement());
+        for (int i = 0; i < touched.size(); i++) {
+            for (int j = 0; j < touched.get(i).getList().size(); j++) {
+                ArrayList<Element> nodelist = touched.get(i).getList().get(j).getNodeList();
+                for (int k = 0; k < nodelist.size(); k++) {
+                    if (nodelist.get(k).getType() == Type.NonTerminal && !touched.contains(nodelist.get(k))) touched.add(nodelist.get(k));
+                }
+            }
+        }
+        List<String> list = new ArrayList<>(map.keySet());
+        for (int i = 0; i < list.size(); i++) {
+            if (!touched.contains(map.get(list.get(i)))) map.remove(list.get(i));
+        }
+    }*/
 }
