@@ -30,7 +30,7 @@ public class Model {
         System.out.println("===========");
         System.out.println("===========");
         System.out.println("LAST RULE");
-        //cnf.chainRule();
+        cnf.chainRule();
 
     }
 

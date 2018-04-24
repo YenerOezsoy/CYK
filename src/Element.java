@@ -47,16 +47,6 @@ public class Element {
         return false;
     }
 
-    /*public boolean hasChildren(String element) {
-        for (int i = 0; i < list.size(); i++) {
-            for (int j = 0; j < list.get(i).getNodeList().size(); j++) {
-                //liefere true nur wenn einzelnes Symbol in Liste
-                if (list.get(i).getNodeList().get(j).getElement().equals(element)) return true;
-            }
-        }
-        return false;
-    }*/
-
     public boolean hasOnlyChildren(String element) {
         for (int i = 0; i < list.size(); i++) {
             for (int j = 0; j < list.get(i).getNodeList().size(); j++) {
@@ -66,17 +56,4 @@ public class Element {
         }
         return false;
     }
-
-    /*public Element getNextChildren() {
-        if (type == Type.Terminal) return null;
-        if (list.size() > nodeIterator) {
-            Element element = list.get(nodeIterator).getNextElement();
-            if (element == null) {
-                nodeIterator++;
-                return getNextChildren();
-            }
-            return element;
-        }
-        return null;
-    }*/
 }

@@ -1,12 +1,15 @@
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
 public class CNF {
 
+    private boolean startedSearch = false;
     private Tree tree;
     private HashMap<String, Element> map;
     private Element actualRoot;
+    private Element rootOfCycle;
     private ArrayList<Element> epsilonStern = new ArrayList<>();
     private ArrayList<Element> visited = new ArrayList<>();
     private ArrayList<Element> possibleCycle = new ArrayList<>();
@@ -34,6 +37,12 @@ public class CNF {
         tree.printTree();
     }
 
+    public void chainRule() {
+        startIteration(3);
+        startIteration(5);
+        tree.printTree();
+    }
+
     private void startIteration(int rule) {
         List<String> list = new ArrayList<>(map.keySet());
         for (int i = 0; i < list.size(); i++) {
@@ -57,6 +66,26 @@ public class CNF {
                 actualRoot = element;
                 inspectChildren(nodes.get(i), rule);
             }
+            //Kettenregel Zyklus
+            else if (rule == 3) {
+                inspectChildren(nodes.get(i), rule);
+            }
+            else if (rule == 4) {
+                actualRoot = element;
+                inspectChildren(nodes.get(i), rule);
+                cleanUp(element);
+            }
+            //Kettenregel
+            else if (rule == 5) {
+                if (nodes.get(i).getNodeList().size() == 1 && nodes.get(i).getNodeList().get(0).getType() == Type.NonTerminal) {
+                    Element elem = nodes.get(i).getNodeList().get(0);
+                    for (int j = 0; j < elem.getList().size(); j++) {
+                        element.addNode(elem.getList().get(j));
+                    }
+                    nodes.remove(i);
+                }
+                cleanUp(element);
+            }
         }
     }
 
@@ -71,8 +100,23 @@ public class CNF {
                     removeEpsilon(node, i);
                 }
             }
+            //Kettenregel Zyklus
+            else if (rule == 3) {
+                actualRoot = node.getNodeList().get(i);
+                if (visited.contains(node.getNodeList().get(i))) checkCycle(node.getNodeList().get(i));
+                else visited.add(node.getNodeList().get(i));
+            }
+            //gehoert zu chainRule -> Methode replaceElement
+            else if (rule == 4) {
+                if (possibleCycle.contains(node.getNodeList().get(i))) {
+                    node.getNodeList().add(i, rootOfCycle);
+                    node.getNodeList().remove(i + 1);
+                }
+            }
         }
     }
+
+    // 1. Regel _____________
 
     private void replaceNonTerminal(Element element, ArrayList<Element> list , int j) {
         if (map.containsKey(element.getElement())) list.set(j, map.get(element.getElement()));
@@ -86,6 +130,8 @@ public class CNF {
         }
     }
 
+
+    // 2. Regel _____________
 
     private void shortenNode(Element element, Node node) {
         String name;
@@ -105,6 +151,9 @@ public class CNF {
         actualNode.addElement(list.get(size - 2));
         actualNode.addElement(list.get(size - 1));
     }
+
+
+    // 3. Regel _____________
 
     private void removeEpsilon(Node node, int i) {
         node.getNodeList().remove(i);
@@ -152,4 +201,112 @@ public class CNF {
         }
         return copy;
     }
+
+
+    // 4. Regel _____________
+
+    private void checkCycle(Element element) {
+        startedSearch = false;
+        epsilonStern.clear();
+        if (isCycle(element)) copyNodes(findRootOfCycle());
+    }
+
+    private boolean isCycle(Element element) {
+        if (element.getType() == Type.NonTerminal) {
+            if (element == actualRoot && startedSearch) return true;
+            else {
+                startedSearch = true;
+                boolean result = elementIterator(element);
+                if (result) possibleCycle.add(element);
+                return result;
+            }
+        }
+        else return false;
+    }
+
+    private boolean elementIterator(Element element) {
+        boolean foundElement = false;
+        for (int i = 0; i < element.getList().size(); i++) {
+            Node nodeList = element.getList().get(i);
+            //nur Abbildungen der Laenge sind von der Regel betroffen
+            if (nodeList.getNodeList().size() == 1 && nodeList.getNodeList().get(0).getType() == Type.NonTerminal) {
+                if (!epsilonStern.contains(nodeList.getNodeList().get(0))) {
+                    epsilonStern.add(nodeList.getNodeList().get(0));
+                    if (isCycle(nodeList.getNodeList().get(0)) && !foundElement) foundElement = true;
+                }
+            }
+        }
+        return foundElement;
+    }
+
+    private Element findRootOfCycle() {
+        ArrayList<Element>  touched = new ArrayList<>();
+        touched.add(tree.getRootElement());
+        return breadthFirstSearch(touched);
+    }
+
+    private Element breadthFirstSearch(ArrayList<Element> touched) {
+        for (int i = 0; i < touched.size(); i++) {
+            for (int j = 0; j < touched.get(i).getList().size(); j++) {
+                Node node = touched.get(i).getList().get(j);
+                Element foundRoot = cycleIterator(node);
+                if (foundRoot != null) return foundRoot;
+            }
+        }
+        return null;
+    }
+
+    private Element cycleIterator(Node node) {
+        for (int i = 0; i < possibleCycle.size(); i++) {
+            if (node.getNodeList().contains(possibleCycle.get(i))) return possibleCycle.get(i);
+        }
+        return null;
+    }
+
+    private void copyNodes(Element root) {
+        possibleCycle.remove(root);
+        for (int i = 0; i < possibleCycle.size(); i++) {
+            for (int j = 0; j < possibleCycle.get(i).getList().size(); j++) {
+                root.addNode(possibleCycle.get(i).getList().get(j));
+            }
+            map.remove(possibleCycle.get(i));
+        }
+        replaceElement(root);
+        possibleCycle.clear();
+    }
+
+    private void replaceElement(Element root) {
+        rootOfCycle = root;
+        startIteration(4);
+    }
+
+    private void cleanUp(Element root) {
+        for (int i = 0; i < root.getList().size(); i++) {
+            if (root.getList().get(i).getNodeList().size() == 1) checkIdentity(root, root.getList().get(i));
+            else checkDouble(root, root.getList().get(i));
+        }
+    }
+
+    private void checkIdentity(Element root, Node node) {
+        if (node.getNodeList().get(0) == root) root.getList().remove(node);
+        else checkDouble(root, node);
+    }
+
+    private void checkDouble(Element root, Node node) {
+        for (int i = root.getList().indexOf(node) + 1; i < root.getList().size(); i++) {
+            if (node.getNodeList().size() == root.getList().get(i).getNodeList().size()) {
+                if (isNodeEqual(root.getList().get(i), node)) root.getList().remove(node);
+            }
+
+        }
+    }
+
+    private boolean isNodeEqual(Node node1, Node node2) {
+        for (int i = 0; i < node1.getNodeList().size(); i++) {
+            if (node1.getNodeList().get(i) != node2.getNodeList().get(i)) return false;
+        }
+        return true;
+    }
+
+    //CHECKE OB ES GLEICHE ABBILDUNGEN GIBT -> IDENTISCHE NONTERMINALE
 }
