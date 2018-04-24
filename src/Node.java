@@ -70,4 +70,8 @@ public class Node {
     public void addElement(Element element) {
         list.add(element);
     }
+
+    public boolean hasElement(Element element) {
+        return(list.contains(element));
+    }
 }
