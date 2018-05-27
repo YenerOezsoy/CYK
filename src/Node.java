@@ -3,19 +3,7 @@ import java.util.HashMap;
 
 public class Node {
 
-    private Input input;
     private ArrayList<Element> list;
-    private HashMap<String, Element> temp;
-    private ArrayList<String> toProcess;
-    private int length;
-
-    public Node(Input input, HashMap<String, Element> temp, ArrayList<String> toProcess) {
-        this.input = input;
-        list = new ArrayList<>();
-        this.temp = temp;
-        this.toProcess = toProcess;
-        length = 0;
-    }
 
     public Node() {
         list = new ArrayList<>();
@@ -25,22 +13,18 @@ public class Node {
         list = new ArrayList<>(node.getNodeList());
     }
 
-    public void addToNode(String s) {
-        //System.out.println("To split: " + s);
-        for (int i = 0; i < s.length(); i++) {
-            String split;
-            if (s.charAt(i) == '\"') {
-                i += 4;
-                split = "Epsilon";
-            }
-            else {
-                split = String.valueOf(s.charAt(i));
-            }
-            System.out.println("Splitted: " + split);
-            createNewElement(split);
-        }
+    public void addTerminalToNode(String element) {
+        Element elem = new Element(element, Type.Terminal);
+        list.add(elem);
     }
 
+    public Element addNonTerminalToNode(String element) {
+        Element elem = new Element(element, Type.NonTerminal);
+        list.add(elem);
+        return elem;
+    }
+
+    /*
     private void createNewElement(String split) {
         if(input.getType(split) == Type.NonTerminal) {
             //wenn Element schon vorhanden, nur linken
@@ -62,6 +46,7 @@ public class Node {
             list.add(element);
         }
     }
+    */
 
     public ArrayList<Element> getNodeList() {
         return list;

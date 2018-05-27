@@ -16,7 +16,7 @@ public class Element {
         list.add(node);
     }
 
-    public String getElement() {
+    public String getString() {
         return character;
     }
 
@@ -41,7 +41,7 @@ public class Element {
         for (int i = 0; i < list.size(); i++) {
             for (int j = 0; j < list.get(i).getNodeList().size(); j++) {
                 //liefere true nur wenn einzelnes Symbol in Liste
-                if (list.get(i).getNodeList().get(j).getElement().equals(element) && list.get(i).getNodeList().size() > 1) return true;
+                if (list.get(i).getNodeList().get(j).getString().equals(element) && list.get(i).getNodeList().size() > 1) return true;
             }
         }
         return false;
@@ -51,7 +51,19 @@ public class Element {
         for (int i = 0; i < list.size(); i++) {
             for (int j = 0; j < list.get(i).getNodeList().size(); j++) {
                 //liefere true nur wenn einzelnes Symbol in Liste
-                if (list.get(i).getNodeList().get(j).getElement().equals(element) && list.get(i).getNodeList().size() == 1) return true;
+                if (list.get(i).getNodeList().get(j).getString().equals(element) && list.get(i).getNodeList().size() == 1) return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean hasChildren(String var1, String var2) {
+        for (int i = 0; i< list.size(); i++) {
+            Node node = list.get(i);
+            if (node.getNodeList().size() == 2) {
+                String element1 = node.getNodeList().get(0).getString();
+                String element2 = node.getNodeList().get(1).getString();
+                if (element1.equals(var1) && element2.equals(var2)) return true;
             }
         }
         return false;

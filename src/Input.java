@@ -1,40 +1,133 @@
 import org.w3c.dom.Document;
-import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import javax.xml.namespace.QName;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
-import java.io.File;
-import java.util.ArrayList;
+import javax.xml.xpath.*;
+
 
 /**
  * Created by yenerozsoy on 21.03.18.
  */
 public class Input {
-    private File fXmlFile;
-    private DocumentBuilderFactory dbFactory;
-    private DocumentBuilder dBuilder;
+
+    private final QName nodesetType = XPathConstants.NODESET;
+    private final QName stringType = XPathConstants.STRING;
+
+    private String path = "grammatik";
+    private String rootElement;
+    private String[] nonterminals;
+    private String[] terminals;
+
     private Document doc;
-    private int[] size;
-    private NodeList production;
+    private XPath xpath;
+    private XPathExpression expr;
 
     public Input () {
         try {
-            fXmlFile = new File("grammatik.dtd");
-            dbFactory = DocumentBuilderFactory.newInstance();
-            dbFactory.setIgnoringElementContentWhitespace(true);
-            dBuilder = dbFactory.newDocumentBuilder();
-            doc = dBuilder.parse(fXmlFile);
-            doc.getDocumentElement().normalize();
+            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder builder = factory.newDocumentBuilder();
+            doc = builder.parse("grammatik.xml");
+            XPathFactory xPathfactory = XPathFactory.newInstance();
+            xpath = xPathfactory.newXPath();
         }
         catch (Exception e) {
             e.printStackTrace();
 
         }
         setActiveStep(0);
-        initializeArray();
     }
 
+    public void setActiveStep(int i) {
+        switch(i) {
+            case 0: path = "grammatik";
+                    break;
+            case 1: path = "firstRule";
+                    break;
+            case 2: path = "secondRule";
+                    break;
+            case 3: path = "thirdRule";
+                    break;
+            case 4: path = "fourthRule";
+                    break;
+        }
+        initializeNames();
+    }
+
+
+    private void initializeNames() {
+        String nonterminal = (String) read("/" + path + "/n", stringType);
+        String terminal = (String) read("/" + path + "/t", stringType);
+        rootElement = (String) read("/" + path + "/s", stringType);
+        nonterminals = nonterminal.split(";");
+        terminals = terminal.split(";");
+    }
+
+
+    public int getColumnSize() {
+        NodeList columns = (NodeList) read("/" + path + "/p/zeile", nodesetType);
+        return columns.getLength();
+    }
+
+    public boolean isNonTerminal(String s) {
+        for (int i = 0; i < nonterminals.length; i++) {
+            if (nonterminals[i].equals(s)) return true;
+        }
+        return false;
+    }
+
+    public boolean isTerminal(String s) {
+        for (int i = 0; i < terminals.length; i++) {
+            if (terminals[i].equals(s)) return true;
+        }
+        return false;
+    }
+
+    public String[] getNonterminals() {
+        return nonterminals;
+    }
+
+    public String[] getTerminals() {
+        return terminals;
+    }
+
+    public String getRootElement() {
+        return rootElement;
+    }
+
+    public NodeList getProduction(int i) {
+        String expression = "/" + path + "/p/zeile[" + i + "]/zelle";
+        return (NodeList) read(expression, nodesetType);
+    }
+
+    public NodeList getProduction(String root) {
+        String expression = "/" + path + "/p/zeile/zelle[text()='" + root + "' and position()=1]/../zelle";
+        return (NodeList) read(expression, nodesetType);
+    }
+
+
+
+    private Object read(String expression, QName type) {
+        Object result;
+        try {
+            expr = xpath.compile(expression);
+            result = expr.evaluate(doc, type);
+
+        } catch (XPathExpressionException e) {
+            e.printStackTrace();
+            return null;
+        }
+        return result;
+    }
+
+
+
+
+
+
+
+    /*
     private void initializeArray() {
         size = new int[doc.getElementsByTagName("zeile").getLength()];
         for (int i = 0; i < size.length; i++) {
@@ -94,6 +187,6 @@ public class Input {
     public String[] getNonTerminal() {
         String[] split = getTags("n").get(0).getTextContent().split(";");
         return split;
-    }
+    }*/
 
 }

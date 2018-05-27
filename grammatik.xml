@@ -6,9 +6,9 @@
 <!ELEMENT t (#PCDATA)>
 <!ELEMENT s (#PCDATA)>
 <!ELEMENT p (zeile+)>
-<!ELEMENT zeile (zelleStart, zelle+)>
-<!ELEMENT zelleStart (#PCDATA)>
+<!ELEMENT zeile (zelle+)>
 <!ELEMENT zelle (#PCDATA)> ]>
+
 <grammatik>
     <name>Grammatik</name>
     <n>S;A;B;C;D;E</n>
@@ -16,34 +16,34 @@
     <s>S</s>
     <p>
         <zeile>
-            <zelleStart>S</zelleStart>
+            <zelle>S</zelle>
             <zelle>aAa</zelle>
             <zelle>bBb</zelle>
             <zelle>A</zelle>
-            <zelle>"Eps"</zelle>
+            <zelle>/Eps</zelle>
         </zeile>
         <zeile>
-            <zelleStart>A</zelleStart>
+            <zelle>A</zelle>
             <zelle>C</zelle>
             <zelle>a</zelle>
         </zeile>
         <zeile>
-            <zelleStart>B</zelleStart>
+            <zelle>B</zelle>
             <zelle>b</zelle>
         </zeile>
         <zeile>
-            <zelleStart>C</zelleStart>
+            <zelle>C</zelle>
             <zelle>CDE</zelle>
-            <zelle>"Eps"</zelle>
+            <zelle>/Eps</zelle>
         </zeile>
         <zeile>
-            <zelleStart>D</zelleStart>
+            <zelle>D</zelle>
             <zelle>A</zelle>
             <zelle>B</zelle>
             <zelle>ab</zelle>
         </zeile>
         <zeile>
-            <zelleStart>E</zelleStart>
+            <zelle>E</zelle>
             <zelle>B</zelle>
             <zelle>A</zelle>
         </zeile>

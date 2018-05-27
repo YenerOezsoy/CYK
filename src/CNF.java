@@ -1,4 +1,3 @@
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -13,7 +12,10 @@ public class CNF {
     private ArrayList<Element> epsilonStern = new ArrayList<>();
     private ArrayList<Element> visited = new ArrayList<>();
     private ArrayList<Element> possibleCycle = new ArrayList<>();
+    private ArrayList<Element> delete = new ArrayList<>();
     private int nameSuffix;
+    private Change change = new Change();
+    private int nodeId;
 
 
     public CNF(Tree tree) {
@@ -23,24 +25,33 @@ public class CNF {
     }
 
     public void terminalRule() {
+        change.createNewChangeSet();
         startIteration(0);
         tree.printTree();
+        change.test();
     }
 
     public void lengthRule() {
+        change.createNewChangeSet();
         startIteration(1);
         tree.printTree();
+        change.test();
     }
 
     public void epsilonRule() {
+        change.createNewChangeSet();
         startIteration(2);
         tree.printTree();
+        change.test();
     }
 
     public void chainRule() {
+        change.createNewChangeSet();
         startIteration(3);
         startIteration(5);
         tree.printTree();
+        delete();
+        change.test();
     }
 
     private void startIteration(int rule) {
@@ -56,14 +67,22 @@ public class CNF {
         ArrayList<Node> nodes = element.getList();
         for (int i = 0; i < nodes.size(); i++) {
             //einzelnes Symbol von Regel nicht betroffen
+            // 1. Regel
             if (rule == 0 && nodes.get(i).getNodeList().size() > 1) {
+                actualRoot = element;
                 inspectChildren(nodes.get(i), rule);
             }
+            //2. Regel
             else if (rule == 1 && nodes.get(i).getNodeList().size() > 2) {
+                actualRoot = element;
+                change.mark(actualRoot.getString());
+                nodeId = i;
                 shortenNode(element, nodes.get(i));
             }
+            //3. Regel
             else if (rule == 2) {
                 actualRoot = element;
+                nodeId = i;
                 inspectChildren(nodes.get(i), rule);
             }
             //Kettenregel Zyklus
@@ -92,10 +111,12 @@ public class CNF {
     private void inspectChildren(Node node, int rule) {
         for (int i = 0; i < node.getNodeList().size(); i++) {
             if (rule == 0 && node.getNodeList().get(i).getType() == Type.Terminal) {
+                change.mark(actualRoot.getString() + "," + node.getNodeList().get(i).getString());
                 replaceNonTerminal(node.getNodeList().get(i), node.getNodeList(), i);
             }
             else if(rule == 2) {
-                if (node.getNodeList().get(i).getElement().equals("Epsilon")) {
+                if (node.getNodeList().get(i).getString().equals("/Eps")) {
+                    change.mark(actualRoot.getString() + ",/Eps");
                     epsilonStern.clear();
                     removeEpsilon(node, i);
                 }
@@ -109,6 +130,7 @@ public class CNF {
             //gehoert zu chainRule -> Methode replaceElement
             else if (rule == 4) {
                 if (possibleCycle.contains(node.getNodeList().get(i))) {
+                    change.replace(rootOfCycle.getString() + "," + node.getNodeList().get(i).getString());
                     node.getNodeList().add(i, rootOfCycle);
                     node.getNodeList().remove(i + 1);
                 }
@@ -119,15 +141,24 @@ public class CNF {
     // 1. Regel _____________
 
     private void replaceNonTerminal(Element element, ArrayList<Element> list , int j) {
-        if (map.containsKey(element.getElement())) list.set(j, map.get(element.getElement()));
+        String prev;
+        String newChar;
+        if (map.containsKey(element.getString())) {
+            prev = element.getString();
+            newChar = map.get(element.getString()).getString();
+            list.set(j, map.get(element.getString()));
+        }
         else {
-            String newChar = element.getElement().toUpperCase() + "1";
-            String prev = element.getElement();
+            newChar = element.getString().toUpperCase() + "1";
+            prev = element.getString();
             element.setType(Type.NonTerminal);
             element.setCharacter(newChar);
             element.addNode(tree.newNode(prev));
             map.put(prev, element);
+            change.add(newChar);
+            change.addTo(newChar + "," + prev);
         }
+        change.replace(actualRoot.getString() + "," + prev + "," + newChar);
     }
 
 
@@ -139,28 +170,43 @@ public class CNF {
         int size = list.size();
         Node actualNode = node;
         node.getNodeList().clear();
+        change.deleteNode(actualRoot.getString() + "," + nodeId);
         for (int i = 0; i < size - 2; i++) {
-            name = element.getElement() + nameSuffix++;
+            name = element.getString() + nameSuffix++;
             Element newElement = new Element(name, Type.NonTerminal);
             map.put(name, newElement);
             actualNode.addElement(list.get(i));
             actualNode.addElement(newElement);
             actualNode = new Node();
             newElement.addNode(actualNode);
+
+            change.addTo(actualRoot.getString() + "," + list.get(i).getString());
+            change.addTo(actualRoot.getString() + "," + name);
+            change.add(name);
+            change.highlight(name);
+            actualRoot = newElement;
         }
         actualNode.addElement(list.get(size - 2));
         actualNode.addElement(list.get(size - 1));
+
+        change.addTo(actualRoot.getString() + "," + list.get(size - 2).getString());
+        change.addTo(actualRoot.getString() + "," + list.get(size - 1).getString());
     }
 
 
     // 3. Regel _____________
 
     private void removeEpsilon(Node node, int i) {
+        change.delete(actualRoot.getString() + "," + node.getNodeList().get(i).getString());
+
         node.getNodeList().remove(i);
         epsilonStern.add(actualRoot);
         searchBackwards();
-        if (node.getNodeList().isEmpty()) actualRoot.getList().remove(node);
-        if (actualRoot.getList().isEmpty()) map.remove(actualRoot.getElement());
+        if (node.getNodeList().isEmpty()) {
+            actualRoot.getList().remove(node);
+            change.deleteNode(actualRoot.getString() + "," + nodeId);
+        }
+        if (actualRoot.getList().isEmpty()) map.remove(actualRoot.getString());
         else replaceEpsilon();
 
     }
@@ -172,7 +218,10 @@ public class CNF {
             List<String> list = new ArrayList<>(map.keySet());
             for (int j = 0; j < list.size(); j++) {
                 Element nonTerminal = map.get(list.get(j));
-                if (nonTerminal.hasOnlyChildren(elem.getElement()) && !epsilonStern.contains(nonTerminal)) epsilonStern.add(nonTerminal);
+                if (nonTerminal.hasOnlyChildren(elem.getString()) && !epsilonStern.contains(nonTerminal)) {
+                    epsilonStern.add(nonTerminal);
+                    change.highlight(nonTerminal.getString());
+                }
             }
         }
     }
@@ -182,22 +231,27 @@ public class CNF {
         for (int i = 0; i < list.size(); i++) {
             Element root = map.get(list.get(i));
             for (int j = 0; j < epsilonStern.size(); j++) {
-                if (root.hasChildrenWSize(epsilonStern.get(j).getElement())) addNodes(root, epsilonStern.get(j));
+                if (root.hasChildrenWSize(epsilonStern.get(j).getString())) addNodes(root, epsilonStern.get(j));
             }
         }
     }
 
     private void addNodes(Element root, Element element) {
         for (int i = 0; i < root.getList().size(); i++) {
-            if (root.getList().get(i).hasElement(element)) root.addNode(copyWithoutEpsilonTrans(root.getList().get(i), element));
+            if (root.getList().get(i).hasElement(element)) {
+                root.addNode(copyWithoutEpsilonTrans(root ,root.getList().get(i), element));
+            }
         }
 
     }
 
-    private Node copyWithoutEpsilonTrans(Node node, Element element) {
+    private Node copyWithoutEpsilonTrans(Element root, Node node, Element element) {
         Node copy = new Node();
         for(int i = 0; i < node.getNodeList().size(); i++) {
-            if(node.getNodeList().get(i) != element) copy.addElement(node.getNodeList().get(i));
+            if(node.getNodeList().get(i) != element) {
+                copy.addElement(node.getNodeList().get(i));
+                change.addTo(root.getString() + "," + node.getNodeList().get(i).getString());
+            }
         }
         return copy;
     }
@@ -264,12 +318,16 @@ public class CNF {
     }
 
     private void copyNodes(Element root) {
+        change.mark(root.getString());
         possibleCycle.remove(root);
         for (int i = 0; i < possibleCycle.size(); i++) {
+            change.highlight(possibleCycle.get(i).getString());
             for (int j = 0; j < possibleCycle.get(i).getList().size(); j++) {
                 root.addNode(possibleCycle.get(i).getList().get(j));
+                change.addNode(root.getString() + "," + possibleCycle.get(i).getString() + "," + j);
+                change.delete(possibleCycle.get(i).getString());
             }
-            map.remove(possibleCycle.get(i));
+            delete.add(possibleCycle.get(i));
         }
         replaceElement(root);
         possibleCycle.clear();
@@ -306,6 +364,12 @@ public class CNF {
             if (node1.getNodeList().get(i) != node2.getNodeList().get(i)) return false;
         }
         return true;
+    }
+
+    private void delete() {
+        for (int i = 0; i < delete.size(); i++) {
+            map.remove(delete.get(i).getString());
+        }
     }
 
     //CHECKE OB ES GLEICHE ABBILDUNGEN GIBT -> IDENTISCHE NONTERMINALE

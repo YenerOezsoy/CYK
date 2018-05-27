@@ -5,13 +5,15 @@ public class Model {
 
     private Tree tree;
     private CNF cnf;
+    private CYK cyk;
 
     public Model() {
         tree = new Tree();
+        cyk = new CYK();
     }
 
     public void start() {
-        tree.buildTree();
+        //tree.buildTree();
         tree.buildTree();
         System.out.println("===========");
         System.out.println("===========");
@@ -31,6 +33,11 @@ public class Model {
         System.out.println("===========");
         System.out.println("LAST RULE");
         cnf.chainRule();
+
+        cyk.setMap(tree.getMap());
+        cyk.initialize("aba");
+        System.out.println(cyk.isWordInGrammar());
+        cyk.print();
 
     }
 
