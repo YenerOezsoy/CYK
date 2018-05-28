@@ -5,6 +5,11 @@ public class CYK {
 
     private String[] word;
     private int size;
+    private int stage;
+    private int stageCounter;
+    private int offset;
+    private int stageCounter2;
+    private int i;
     private HashMap<Integer, ArrayList<String>[]> pyramid;
     private HashMap<String, Element> map;
 
@@ -12,14 +17,16 @@ public class CYK {
     public void initialize(String w) {
         pyramid = new HashMap<>();
         size = w.length();
+        stage = size;
         word = new String[size];
         for (int i = 0; i < w.length(); i++) {
             word[i] = String.valueOf(w.charAt(i));
         }
         buildPyramide(size);
+        initLoop();
     }
 
-    public boolean isWordInGrammar() {
+    /*public boolean isWordInGrammar() {
         int stage = size;
         while (stage != 0) {
             initializeStage(stage);
@@ -27,6 +34,32 @@ public class CYK {
         }
 
         return false;
+    }*/
+
+    public int[] nextStep() {
+        if (i == stage) {
+            stage--;
+            initLoop();
+        }
+        if(stage == 0) {
+            return null;
+        }
+        else return doLoop();
+    }
+
+    private void initLoop() {
+        initInnerLoop();
+        i = 0;
+    }
+
+    private void initInnerLoop() {
+        stageCounter = stage + 1;
+        stageCounter2 = size;
+        offset = stage;
+    }
+
+    private int[] doLoop() {
+        return initializeStage(stage, i);
     }
 
     public void setMap(HashMap<String, Element> map) {
@@ -43,29 +76,41 @@ public class CYK {
         }
     }
 
-    private void initializeStage(int stage) {
-        for (int i = 0; i < stage; i++) {
-            if (stage == size) {
-                checkColumn(stage, i);
-            }
-            else if (stage == size - 1){
-                checkColumn(stage, stage + 1, i, i + 1);
-            }
-            else {
-                /*checkColumn(stage, i ,stage + 1, i, size, i + size -1);
-                checkColumn(stage, i ,size, i, stage + 1, i + 1);*/
-                int stageCounter = stage + 1;
-                int offset = stage;
-                int stageCounter2 = size;
-                while (stageCounter != size) {
-                    checkColumn(stage,i, stageCounter, i, stageCounter2, i + offset - 1);
-                    stageCounter++;
-                    stageCounter2--;
-                    offset--;
-                }
-            }
+    private int[] initializeStage(int stage, int i) {
+        int[] analyze;
+        if (stage == size) {
+            checkColumn(stage, i);
+            analyze = initAnalyze(stage, i);
         }
+        else if (stage == size - 1){
+            checkColumn(stage, stage + 1, i, i + 1);
+            analyze = initAnalyze(stage, i,stage + 1, i, i + 1);
+        }
+        else {
+            checkColumn(stage,i, stageCounter, i, stageCounter2, i + offset - 1);
+            analyze = initAnalyze(stage,i, stageCounter, i, stageCounter2, i + offset - 1);
+            stageCounter++;
+            stageCounter2--;
+            offset--;
+            if (stageCounter < size) this.i--;
+        }
+        this.i++;
+        return analyze;
+    }
 
+    private int[] initAnalyze(int row, int column) {
+        int[] analyze = {row, column};
+        return analyze;
+    }
+
+    private int[] initAnalyze(int row, int column, int row1, int column1, int column2) {
+        int[] analyze = {row, column, row1, column1, column2};
+        return analyze;
+    }
+
+    private int[] initAnalyze(int row, int column, int row1, int column1, int row2, int column2) {
+        int[] analyze = {row, column, row1, column1, row2, column2};
+        return analyze;
     }
 
     private void checkColumn(int stage, int column) {
@@ -129,6 +174,13 @@ public class CYK {
             }
 
         }
+    }
+
+    public void printArray(int[] arr) {
+        for (int i = 0; i < arr.length; i++) {
+            System.out.println(arr[i]);
+        }
+        System.out.println("____________");
     }
 
 

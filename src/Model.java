@@ -36,7 +36,12 @@ public class Model {
 
         cyk.setMap(tree.getMap());
         cyk.initialize("aba");
-        System.out.println(cyk.isWordInGrammar());
+        //System.out.println(cyk.isWordInGrammar());
+        int[] arr = cyk.nextStep();
+        while(arr != null) {
+            cyk.printArray(arr);
+            arr = cyk.nextStep();
+        }
         cyk.print();
 
     }
