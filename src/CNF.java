@@ -16,6 +16,7 @@ public class CNF {
     private int nameSuffix;
     private Change change = new Change();
     private int nodeId;
+    private Output output = new Output();
 
 
     public CNF(Tree tree) {
@@ -29,6 +30,7 @@ public class CNF {
         startIteration(0);
         tree.printTree();
         change.test();
+        write();
     }
 
     public void lengthRule() {
@@ -370,6 +372,15 @@ public class CNF {
         for (int i = 0; i < delete.size(); i++) {
             map.remove(delete.get(i).getString());
         }
+    }
+
+    private void write() {
+        output.createChangeTag();
+        output.addChange(change.getChanges());
+        /*
+        output.createRuleTag();
+        output.addResult();
+         */
     }
 
     //CHECKE OB ES GLEICHE ABBILDUNGEN GIBT -> IDENTISCHE NONTERMINALE

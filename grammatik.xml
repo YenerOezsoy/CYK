@@ -9,6 +9,7 @@
 <!ELEMENT zeile (zelle+)>
 <!ELEMENT zelle (#PCDATA)> ]>
 
+
 <grammatik>
     <name>Grammatik</name>
     <n>S;A;B;C;D;E</n>

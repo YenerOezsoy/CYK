@@ -57,9 +57,13 @@ public class Change {
         System.out.println(changes);
     }
 
-    public void write() {
+    /*public void write() {
         output.createChangeTag();
         output.addChange(changes);
+    }*/
+
+    public String getChanges() {
+        return changes;
     }
 
 }

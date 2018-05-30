@@ -26,16 +26,6 @@ public class CYK {
         initLoop();
     }
 
-    /*public boolean isWordInGrammar() {
-        int stage = size;
-        while (stage != 0) {
-            initializeStage(stage);
-            stage--;
-        }
-
-        return false;
-    }*/
-
     public int[] nextStep() {
         if (i == stage) {
             stage--;
