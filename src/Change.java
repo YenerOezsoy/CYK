@@ -12,11 +12,13 @@ public class Change {
     }
 
     public void add(String change) {
-        changes += "add(" + change + "); ";
+        seperator();
+        changes += "add(" + change + ")";
     }
 
     public void addTo(String change) {
-        changes += "addTo(" + change + "); ";
+        seperator();
+        changes += "addTo(" + change + ")";
     }
 
     /*
@@ -24,19 +26,23 @@ public class Change {
     Destination , Source , Node Identifier
      */
     public void addNode(String change) {
-        changes += "addNode(" + change + "); ";
+        seperator();
+        changes += "addNode(" + change + ")";
     }
 
     public void replace(String change) {
-        changes += "replace(" + change + "); ";
+        seperator();
+        changes += "replace(" + change + ")";
     }
 
     public void delete(String change) {
-        changes += "delete(" + change + "); ";
+        seperator();
+        changes += "delete(" + change + ")";
     }
 
     public void deleteNode(String change) {
-        changes += "deleteNode(" + change + "); ";
+        seperator();
+        changes += "deleteNode(" + change + ")";
     }
 
     /*
@@ -46,11 +52,13 @@ public class Change {
         Root
      */
     public void mark(String change) {
-        changes += "mark(" + change + "); ";
+        seperator();
+        changes += "mark(" + change + ")";
     }
 
     public void highlight(String change) {
-        changes += "highlight(" + change + "); ";
+        seperator();
+        changes += "highlight(" + change + ")";
     }
 
     public void test () {
@@ -64,6 +72,10 @@ public class Change {
 
     public String getChanges() {
         return changes;
+    }
+
+    private void seperator() {
+        if (changes.length() != 0) changes += "; ";
     }
 
 }

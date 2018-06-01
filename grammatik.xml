@@ -38,10 +38,11 @@
             <zelle>A</zelle>
         </zeile>
     </p>
-<change>mark(S,a); add(A1); addTo(A1,a); replace(S,a,A1); mark(S,a); replace(S,a,A1); mark(S,b); add(B1); addTo(B1,b); replace(S,b,B1); mark(S,b); replace(S,b,B1); mark(D,a); replace(D,a,A1); mark(D,b); replace(D,b,B1); </change>
+
+<change>mark(S,a); add(A1); addTo(A1,a); replace(S,a,A1); mark(S,a); replace(S,a,A1); mark(S,b); add(B1); addTo(B1,b); replace(S,b,B1); mark(S,b); replace(S,b,B1); mark(D,a); replace(D,a,A1); mark(D,b); replace(D,b,B1)</change>
 <name>terminalRule</name>
-<n>A;A1;B;B1;S;C;D;E;</n>
-<t>a;b;</t>
+<n>A;A1;B;B1;S;C;D;E</n>
+<t>a;b</t>
 <s>S</s>
 <p>
 <zeile>
@@ -85,10 +86,10 @@
 <zelle>A</zelle>
 </zeile>
 </p>
-<change>mark(S); deleteNode(S,0); addTo(S,A1); addTo(S,S2); add(S2); highlight(S2); addTo(S2,A); addTo(S2,A1); mark(S); deleteNode(S,1); addTo(S,B1); addTo(S,S3); add(S3); highlight(S3); addTo(S3,B); addTo(S3,B1); mark(C); deleteNode(C,0); addTo(C,C); addTo(C,C2); add(C2); highlight(C2); addTo(C2,D); addTo(C2,E); </change>
+<change>mark(S); deleteNode(S,0); addTo(S,A1); addTo(S,S2); add(S2); highlight(S2); addTo(S2,A); addTo(S2,A1); mark(S); deleteNode(S,1); addTo(S,B1); addTo(S,S3); add(S3); highlight(S3); addTo(S3,B); addTo(S3,B1); mark(C); deleteNode(C,0); addTo(C,C); addTo(C,C2); add(C2); highlight(C2); addTo(C2,D); addTo(C2,E)</change>
 <name>lengthRule</name>
-<n>S3;A;A1;B;B1;S;C;D;E;S2;C2;</n>
-<t>a;b;</t>
+<n>S3;A;A1;B;B1;S;C;D;E;S2;C2</n>
+<t>a;b</t>
 <s>S</s>
 <p>
 <zeile>
@@ -144,10 +145,10 @@
 <zelle>DE</zelle>
 </zeile>
 </p>
-<change>mark(S,/Eps); delete(S,/Eps); deleteNode(S,3); mark(C,/Eps); delete(C,/Eps); highlight(A); highlight(S); highlight(D); highlight(E); deleteNode(C,1); addTo(C,C2); addTo(S2,A1); addTo(C2,E); addTo(C2,D); </change>
+<change>mark(S,/Eps); delete(S,/Eps); deleteNode(S,3); mark(C,/Eps); delete(C,/Eps); highlight(A); highlight(S); highlight(D); highlight(E); deleteNode(C,1); addTo(C,C2); addTo(S2,A1); addTo(C2,E); addTo(C2,D)</change>
 <name>epsilonRule</name>
-<n>S3;A;A1;B;B1;S;C;D;E;S2;C2;</n>
-<t>a;b;</t>
+<n>S3;A;A1;B;B1;S;C;D;E;S2;C2</n>
+<t>a;b</t>
 <s>S</s>
 <p>
 <zeile>
@@ -206,10 +207,10 @@
 <zelle/>
 </zeile>
 </p>
-<change>mark(A); highlight(E); addNode(A,E,0); delete(E); addNode(A,E,1); delete(E); highlight(C2); addNode(A,C2,0); delete(C2); addNode(A,C2,1); delete(C2); addNode(A,C2,2); delete(C2); addNode(A,C2,3); delete(C2); highlight(C); addNode(A,C,0); delete(C); addNode(A,C,1); delete(C); replace(A,C); replace(A,E); replace(A,E); replace(A,C); replace(A,C2); replace(A,C2); mark(A); highlight(D); addNode(A,D,0); delete(D); addNode(A,D,1); delete(D); addNode(A,D,2); delete(D); replace(A,D); replace(A,D); mark(A); </change>
+<change>mark(A); highlight(E); addNode(A,E,0); delete(E); addNode(A,E,1); delete(E); highlight(C2); addNode(A,C2,0); delete(C2); addNode(A,C2,1); delete(C2); addNode(A,C2,2); delete(C2); addNode(A,C2,3); delete(C2); highlight(C); addNode(A,C,0); delete(C); addNode(A,C,1); delete(C); replace(A,C); replace(A,E); replace(A,E); replace(A,C); replace(A,C2); replace(A,C2); mark(A); highlight(D); addNode(A,D,0); delete(D); addNode(A,D,1); delete(D); addNode(A,D,2); delete(D); replace(A,D); replace(A,D); mark(A)</change>
 <name>chainRule</name>
-<n>S3;A;A1;B;B1;S;S2;</n>
-<t>a;b;</t>
+<n>S3;A;A1;B;B1;S;S2</n>
+<t>a;b</t>
 <s>S</s>
 <p>
 <zeile>

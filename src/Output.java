@@ -75,7 +75,7 @@ public class Output {
         for (int i = 0; i < list.size(); i++) {
             if (map.get(list.get(i)).getType() == Type.NonTerminal) nonTerminals += map.get(list.get(i)).getString() + ";" ;
         }
-        nonTerminals.substring(0, nonTerminals.length() - 1);
+        nonTerminals = nonTerminals.substring(0, nonTerminals.length() - 1);
         rootElement.appendChild(element);
         addChange(element, nonTerminals);
     }
@@ -87,7 +87,7 @@ public class Output {
         for (int i = 0; i < list.size(); i++) {
             if (!map.get(list.get(i)).getString().equals(list.get(i))) terminals += list.get(i) + ";";
         }
-        terminals.substring(0, terminals.length() - 1);
+        terminals = terminals.substring(0, terminals.length() - 1);
         rootElement.appendChild(element);
         addChange(element, terminals);
     }
