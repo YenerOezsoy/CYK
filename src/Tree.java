@@ -7,12 +7,12 @@ import java.util.HashMap;
 
 public class Tree {
 
-    private Element rootElement;
-    private Element actualRoot;
+    private Elem rootElem;
+    private Elem actualRoot;
     private Input input;
     private Node node;
     private ArrayList<String> toProcess;
-    private HashMap<String, Element> temp;
+    private HashMap<String, Elem> temp;
 
     public Tree() {
         input = new Input();
@@ -22,10 +22,10 @@ public class Tree {
     public void buildTree() {
         //prüfe beim Erstellen der Datei ob StartSymbol auch in NichtTerminal vorhanden ist
         String root = input.getRootElement();
-        rootElement = new Element(root, Type.NonTerminal);
+        rootElem = new Elem(root, Type.NonTerminal);
         toProcess = new ArrayList<>();
         temp = new HashMap<>();
-        temp.put(root,rootElement);
+        temp.put(root, rootElem);
         toProcess.add(root);
         process(toProcess);
     }
@@ -42,7 +42,7 @@ public class Tree {
             actualRoot = temp.get(root);
         }
         else {
-            actualRoot = new Element(root, Type.NonTerminal);
+            actualRoot = new Elem(root, Type.NonTerminal);
             temp.put(root, actualRoot);
         }
 
@@ -87,12 +87,12 @@ public class Tree {
         return false;
     }
 
-    public HashMap<String, Element> getMap() {
+    public HashMap<String, Elem> getMap() {
         return temp;
     }
 
-    public Element getRootElement() {
-        return rootElement;
+    public Elem getRootElem() {
+        return rootElem;
     }
 
     public Node newNode(String character) {
@@ -102,13 +102,13 @@ public class Tree {
     }
 
     public void printTree() {
-        ArrayList<Element> touched = new ArrayList<>();
-        touched.add(rootElement);
+        ArrayList<Elem> touched = new ArrayList<>();
+        touched.add(rootElem);
         for (int i = 0; i < touched.size(); i++) {
             System.out.println("_______");
             System.out.println("Root: " +  touched.get(i).getString());
             for (int j = 0; j < touched.get(i).getList().size(); j++) {
-                ArrayList<Element> nodelist = touched.get(i).getList().get(j).getNodeList();
+                ArrayList<Elem> nodelist = touched.get(i).getList().get(j).getNodeList();
                 for (int k = 0; k < nodelist.size(); k++) {
                     System.out.println("Index k: " + k + "   ::" + nodelist.get(k).getString());
                     if (nodelist.get(k).getType() == Type.NonTerminal && !touched.contains(nodelist.get(k))) touched.add(nodelist.get(k));
@@ -119,11 +119,11 @@ public class Tree {
 
 }
     /*public void buildTree() {
-        root = new Element(input.getRootElement(), Type.NonTerminal);
+        root = new Elem(input.getRootElem(), Type.NonTerminal);
         ArrayList<String> toProcess = new ArrayList<>();
-        toProcess.add(input.getRootElement());
+        toProcess.add(input.getRootElem());
         temp = new HashMap<>();
-        temp.put(input.getRootElement(), root);
+        temp.put(input.getRootElem(), root);
 
         while (!toProcess.isEmpty()) {
             System.out.println("To Process: " + toProcess.get(0));

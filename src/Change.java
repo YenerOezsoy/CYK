@@ -41,7 +41,7 @@ public class Change {
 
     /*
     change besteht aus:
-        Root und Element
+        Root und Elem
              oder
         Root
      */

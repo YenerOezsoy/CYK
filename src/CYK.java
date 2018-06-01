@@ -11,7 +11,7 @@ public class CYK {
     private int stageCounter2;
     private int i;
     private HashMap<Integer, ArrayList<String>[]> pyramid;
-    private HashMap<String, Element> map;
+    private HashMap<String, Elem> map;
 
 
     public void initialize(String w) {
@@ -52,7 +52,7 @@ public class CYK {
         return initializeStage(stage, i);
     }
 
-    public void setMap(HashMap<String, Element> map) {
+    public void setMap(HashMap<String, Elem> map) {
         this.map = map;
     }
 

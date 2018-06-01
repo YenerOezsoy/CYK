@@ -1,9 +1,8 @@
 import java.util.ArrayList;
-import java.util.HashMap;
 
 public class Node {
 
-    private ArrayList<Element> list;
+    private ArrayList<Elem> list;
 
     public Node() {
         list = new ArrayList<>();
@@ -14,12 +13,12 @@ public class Node {
     }
 
     public void addTerminalToNode(String element) {
-        Element elem = new Element(element, Type.Terminal);
+        Elem elem = new Elem(element, Type.Terminal);
         list.add(elem);
     }
 
-    public Element addNonTerminalToNode(String element) {
-        Element elem = new Element(element, Type.NonTerminal);
+    public Elem addNonTerminalToNode(String element) {
+        Elem elem = new Elem(element, Type.NonTerminal);
         list.add(elem);
         return elem;
     }
@@ -27,14 +26,14 @@ public class Node {
     /*
     private void createNewElement(String split) {
         if(input.getType(split) == Type.NonTerminal) {
-            //wenn Element schon vorhanden, nur linken
+            //wenn Elem schon vorhanden, nur linken
             if (temp.containsKey(split)) {
                 list.add(temp.get(split));
                 System.out.println("Vorhandenes Nicht-Terminal: " + split);
             }
             else {
                 System.out.println("Neues Nicht-Terminal: " + split);
-                Element element = new Element(split, input.getType(split));
+                Elem element = new Elem(split, input.getType(split));
                 list.add(element);
                 temp.put(split, element);
                 toProcess.add(split);
@@ -42,21 +41,21 @@ public class Node {
         }
         else {
             System.out.println("Terminal: " + split);
-            Element element = new Element(split, input.getType(split));
+            Elem element = new Elem(split, input.getType(split));
             list.add(element);
         }
     }
     */
 
-    public ArrayList<Element> getNodeList() {
+    public ArrayList<Elem> getNodeList() {
         return list;
     }
 
-    public void addElement(Element element) {
-        list.add(element);
+    public void addElement(Elem elem) {
+        list.add(elem);
     }
 
-    public boolean hasElement(Element element) {
-        return(list.contains(element));
+    public boolean hasElement(Elem elem) {
+        return(list.contains(elem));
     }
 }

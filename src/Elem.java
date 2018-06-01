@@ -1,12 +1,12 @@
 import java.util.ArrayList;
 
-public class Element {
+public class Elem {
     private String character;
     private Type type;
     private ArrayList<Node> list;
 
 
-    public Element(String character, Type type) {
+    public Elem(String character, Type type) {
         this.character = character;
         this.type = type;
         list = new ArrayList<>();

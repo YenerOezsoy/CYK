@@ -6,13 +6,13 @@ public class CNF {
 
     private boolean startedSearch = false;
     private Tree tree;
-    private HashMap<String, Element> map;
-    private Element actualRoot;
-    private Element rootOfCycle;
-    private ArrayList<Element> epsilonStern = new ArrayList<>();
-    private ArrayList<Element> visited = new ArrayList<>();
-    private ArrayList<Element> possibleCycle = new ArrayList<>();
-    private ArrayList<Element> delete = new ArrayList<>();
+    private HashMap<String, Elem> map;
+    private Elem actualRoot;
+    private Elem rootOfCycle;
+    private ArrayList<Elem> epsilonStern = new ArrayList<>();
+    private ArrayList<Elem> visited = new ArrayList<>();
+    private ArrayList<Elem> possibleCycle = new ArrayList<>();
+    private ArrayList<Elem> delete = new ArrayList<>();
     private int nameSuffix;
     private Change change = new Change();
     private int nodeId;
@@ -22,7 +22,7 @@ public class CNF {
     public CNF(Tree tree) {
         this.tree = tree;
         map = tree.getMap();
-        visited.add(tree.getRootElement());
+        visited.add(tree.getRootElem());
     }
 
     public void terminalRule() {
@@ -30,7 +30,7 @@ public class CNF {
         startIteration(0);
         tree.printTree();
         change.test();
-        write();
+        write("terminalRule");
     }
 
     public void lengthRule() {
@@ -38,6 +38,7 @@ public class CNF {
         startIteration(1);
         tree.printTree();
         change.test();
+        write("lengthRule");
     }
 
     public void epsilonRule() {
@@ -45,6 +46,7 @@ public class CNF {
         startIteration(2);
         tree.printTree();
         change.test();
+        write("epsilonRule");
     }
 
     public void chainRule() {
@@ -54,6 +56,7 @@ public class CNF {
         tree.printTree();
         delete();
         change.test();
+        write("chainRule");
     }
 
     private void startIteration(int rule) {
@@ -64,7 +67,7 @@ public class CNF {
         }
     }
 
-    private void inspectNonTerminal(Element element, int rule) {
+    private void inspectNonTerminal(Elem element, int rule) {
         //jeder Node bildet eine Ableitungsregel
         ArrayList<Node> nodes = element.getList();
         for (int i = 0; i < nodes.size(); i++) {
@@ -99,7 +102,7 @@ public class CNF {
             //Kettenregel
             else if (rule == 5) {
                 if (nodes.get(i).getNodeList().size() == 1 && nodes.get(i).getNodeList().get(0).getType() == Type.NonTerminal) {
-                    Element elem = nodes.get(i).getNodeList().get(0);
+                    Elem elem = nodes.get(i).getNodeList().get(0);
                     for (int j = 0; j < elem.getList().size(); j++) {
                         element.addNode(elem.getList().get(j));
                     }
@@ -142,21 +145,21 @@ public class CNF {
 
     // 1. Regel _____________
 
-    private void replaceNonTerminal(Element element, ArrayList<Element> list , int j) {
+    private void replaceNonTerminal(Elem elem, ArrayList<Elem> list , int j) {
         String prev;
         String newChar;
-        if (map.containsKey(element.getString())) {
-            prev = element.getString();
-            newChar = map.get(element.getString()).getString();
-            list.set(j, map.get(element.getString()));
+        if (map.containsKey(elem.getString())) {
+            prev = elem.getString();
+            newChar = map.get(elem.getString()).getString();
+            list.set(j, map.get(elem.getString()));
         }
         else {
-            newChar = element.getString().toUpperCase() + "1";
-            prev = element.getString();
-            element.setType(Type.NonTerminal);
-            element.setCharacter(newChar);
-            element.addNode(tree.newNode(prev));
-            map.put(prev, element);
+            newChar = elem.getString().toUpperCase() + "1";
+            prev = elem.getString();
+            elem.setType(Type.NonTerminal);
+            elem.setCharacter(newChar);
+            elem.addNode(tree.newNode(prev));
+            map.put(prev, elem);
             change.add(newChar);
             change.addTo(newChar + "," + prev);
         }
@@ -166,27 +169,27 @@ public class CNF {
 
     // 2. Regel _____________
 
-    private void shortenNode(Element element, Node node) {
+    private void shortenNode(Elem elem, Node node) {
         String name;
-        ArrayList<Element> list = new ArrayList<>(node.getNodeList());
+        ArrayList<Elem> list = new ArrayList<>(node.getNodeList());
         int size = list.size();
         Node actualNode = node;
         node.getNodeList().clear();
         change.deleteNode(actualRoot.getString() + "," + nodeId);
         for (int i = 0; i < size - 2; i++) {
-            name = element.getString() + nameSuffix++;
-            Element newElement = new Element(name, Type.NonTerminal);
-            map.put(name, newElement);
+            name = elem.getString() + nameSuffix++;
+            Elem newElem = new Elem(name, Type.NonTerminal);
+            map.put(name, newElem);
             actualNode.addElement(list.get(i));
-            actualNode.addElement(newElement);
+            actualNode.addElement(newElem);
             actualNode = new Node();
-            newElement.addNode(actualNode);
+            newElem.addNode(actualNode);
 
             change.addTo(actualRoot.getString() + "," + list.get(i).getString());
             change.addTo(actualRoot.getString() + "," + name);
             change.add(name);
             change.highlight(name);
-            actualRoot = newElement;
+            actualRoot = newElem;
         }
         actualNode.addElement(list.get(size - 2));
         actualNode.addElement(list.get(size - 1));
@@ -213,13 +216,13 @@ public class CNF {
 
     }
 
-    //Suche nach Elementen, die Wurzel von Element aus Liste epsilonStern sind
+    //Suche nach Elementen, die Wurzel von Elem aus Liste epsilonStern sind
     private void searchBackwards() {
         for (int i = 0; i < epsilonStern.size(); i++) {
-            Element elem = epsilonStern.get(i);
+            Elem elem = epsilonStern.get(i);
             List<String> list = new ArrayList<>(map.keySet());
             for (int j = 0; j < list.size(); j++) {
-                Element nonTerminal = map.get(list.get(j));
+                Elem nonTerminal = map.get(list.get(j));
                 if (nonTerminal.hasOnlyChildren(elem.getString()) && !epsilonStern.contains(nonTerminal)) {
                     epsilonStern.add(nonTerminal);
                     change.highlight(nonTerminal.getString());
@@ -231,26 +234,26 @@ public class CNF {
     private void replaceEpsilon() {
         List<String> list = new ArrayList<>(map.keySet());
         for (int i = 0; i < list.size(); i++) {
-            Element root = map.get(list.get(i));
+            Elem root = map.get(list.get(i));
             for (int j = 0; j < epsilonStern.size(); j++) {
                 if (root.hasChildrenWSize(epsilonStern.get(j).getString())) addNodes(root, epsilonStern.get(j));
             }
         }
     }
 
-    private void addNodes(Element root, Element element) {
+    private void addNodes(Elem root, Elem elem) {
         for (int i = 0; i < root.getList().size(); i++) {
-            if (root.getList().get(i).hasElement(element)) {
-                root.addNode(copyWithoutEpsilonTrans(root ,root.getList().get(i), element));
+            if (root.getList().get(i).hasElement(elem)) {
+                root.addNode(copyWithoutEpsilonTrans(root ,root.getList().get(i), elem));
             }
         }
 
     }
 
-    private Node copyWithoutEpsilonTrans(Element root, Node node, Element element) {
+    private Node copyWithoutEpsilonTrans(Elem root, Node node, Elem elem) {
         Node copy = new Node();
         for(int i = 0; i < node.getNodeList().size(); i++) {
-            if(node.getNodeList().get(i) != element) {
+            if(node.getNodeList().get(i) != elem) {
                 copy.addElement(node.getNodeList().get(i));
                 change.addTo(root.getString() + "," + node.getNodeList().get(i).getString());
             }
@@ -261,29 +264,29 @@ public class CNF {
 
     // 4. Regel _____________
 
-    private void checkCycle(Element element) {
+    private void checkCycle(Elem elem) {
         startedSearch = false;
         epsilonStern.clear();
-        if (isCycle(element)) copyNodes(findRootOfCycle());
+        if (isCycle(elem)) copyNodes(findRootOfCycle());
     }
 
-    private boolean isCycle(Element element) {
-        if (element.getType() == Type.NonTerminal) {
-            if (element == actualRoot && startedSearch) return true;
+    private boolean isCycle(Elem elem) {
+        if (elem.getType() == Type.NonTerminal) {
+            if (elem == actualRoot && startedSearch) return true;
             else {
                 startedSearch = true;
-                boolean result = elementIterator(element);
-                if (result) possibleCycle.add(element);
+                boolean result = elementIterator(elem);
+                if (result) possibleCycle.add(elem);
                 return result;
             }
         }
         else return false;
     }
 
-    private boolean elementIterator(Element element) {
+    private boolean elementIterator(Elem elem) {
         boolean foundElement = false;
-        for (int i = 0; i < element.getList().size(); i++) {
-            Node nodeList = element.getList().get(i);
+        for (int i = 0; i < elem.getList().size(); i++) {
+            Node nodeList = elem.getList().get(i);
             //nur Abbildungen der Laenge sind von der Regel betroffen
             if (nodeList.getNodeList().size() == 1 && nodeList.getNodeList().get(0).getType() == Type.NonTerminal) {
                 if (!epsilonStern.contains(nodeList.getNodeList().get(0))) {
@@ -295,31 +298,31 @@ public class CNF {
         return foundElement;
     }
 
-    private Element findRootOfCycle() {
-        ArrayList<Element>  touched = new ArrayList<>();
-        touched.add(tree.getRootElement());
+    private Elem findRootOfCycle() {
+        ArrayList<Elem>  touched = new ArrayList<>();
+        touched.add(tree.getRootElem());
         return breadthFirstSearch(touched);
     }
 
-    private Element breadthFirstSearch(ArrayList<Element> touched) {
+    private Elem breadthFirstSearch(ArrayList<Elem> touched) {
         for (int i = 0; i < touched.size(); i++) {
             for (int j = 0; j < touched.get(i).getList().size(); j++) {
                 Node node = touched.get(i).getList().get(j);
-                Element foundRoot = cycleIterator(node);
+                Elem foundRoot = cycleIterator(node);
                 if (foundRoot != null) return foundRoot;
             }
         }
         return null;
     }
 
-    private Element cycleIterator(Node node) {
+    private Elem cycleIterator(Node node) {
         for (int i = 0; i < possibleCycle.size(); i++) {
             if (node.getNodeList().contains(possibleCycle.get(i))) return possibleCycle.get(i);
         }
         return null;
     }
 
-    private void copyNodes(Element root) {
+    private void copyNodes(Elem root) {
         change.mark(root.getString());
         possibleCycle.remove(root);
         for (int i = 0; i < possibleCycle.size(); i++) {
@@ -335,30 +338,34 @@ public class CNF {
         possibleCycle.clear();
     }
 
-    private void replaceElement(Element root) {
+    private void replaceElement(Elem root) {
         rootOfCycle = root;
         startIteration(4);
     }
 
-    private void cleanUp(Element root) {
+    private void cleanUp(Elem root) {
         for (int i = 0; i < root.getList().size(); i++) {
             if (root.getList().get(i).getNodeList().size() == 1) checkIdentity(root, root.getList().get(i));
             else checkDouble(root, root.getList().get(i));
         }
     }
 
-    private void checkIdentity(Element root, Node node) {
+    private void checkIdentity(Elem root, Node node) {
         if (node.getNodeList().get(0) == root) root.getList().remove(node);
         else checkDouble(root, node);
     }
 
-    private void checkDouble(Element root, Node node) {
-        for (int i = root.getList().indexOf(node) + 1; i < root.getList().size(); i++) {
-            if (node.getNodeList().size() == root.getList().get(i).getNodeList().size()) {
-                if (isNodeEqual(root.getList().get(i), node)) root.getList().remove(node);
-            }
+    private void checkDouble(Elem root, Node node) {
+        if (node.getNodeList().size() == 0) root.getList().remove(node);
+        else {
+            for (int i = root.getList().indexOf(node) + 1; i < root.getList().size(); i++) {
+                if (node.getNodeList().size() == root.getList().get(i).getNodeList().size()) {
+                    if (isNodeEqual(root.getList().get(i), node)) root.getList().remove(node);
+                }
 
+            }
         }
+
     }
 
     private boolean isNodeEqual(Node node1, Node node2) {
@@ -374,13 +381,9 @@ public class CNF {
         }
     }
 
-    private void write() {
-        output.createChangeTag();
-        output.addChange(change.getChanges());
-        /*
-        output.createRuleTag();
-        output.addResult();
-         */
+    private void write(String name) {
+        output.addChange(output.createChangeTag(), change.getChanges());
+        output.writeTree(map, tree.getRootElem().getString(),name);
     }
 
     //CHECKE OB ES GLEICHE ABBILDUNGEN GIBT -> IDENTISCHE NONTERMINALE

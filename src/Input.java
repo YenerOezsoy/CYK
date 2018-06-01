@@ -15,7 +15,7 @@ public class Input {
     private final QName nodesetType = XPathConstants.NODESET;
     private final QName stringType = XPathConstants.STRING;
 
-    private String path = "grammatik";
+    private String path = "1";
     private String rootElement;
     private String[] nonterminals;
     private String[] terminals;
@@ -36,30 +36,19 @@ public class Input {
             e.printStackTrace();
 
         }
-        setActiveStep(0);
+        setActiveStep(1);
     }
 
     public void setActiveStep(int i) {
-        switch(i) {
-            case 0: path = "grammatik";
-                    break;
-            case 1: path = "firstRule";
-                    break;
-            case 2: path = "secondRule";
-                    break;
-            case 3: path = "thirdRule";
-                    break;
-            case 4: path = "fourthRule";
-                    break;
-        }
+        this.path = i + "";
         initializeNames();
     }
 
 
     private void initializeNames() {
-        String nonterminal = (String) read("/" + path + "/n", stringType);
-        String terminal = (String) read("/" + path + "/t", stringType);
-        rootElement = (String) read("/" + path + "/s", stringType);
+        String nonterminal = (String) read("/grammatik/n[" + path + "]", stringType);
+        String terminal = (String) read("/grammatik/t[" + path + "]", stringType);
+        rootElement = (String) read("/grammatik/s[" + path + "]", stringType);
         nonterminals = nonterminal.split(";");
         terminals = terminal.split(";");
     }
@@ -97,13 +86,18 @@ public class Input {
     }
 
     public NodeList getProduction(int i) {
-        String expression = "/" + path + "/p/zeile[" + i + "]/zelle";
+        String expression = "/grammatik/p[" + path + "/zeile[" + i + "]/zelle";
         return (NodeList) read(expression, nodesetType);
     }
 
     public NodeList getProduction(String root) {
-        String expression = "/" + path + "/p/zeile/zelle[text()='" + root + "' and position()=1]/../zelle";
+        String expression = "/grammatik/p[" + path + "]/zeile/zelle[text()='" + root + "' and position()=1]/../zelle";
         return (NodeList) read(expression, nodesetType);
+    }
+
+    public String getChange() {
+        String expression = "grammatik/change[" +path + "]";
+        return (String) read(expression, stringType);
     }
 
 
@@ -135,7 +129,7 @@ public class Input {
         }
     }
 
-    public String getRootElement() {
+    public String getRootElem() {
         return production.item(3).getTextContent();
     }
 
