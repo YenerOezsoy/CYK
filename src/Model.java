@@ -3,13 +3,27 @@
  */
 public class Model {
 
-    private Tree tree;
+    /*private Tree tree;
     private CNF cnf;
     private CYK cyk;
 
     public Model() {
         tree = new Tree();
         cyk = new CYK();
+    }*/
+
+    private CNF cnf;
+    private Input input;
+    private Output output;
+    private Tree tree;
+
+    public Model() {
+
+    }
+
+    public void readFile(String path) {
+        tree = new Tree(path);
+        cnf = new CNF(tree);
     }
 
     public void start() {
@@ -34,7 +48,7 @@ public class Model {
         System.out.println("LAST RULE");
         cnf.chainRule();
 
-        cyk.setMap(tree.getMap());
+        /*cyk.setMap(tree.getMap());
         cyk.initialize("aba");
         //System.out.println(cyk.isWordInGrammar());
         int[] arr = cyk.nextStep();
@@ -42,9 +56,14 @@ public class Model {
             cyk.printArray(arr);
             arr = cyk.nextStep();
         }
-        cyk.print();
+        cyk.print();*/
 
     }
 
+    public Tree getStep(int step) {
+        tree.setActiveStep(step);
+        tree.printTree();
+        return tree;
+    }
 
 }

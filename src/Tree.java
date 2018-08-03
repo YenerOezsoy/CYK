@@ -14,8 +14,8 @@ public class Tree {
     private ArrayList<String> toProcess;
     private HashMap<String, Elem> temp;
 
-    public Tree() {
-        input = new Input();
+    public Tree(String path) {
+        input = new Input(path);
     }
 
 
@@ -28,6 +28,11 @@ public class Tree {
         temp.put(root, rootElem);
         toProcess.add(root);
         process(toProcess);
+    }
+
+    public void setActiveStep(int step) {
+        input.setActiveStep(step);
+        buildTree();
     }
 
     private void process(ArrayList<String> toProcess) {

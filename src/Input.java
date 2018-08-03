@@ -24,11 +24,12 @@ public class Input {
     private XPath xpath;
     private XPathExpression expr;
 
-    public Input () {
+    public Input (String filePath) {
+        System.out.println(filePath);
         try {
             DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
             DocumentBuilder builder = factory.newDocumentBuilder();
-            doc = builder.parse("grammatik.xml");
+            doc = builder.parse(filePath);
             XPathFactory xPathfactory = XPathFactory.newInstance();
             xpath = xPathfactory.newXPath();
         }

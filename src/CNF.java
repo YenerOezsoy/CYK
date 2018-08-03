@@ -16,11 +16,12 @@ public class CNF {
     private int nameSuffix;
     private Change change = new Change();
     private int nodeId;
-    private Output output = new Output();
+    private Output output;// = new Output();
 
 
     public CNF(Tree tree) {
         this.tree = tree;
+        output = new Output();
         map = tree.getMap();
         visited.add(tree.getRootElem());
     }
