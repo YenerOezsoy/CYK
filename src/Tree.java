@@ -61,10 +61,9 @@ public class Tree {
 
     //fange Fall ab falls Symbol nicht definiert in n oder t
     private void splitSymbol(String symbols) {
-        String detected = "";
-        for (int i = 0; i < symbols.length(); i++) {
-            detected += symbols.charAt(i);
-            if (checkSymbol(detected)) detected = "";
+        String[] detected = symbols.split("\\s+");
+        for (int i = 0; i < detected.length; i++) {
+            checkSymbol(detected[i]);
         }
         /*
         if (detected.length() > 0) ERROR

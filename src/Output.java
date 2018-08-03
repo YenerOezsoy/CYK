@@ -123,7 +123,7 @@ public class Output {
         Element column = doc.createElement("zelle");
         row.appendChild(column);
         for (int i = 0; i < node.getNodeList().size(); i++) {
-            production += node.getNodeList().get(i).getString();
+            production += " " + node.getNodeList().get(i).getString();
         }
         addChange(column, production);
     }

@@ -27,7 +27,6 @@ public class Model {
     }
 
     public void start() {
-        //tree.buildTree();
         tree.buildTree();
         System.out.println("===========");
         System.out.println("===========");
