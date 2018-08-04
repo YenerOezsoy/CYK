@@ -3,15 +3,6 @@
  */
 public class Model {
 
-    /*private Tree tree;
-    private CNF cnf;
-    private CYK cyk;
-
-    public Model() {
-        tree = new Tree();
-        cyk = new CYK();
-    }*/
-
     private CNF cnf;
     private Input input;
     private Output output;
@@ -24,6 +15,10 @@ public class Model {
     public void readFile(String path) {
         tree = new Tree(path);
         cnf = new CNF(tree);
+    }
+
+    public void writeFile(String path) {
+        tree = new Tree(path);
     }
 
     public void start() {
@@ -60,9 +55,12 @@ public class Model {
     }
 
     public Tree getStep(int step) {
-        tree.setActiveStep(step);
-        tree.printTree();
-        return tree;
+        if (step < 6) {
+            tree.setActiveStep(step);
+            tree.printTree();
+            return tree;
+        }
+        return null;
     }
 
 }

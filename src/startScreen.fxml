@@ -166,15 +166,15 @@
                   <TextArea fx:id="infoboxCNFText" prefHeight="159.0" prefWidth="1024.0" />
                </children>
             </Pane>
-            <Button fx:id="cnfStepBack" layoutX="671.0" layoutY="15.0" mnemonicParsing="false" onAction="#cnfPrevious" prefHeight="27.0" prefWidth="18.0" text="Button" />
-            <Button fx:id="cnfPlayButton" layoutX="709.0" layoutY="15.0" mnemonicParsing="false" onAction="#play" prefHeight="27.0" prefWidth="18.0" text="Button" />
-            <Button fx:id="cnfStepForward" layoutX="745.0" layoutY="15.0" mnemonicParsing="false" onAction="#cnfNext" prefHeight="27.0" prefWidth="18.0" text="Button" />
-            <Text layoutX="783.0" layoutY="33.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Geschwindigkeit:">
+            <Button fx:id="cnfStepBack" layoutX="670.0" layoutY="15.0" mnemonicParsing="false" onAction="#cnfPrevious" prefHeight="27.0" prefWidth="18.0" />
+            <Button fx:id="cnfPlayButton" layoutX="710.0" layoutY="15.0" mnemonicParsing="false" onAction="#play" prefHeight="27.0" prefWidth="18.0" />
+            <Button fx:id="cnfStepForward" layoutX="750.0" layoutY="15.0" mnemonicParsing="false" onAction="#cnfNext" prefHeight="27.0" prefWidth="18.0" />
+            <Text layoutX="797.0" layoutY="33.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Geschwindigkeit:">
                <font>
                   <Font name="Arial" size="13.0" />
                </font>
             </Text>
-            <Slider fx:id="cnfSlider" layoutX="897.0" layoutY="19.0" max="10.0" min="0.5" prefHeight="16.0" prefWidth="120.0" value="2.0" />
+            <Slider fx:id="cnfSlider" layoutX="896.0" layoutY="21.0" max="10.0" min="0.5" prefHeight="16.0" prefWidth="120.0" value="2.0" />
          </children>
       </Pane>
    </children>

@@ -31,6 +31,7 @@ public class View extends Application{
     private Timer timer;
     private Controller controller;
     private int step = 0;
+    private Tree tree;
 
 
     private GridPane pane;
@@ -118,6 +119,7 @@ public class View extends Application{
         selectionScreen.setVisible(false);
         title.setText("Chomsky Normalform");
         cnfPane.setVisible(true);
+        initButton();
         //initcnfPane(previousCNF, tree);
     }
 
@@ -181,9 +183,10 @@ public class View extends Application{
     @FXML
     protected void cnfNext() {
         System.out.println("next");
+        tree = controller.getTreeStep(++step);
+        if (tree == null) step--;
         System.out.println(step);
-        controller.getTreeStep(++step);
-        System.out.println(step);
+        //doSomething
     }
 
     private void initcnfPane(Pane pane, Tree tree) {

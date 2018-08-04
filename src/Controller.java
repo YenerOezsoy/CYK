@@ -21,7 +21,6 @@ public class Controller {
     }
 
     public Tree getTreeStep(int step) {
-        model.getStep(step);
-        return null;
+        return model.getStep(step);
     }
 }

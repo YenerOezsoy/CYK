@@ -39,6 +39,10 @@ public class Output {
 
     }
 
+    public Output(String path) {
+
+    }
+
     public Element createChangeTag() {
         element = doc.createElement("change");
         rootElement.appendChild(element);
