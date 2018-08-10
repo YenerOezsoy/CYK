@@ -28,6 +28,7 @@
                   <Font name="Arial" size="20.0" />
                </font>
             </Button>
+            <Text fx:id="test" layoutX="102.0" layoutY="233.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Text" />
          </children>
       </Pane>
       <Pane fx:id="selectionScreen" prefHeight="768.0" prefWidth="1024.0" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
@@ -79,13 +80,13 @@
                   <Font name="Arial Bold" size="19.0" />
                </font>
             </Text>
-            <Text layoutX="80.0" layoutY="468.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Hinweis: Geben Sie die Produktionen wie folgt ein: S-&gt;AaA BbB&#10;               Trennen Sie Produktionsregeln durch ein Leerzeichen&#10;               Für Epsilon verwenden Sie /Eps ">
+            <Text layoutX="80.0" layoutY="468.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Hinweis: Geben Sie die Produktionen wie folgt ein: S-&gt;A a A,B b B&#10;               Trennen Sie Produktionsregeln durch ein Komma&#10;&#9;       Trennen Sie Symbole durch ein Leerzeichen &#10;               Für Epsilon verwenden Sie /Eps ">
                <font>
                   <Font name="Arial" size="13.0" />
                </font>
             </Text>
-            <TextArea layoutX="80.0" layoutY="523.0" prefHeight="159.0" prefWidth="905.0" />
-            <Button fx:id="confirm" layoutX="892.0" layoutY="700.0" mnemonicParsing="false" text="Bestätigen">
+            <TextArea fx:id="production" layoutX="80.0" layoutY="523.0" prefHeight="159.0" prefWidth="905.0" />
+            <Button fx:id="confirm" layoutX="892.0" layoutY="700.0" mnemonicParsing="false" onAction="#userInput" text="Bestätigen">
                <font>
                   <Font name="Arial" size="15.0" />
                </font>
@@ -153,17 +154,17 @@
          <children>
             <Pane fx:id="previousCNF" layoutY="45.0" prefHeight="455.0" prefWidth="512.0" style="-fx-border-color: black;">
                <children>
-                  <TextArea fx:id="previousCNFText" layoutY="4.0" prefHeight="500.0" prefWidth="512.0" />
+                  <TextArea fx:id="previousCNFText" editable="false" layoutY="4.0" prefHeight="500.0" prefWidth="512.0" />
                </children>
             </Pane>
             <Pane fx:id="actualCNF" layoutX="512.0" layoutY="45.0" prefHeight="455.0" prefWidth="512.0" style="-fx-border-color: black;">
                <children>
-                  <TextArea fx:id="actualCNFText" prefHeight="500.0" prefWidth="512.0" />
+                  <TextArea fx:id="actualCNFText" editable="false" prefHeight="500.0" prefWidth="512.0" />
                </children>
             </Pane>
             <Pane fx:id="cnfInfoboxPane" layoutY="500.0" prefHeight="159.0" prefWidth="1024.0" style="-fx-border-color: black;">
                <children>
-                  <TextArea fx:id="infoboxCNFText" prefHeight="159.0" prefWidth="1024.0" />
+                  <TextArea fx:id="infoboxCNFText" editable="false" prefHeight="159.0" prefWidth="1024.0" />
                </children>
             </Pane>
             <Button fx:id="cnfStepBack" layoutX="670.0" layoutY="15.0" mnemonicParsing="false" onAction="#cnfPrevious" prefHeight="27.0" prefWidth="18.0" />

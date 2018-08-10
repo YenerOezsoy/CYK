@@ -13,6 +13,7 @@ import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
+import javax.swing.*;
 import java.io.File;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -43,6 +44,7 @@ public class View extends Application{
     @FXML Button cnfStepBack;
     @FXML Button cnfPlayButton;
     @FXML Button cnfStepForward;
+
     @FXML Pane startScreen;
     @FXML Pane selectionScreen;
     @FXML Pane grammarForm;
@@ -57,9 +59,13 @@ public class View extends Application{
     @FXML TextArea previousCNFText;
     @FXML TextArea actualCNFText;
     @FXML TextArea infoboxCNFText;
+    @FXML TextArea production;
     @FXML Text title;
     @FXML Text errorText;
     @FXML TextField cykInputText;
+    @FXML TextField nonTerminals;
+    @FXML TextField terminals;
+    @FXML TextField root;
     @FXML Slider cykSlider;
     @FXML Slider cnfSlider;
 
@@ -115,12 +121,19 @@ public class View extends Application{
     }
 
     @FXML
+    protected void userInput() {
+        grammarForm.setVisible(false);
+        selectionScreen.setVisible(true);
+        controller.writeFile(nonTerminals.getText(), terminals.getText(), root.getText(), production.getText());
+    }
+
+    @FXML
     protected void cnfStart() {
         selectionScreen.setVisible(false);
         title.setText("Chomsky Normalform");
         cnfPane.setVisible(true);
         initButton();
-        //initcnfPane(previousCNF, tree);
+        initcnfPane(tree);
     }
 
     @FXML
@@ -185,11 +198,12 @@ public class View extends Application{
         System.out.println("next");
         tree = controller.getTreeStep(++step);
         if (tree == null) step--;
-        System.out.println(step);
+        initcnfPane(tree);
         //doSomething
     }
 
-    private void initcnfPane(Pane pane, Tree tree) {
+    private void initcnfPane(Tree tree) {
+        previousCNFText.setText(tree.getLine("S"));
 
     }
 

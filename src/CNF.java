@@ -14,19 +14,28 @@ public class CNF {
     private ArrayList<Elem> possibleCycle = new ArrayList<>();
     private ArrayList<Elem> delete = new ArrayList<>();
     private int nameSuffix;
-    private Change change = new Change();
+    private Change change;// = new Change();
     private int nodeId;
-    private Output output;// = new Output();
+    private Output output;
 
 
-    public CNF(Tree tree) {
+    public CNF(Tree tree, Output output) {
         this.tree = tree;
-        output = new Output();
+        this.output = output;
+        output.addToFile();
+        change = new Change(output);
         map = tree.getMap();
         visited.add(tree.getRootElem());
     }
 
-    public void terminalRule() {
+    public void startCNF() {
+        terminalRule();
+        lengthRule();
+        epsilonRule();
+        chainRule();
+    }
+
+    private void terminalRule() {
         change.createNewChangeSet();
         startIteration(0);
         tree.printTree();
@@ -34,7 +43,7 @@ public class CNF {
         write("terminalRule");
     }
 
-    public void lengthRule() {
+    private void lengthRule() {
         change.createNewChangeSet();
         startIteration(1);
         tree.printTree();
@@ -42,7 +51,7 @@ public class CNF {
         write("lengthRule");
     }
 
-    public void epsilonRule() {
+    private void epsilonRule() {
         change.createNewChangeSet();
         startIteration(2);
         tree.printTree();
@@ -50,7 +59,7 @@ public class CNF {
         write("epsilonRule");
     }
 
-    public void chainRule() {
+    private void chainRule() {
         change.createNewChangeSet();
         startIteration(3);
         startIteration(5);

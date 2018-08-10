@@ -19,7 +19,7 @@ public class Tree {
     }
 
 
-    public void buildTree() {
+    public boolean buildTree() {
         //prüfe beim Erstellen der Datei ob StartSymbol auch in NichtTerminal vorhanden ist
         String root = input.getRootElement();
         rootElem = new Elem(root, Type.NonTerminal);
@@ -27,22 +27,23 @@ public class Tree {
         temp = new HashMap<>();
         temp.put(root, rootElem);
         toProcess.add(root);
-        process(toProcess);
+        return process(toProcess);
     }
+
 
     public void setActiveStep(int step) {
         input.setActiveStep(step);
         buildTree();
     }
 
-    private void process(ArrayList<String> toProcess) {
+    private boolean process(ArrayList<String> toProcess) {
         for (int i = 0; i < toProcess.size(); i++) {
-            processProduction(toProcess.get(i));
+            if(!processProduction(toProcess.get(i))) return false;
         }
+        return true;
     }
 
-    //abfangen falls root Symbol nicht NonTerminal ist
-    private void processProduction(String root) {
+    private boolean processProduction(String root) {
         if (temp.containsKey(root)) {
             actualRoot = temp.get(root);
         }
@@ -55,16 +56,19 @@ public class Tree {
         for (int i = 1; i < list.getLength(); i++) {
             node = new Node();
             actualRoot.addNode(node);
-            splitSymbol(list.item(i).getTextContent());
+            if(!splitSymbol(list.item(i).getTextContent())) return false;
         }
+        return true;
     }
 
     //fange Fall ab falls Symbol nicht definiert in n oder t
-    private void splitSymbol(String symbols) {
+    private boolean splitSymbol(String symbols) {
+        symbols = symbols.trim();
         String[] detected = symbols.split("\\s+");
         for (int i = 0; i < detected.length; i++) {
-            checkSymbol(detected[i]);
+            if(!checkSymbol(detected[i])) return false;
         }
+        return true;
         /*
         if (detected.length() > 0) ERROR
          */
@@ -119,6 +123,17 @@ public class Tree {
                 }
             }
         }
+    }
+
+    public String getLine(String root) {
+        String line = root + "->";
+        for (int i = 0; i < temp.get(root).getList().size(); i++) {
+            if (i != 0) line += ",";
+            for (int j = 0; j < temp.get(root).getList().get(i).getNodeList().size(); j++) {
+                line += temp.get(root).getList().get(i).getNodeList().get(j).getString() + " ";
+            }
+        }
+        return line;
     }
 
 }

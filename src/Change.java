@@ -3,8 +3,8 @@ public class Change {
     private Output output;
     String changes;
 
-    public Change() {
-        output = new Output();
+    public Change(Output output) {
+        this.output = output;
     }
 
     public void createNewChangeSet() {

@@ -8,8 +8,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.*;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -21,13 +20,18 @@ public class Output {
     private Document doc;
     private Element element;
     private Element rootElement;
+    private String path;
 
 
-    public Output() {
+    public Output(String path) {
+        this.path = path;
+    }
+
+    public void addToFile() {
         dbFactory = DocumentBuilderFactory.newInstance();
         try {
             dBuilder = dbFactory.newDocumentBuilder();
-            doc = dBuilder.parse("grammatik.xml");
+            doc = dBuilder.parse(path);
             rootElement = (Element) doc.getElementsByTagName("grammatik").item(0);
         } catch (ParserConfigurationException e) {
             e.printStackTrace();
@@ -36,12 +40,24 @@ public class Output {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
     }
 
-    public Output(String path) {
+    public void newFile() {
+        Writer writer = null;
 
+        try {
+            writer = new BufferedWriter(new OutputStreamWriter(
+                    new FileOutputStream(path), "utf-8"));
+            writer.write("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>");
+            writer.write("\n<grammatik>");
+            writer.write("\n</grammatik>");
+        } catch (IOException ex) {
+            // Report
+        } finally {
+            try {writer.close();} catch (Exception ex) {/*ignore*/}
+        }
     }
+
 
     public Element createChangeTag() {
         element = doc.createElement("change");
@@ -58,6 +74,47 @@ public class Output {
         writeSign(map, root);
         writeTree(map);
         write();
+    }
+
+
+    public void initName(String name) {
+        writeName(name);
+    }
+
+    private void append(Element element, String value) {
+        rootElement.appendChild(element);
+        addChange(element, value);
+    }
+
+    public void initNonterminal(String nonterminal) {
+        element = doc.createElement("n");
+        append(element, nonterminal);
+    }
+
+    public void initTerminal(String terminal) {
+        element = doc.createElement("t");
+        append(element, terminal);
+    }
+
+    public void initStartsymbol(String start) {
+        element = doc.createElement("s");
+        append(element, start);
+    }
+
+    public void initProduction() {
+        element = doc.createElement("p");
+        rootElement.appendChild(element);
+    }
+
+    public void initLine(String start, String[] productions) {
+        Element line = doc.createElement("zeile");
+        element.appendChild(line);
+        for (int i = -1; i < productions.length; i++) {
+            Element cell = doc.createElement("zelle");
+            if (i == -1) addChange(cell, start);
+            else addChange(cell, productions[i]);
+            line.appendChild(cell);
+        }
     }
 
     private void writeName(String name) {
@@ -132,12 +189,16 @@ public class Output {
         addChange(column, production);
     }
 
+    public void finishInit() {
+        write();
+    }
+
     private void write() {
         try {
             TransformerFactory transformerFactory = TransformerFactory.newInstance();
             Transformer transformer = null;
 
-                transformer = transformerFactory.newTransformer();
+            transformer = transformerFactory.newTransformer();
 
             //for pretty print
             transformer.setOutputProperty(OutputKeys.INDENT, "yes");
@@ -145,7 +206,7 @@ public class Output {
 
             //write to console or file
             StreamResult console = new StreamResult(System.out);
-            StreamResult file = new StreamResult(new File("grammatik.xml"));
+            StreamResult file = new StreamResult(new File(path));
 
             //write data
             transformer.transform(source, console);
