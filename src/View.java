@@ -10,10 +10,10 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.text.Text;
+import javafx.scene.text.TextFlow;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
-import javax.swing.*;
 import java.io.File;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -56,8 +56,8 @@ public class View extends Application{
     @FXML Pane previousCNF;
     @FXML Pane actualCNF;
     @FXML Pane cnfInfoboxPane;
-    @FXML TextArea previousCNFText;
-    @FXML TextArea actualCNFText;
+    @FXML TextFlow previousCNFText;
+    @FXML TextFlow actualCNFText;
     @FXML TextArea infoboxCNFText;
     @FXML TextArea production;
     @FXML Text title;
@@ -133,7 +133,7 @@ public class View extends Application{
         title.setText("Chomsky Normalform");
         cnfPane.setVisible(true);
         initButton();
-        initcnfPane(tree);
+        initcnfPane();
     }
 
     @FXML
@@ -196,15 +196,21 @@ public class View extends Application{
     @FXML
     protected void cnfNext() {
         System.out.println("next");
+        controller.initCNFpane(previousCNFText);
         tree = controller.getTreeStep(++step);
-        if (tree == null) step--;
-        initcnfPane(tree);
+        if (tree == null) {
+            tree = controller.getTreeStep(--step);
+        }
+        else controller.initCNFpane(actualCNFText);
+
         //doSomething
     }
 
-    private void initcnfPane(Tree tree) {
-        previousCNFText.setText(tree.getLine("S"));
-
+    private void initcnfPane() {
+        tree = controller.getTreeStep(++step);
+        controller.initCNFpane(previousCNFText);
+        tree = controller.getTreeStep(++step);
+        controller.initCNFpane(actualCNFText);
     }
 
     private void initButton() {

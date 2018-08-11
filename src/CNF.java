@@ -254,7 +254,8 @@ public class CNF {
     private void addNodes(Elem root, Elem elem) {
         for (int i = 0; i < root.getList().size(); i++) {
             if (root.getList().get(i).hasElement(elem)) {
-                root.addNode(copyWithoutEpsilonTrans(root ,root.getList().get(i), elem));
+                Node node = copyWithoutEpsilonTrans(root ,root.getList().get(i), elem);
+                if (!node.getNodeList().isEmpty()) root.addNode(node);
             }
         }
 

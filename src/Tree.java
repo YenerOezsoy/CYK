@@ -124,46 +124,4 @@ public class Tree {
             }
         }
     }
-
-    public String getLine(String root) {
-        String line = root + "->";
-        for (int i = 0; i < temp.get(root).getList().size(); i++) {
-            if (i != 0) line += ",";
-            for (int j = 0; j < temp.get(root).getList().get(i).getNodeList().size(); j++) {
-                line += temp.get(root).getList().get(i).getNodeList().get(j).getString() + " ";
-            }
-        }
-        return line;
-    }
-
 }
-    /*public void buildTree() {
-        root = new Elem(input.getRootElem(), Type.NonTerminal);
-        ArrayList<String> toProcess = new ArrayList<>();
-        toProcess.add(input.getRootElem());
-        temp = new HashMap<>();
-        temp.put(input.getRootElem(), root);
-
-        while (!toProcess.isEmpty()) {
-            System.out.println("To Process: " + toProcess.get(0));
-            createNodes(toProcess.get(0), toProcess);
-            toProcess.remove(0);
-        }
-    }
-
-    private void createNodes(String s, ArrayList<String> toProcess) {
-        int size = input.getProductionSize(s);
-        int diff = 1;
-        System.out.println("Anzahl Elemente: " + size);
-        while (diff != size) {
-            node = new Node(input, temp, toProcess);
-            temp.get(s).addNode(node);
-            node.addToNode(input.getProduction(s, diff));
-            diff++;
-            System.out.println("__________");
-        }
-    }
-
-
-}
-*/

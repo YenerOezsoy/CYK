@@ -4,6 +4,9 @@ public class Elem {
     private String character;
     private Type type;
     private ArrayList<Node> list;
+    private int i = 0;
+    private int j = 0;
+    private boolean seperator = false;
 
 
     public Elem(String character, Type type) {
@@ -67,5 +70,28 @@ public class Elem {
             }
         }
         return false;
+    }
+
+    public String getChildren() {
+        if (i < list.size()) {
+            if (seperator && j < list.get(i).getNodeList().size()) {
+                seperator = false;
+                j++;
+                return " ";
+            }
+            else if (j < list.get(i).getNodeList().size()) {
+                seperator = true;
+                return list.get(i).getNodeList().get(j).getString();
+            }
+            else {
+                j = 0;
+                i++;
+                seperator = false;
+                if (i < list.size()) return "| ";
+            }
+        }
+        i = 0;
+        j = 0;
+        return null;
     }
 }

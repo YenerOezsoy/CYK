@@ -1,3 +1,5 @@
+import javafx.scene.text.TextFlow;
+
 import java.io.File;
 import java.nio.file.Files;
 
@@ -30,5 +32,9 @@ public class Controller {
 
     public Tree getTreeStep(int step) {
         return model.getStep(step);
+    }
+
+    public void initCNFpane(TextFlow flow) {
+        model.initPane(flow);
     }
 }

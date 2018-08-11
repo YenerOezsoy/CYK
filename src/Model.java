@@ -1,5 +1,11 @@
+import javafx.scene.text.Text;
+import javafx.scene.text.TextFlow;
+
 import java.io.File;
 import java.nio.file.Files;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 /**
  * Created by yenerozsoy on 21.03.18.
@@ -16,6 +22,7 @@ public class Model {
     private String left;
     private String[] right;
     private String path;
+    private HashMap<String,Elem> map;
 
     public Model() {
 
@@ -135,6 +142,45 @@ public class Model {
         }
 
     }
+
+    public void initPane(TextFlow flow) {
+        flow.getChildren().clear();
+        this.map = tree.getMap();
+        List<String> list = new ArrayList<>(map.keySet());
+        list = listSort(list, map);
+        for (int i = 0; i < list.size(); i++) {
+            initRoot(flow, map.get(list.get(i)));
+            String result = map.get(list.get(i)).getChildren();
+            while(result != null) {
+                Text text = new Text(result);
+                flow.getChildren().add(text);
+                result = map.get(list.get(i)).getChildren();
+            }
+            flow.getChildren().add(new Text("\n"));
+        }
+
+    }
+
+    private void initRoot(TextFlow flow, Elem root) {
+        Text rootSymbol = new Text(root.getString());
+        Text seperatorSymbol = new Text("->");
+        flow.getChildren().add(rootSymbol);
+        flow.getChildren().add(seperatorSymbol);
+    }
+
+    private List<String> listSort(List<String> list, HashMap<String,Elem> map) {
+        List<String> sortedList = new ArrayList<>();
+        sortedList.add(tree.getRootElem().getString());
+        for (int i = 0; i < sortedList.size(); i++) {
+            String child = map.get(sortedList.get(i)).getChildren();
+            while(child != null) {
+                if (!sortedList.contains(child) && list.contains(child)) sortedList.add(child);
+                child = map.get(sortedList.get(i)).getChildren();
+            }
+        }
+        return sortedList;
+    }
+
 /*public void start() {
         tree.buildTree();
         System.out.println("===========");

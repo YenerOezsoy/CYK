@@ -184,7 +184,8 @@ public class Output {
         Element column = doc.createElement("zelle");
         row.appendChild(column);
         for (int i = 0; i < node.getNodeList().size(); i++) {
-            production += " " + node.getNodeList().get(i).getString();
+            if (i != 0) production += " ";
+            production += node.getNodeList().get(i).getString();
         }
         addChange(column, production);
     }
