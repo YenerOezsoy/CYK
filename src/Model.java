@@ -1,8 +1,6 @@
+import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
-
-import java.io.File;
-import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -13,7 +11,6 @@ import java.util.List;
 public class Model {
 
     private CNF cnf;
-    private Input input;
     private Output output;
     private Tree tree;
     private String[] nonTerminals;
@@ -22,7 +19,13 @@ public class Model {
     private String left;
     private String[] right;
     private String path;
+    private String[] change;
+    private int changeIterator = 0;
+    private boolean changeStep = false;
     private HashMap<String,Elem> map;
+    private ArrayList<Text> rootList;
+    private ArrayList<Text> childList;
+    private HashMap<String, ArrayList<Text>> childMap;
 
     public Model() {
 
@@ -62,6 +65,9 @@ public class Model {
         if (step < 6) {
             tree.setActiveStep(step);
             tree.printTree();
+            this.change = tree.getChange().split(";");
+            changeIterator = 0;
+            clearList();
             return tree;
         }
         return null;
@@ -123,7 +129,7 @@ public class Model {
         for (int i = 0; i < symbol.length; i++) {
             toWrite += symbol[i] + ";";
         }
-        return toWrite = toWrite.substring(0, toWrite.length() - 1);
+        return toWrite.substring(0, toWrite.length() - 1);
     }
 
     private void writeStartsymbol(String startsymbol) {
@@ -162,10 +168,8 @@ public class Model {
     }
 
     private void initRoot(TextFlow flow, Elem root) {
-        Text rootSymbol = new Text(root.getString());
-        Text seperatorSymbol = new Text("->");
-        flow.getChildren().add(rootSymbol);
-        flow.getChildren().add(seperatorSymbol);
+        flow.getChildren().add(new Text(root.getString()));
+        flow.getChildren().add(new Text("->"));
     }
 
     private List<String> listSort(List<String> list, HashMap<String,Elem> map) {
@@ -179,6 +183,173 @@ public class Model {
             }
         }
         return sortedList;
+    }
+
+    public void initInfobox(TextFlow infobox) {
+        writeInfobox(infobox);
+    }
+
+    public boolean writeInfobox(TextFlow infobox, TextFlow previousCNFText) {
+        String change = getChange();
+        writeInfobox(infobox);
+        if (change == null) return false;
+        while (change != null && !change.equals("/end")) {
+            writeChange(change, infobox, previousCNFText);
+            change = getChange();
+        }
+        return true;
+    }
+
+
+    private String getChange() {
+        if (changeIterator < change.length) {
+            if (change[changeIterator].contains("mark") && !changeStep) {
+                changeStep = true;
+                return change[changeIterator++];
+            }
+            else if (change[changeIterator].contains("mark") && changeStep) {
+                changeStep = false;
+                return "/end";
+            }
+            else return change[changeIterator++];
+        }
+        return null;
+    }
+
+    private void writeInfobox(TextFlow infobox) {
+        infobox.getChildren().clear();
+        setNameInfobox(tree.getName(), infobox);
+    }
+
+    private void setNameInfobox(String name, TextFlow infobox) {
+        switch(name) {
+            case "terminalRule": infobox.getChildren().add(new Text("1. Regel:\n"));
+                                 infobox.getChildren().add(new Text("Alle Regeln enthalten auf der rechten Seite nur Nichtterminale oder ein Terminalsymbol.\n\n"));
+                                 break;
+            case "lengthRule":  infobox.getChildren().add(new Text("2. Regel:\n"));
+                                infobox.getChildren().add(new Text("Alle rechten Seiten haben eine maximale Länge von 2.\n\n"));
+                                break;
+            case "epsilonRule": infobox.getChildren().add(new Text("3. Regel:\n"));
+                                infobox.getChildren().add(new Text("Epsilon-Übergänge werden aufgelöst und entfernt.\n\n"));
+                                break;
+            case "chainRule":   infobox.getChildren().add(new Text("4. Regel:\n"));
+                                infobox.getChildren().add(new Text("Alle Kettenregeln werden aufgelöst und entfernt.\n\n"));
+                                break;
+        }
+
+    }
+
+    private void writeChange(String change, TextFlow infobox, TextFlow previousCNFText) {
+        int begin = change.indexOf('(') + 1;
+        int end = change.indexOf(')');
+        if(change.contains("mark")) {
+            change = change.substring(begin,end);
+            mark(change, previousCNFText);
+        }
+        else if(change.contains("highlight")) {
+            change = change.substring(begin,end);
+            highlight(change, previousCNFText);
+        }
+        else if(change.contains("addNode")) {
+            change = change.substring(begin,end);
+            addNode(change, infobox);
+        }
+        else if(change.contains("addTo")) {
+            change = change.substring(begin,end);
+            addTo(change, infobox);
+        }
+        else if(change.contains("add")) {
+            change = change.substring(begin,end);
+            add(change, infobox);
+        }
+        else if(change.contains("deleteNode")) {
+            change = change.substring(begin,end);
+            deleteNode(change, infobox);
+        }
+        else if(change.contains("delete")) {
+            change = change.substring(begin,end);
+            delete(change, infobox);
+        }
+        else if(change.contains("replace")) {
+            change = change.substring(begin,end);
+            replace(change, infobox);
+        }
+    }
+
+    private void mark(String change, TextFlow previousCNFText) {
+        unmark(previousCNFText);
+        String[] split = change.split(",");
+        boolean foundRoot = false;
+        if (split.length == 1) foundRoot = true;
+        for (int j = 0; j < split.length; j++) {
+            for (int i = 0; i < previousCNFText.getChildren().size(); i++) {
+                Text text = ((Text) previousCNFText.getChildren().get(i));
+                String childElement = text.getText();
+                String element = split[j];
+                if (childElement.equals(element) && foundRoot && !markedList.contains(text)) {
+                    text.setFill(Color.RED);
+                    markedList.add(((Text) previousCNFText.getChildren().get(i)));
+                    break;
+                }
+                else if (childElement.equals(element) && !foundRoot) {
+                    foundRoot = true;
+                    j++;
+                }
+            }
+        }
+
+    }
+
+    private void unmark(TextFlow previousCNFText) {
+        for (int i = 0; i < markedList.size(); i++) {
+            markedList.get(i).setFill(Color.BLACK);
+        }
+    }
+
+    private void highlight(String change, TextFlow previousCNFText) {
+        for (int i = 0; i < previousCNFText.getChildren().size(); i++) {
+            if (( (Text) previousCNFText.getChildren().get(i)).getText().equals(change)) ( (Text) previousCNFText.getChildren().get(i)).setFill(Color.DARKGOLDENROD);
+        }
+    }
+
+    private void addNode(String change, TextFlow infobox) {
+        String[] split = change.split(",");
+        int value = Integer.parseInt(split[2]) + 1;
+        infobox.getChildren().add(new Text("Füge der Wurzel " + split[0] + " in Abbildung " + value + " das Element " + split[1] + " hinzu.\n"));
+    }
+
+    private void addTo(String change, TextFlow infobox) {
+        String[] split = change.split(",");
+        infobox.getChildren().add(new Text("Füge der Wurzel " + split[0] + " das Element " + split[1] + " hinzu.\n"));
+    }
+
+    private void add(String change, TextFlow infobox) {
+        infobox.getChildren().add(new Text("Erstelle die Wurzel " + change + ".\n"));
+    }
+
+    private void deleteNode(String change, TextFlow infobox) {
+        String[] split = change.split(",");
+        int value = Integer.parseInt(split[1]) + 1;
+        infobox.getChildren().add(new Text("Lösche die Abbildung " + value  + " von der Wurzel " + split[0] + ".\n"));
+    }
+
+    private void delete(String change, TextFlow infobox) {
+        String[] split = change.split(",");
+        if (split.length == 1) infobox.getChildren().add(new Text("Lösche die Wurzel " + split[0] + ".\n"));
+        else infobox.getChildren().add(new Text("Lösche das Element " + split[1] + " von der Wurzel " + split[0] + ".\n"));
+
+    }
+
+    private void replace(String change, TextFlow infobox) {
+        String[] split = change.split(",");
+        if (split.length == 2) infobox.getChildren().add(new Text("Ersetze das Element " + split[0] + " mit dem Element " + split[1] + ".\n"));
+        else infobox.getChildren().add(new Text("Ersetze in Wurzel " + split[0] + " das Element " + split[1] + " mit dem neuen Element " + split[2] + ".\n"));
+    }
+
+    private void clearList() {
+        rootList = new ArrayList<>();
+        childList = new ArrayList<>();
+        childMap = new HashMap<>();
     }
 
 /*public void start() {

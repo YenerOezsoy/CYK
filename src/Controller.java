@@ -1,3 +1,4 @@
+import javafx.scene.control.TextArea;
 import javafx.scene.text.TextFlow;
 
 import java.io.File;
@@ -36,5 +37,13 @@ public class Controller {
 
     public void initCNFpane(TextFlow flow) {
         model.initPane(flow);
+    }
+
+    public boolean writeInfobox(TextFlow infobox, TextFlow previousCNFText) {
+         return model.writeInfobox(infobox, previousCNFText);
+    }
+
+    public void initInfobox(TextFlow infobox) {
+        model.initInfobox(infobox);
     }
 }

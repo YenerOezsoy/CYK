@@ -58,7 +58,7 @@ public class View extends Application{
     @FXML Pane cnfInfoboxPane;
     @FXML TextFlow previousCNFText;
     @FXML TextFlow actualCNFText;
-    @FXML TextArea infoboxCNFText;
+    @FXML TextFlow infoboxCNFText;
     @FXML TextArea production;
     @FXML Text title;
     @FXML Text errorText;
@@ -196,13 +196,17 @@ public class View extends Application{
     @FXML
     protected void cnfNext() {
         System.out.println("next");
-        controller.initCNFpane(previousCNFText);
-        tree = controller.getTreeStep(++step);
-        if (tree == null) {
-            tree = controller.getTreeStep(--step);
+        if (!controller.writeInfobox(infoboxCNFText, previousCNFText)) {
+            controller.initCNFpane(previousCNFText);
+            tree = controller.getTreeStep(++step);
+            if (tree == null) {
+                tree = controller.getTreeStep(--step);
+            }
+            else {
+                controller.initCNFpane(actualCNFText);
+                controller.writeInfobox(infoboxCNFText, previousCNFText);
+            }
         }
-        else controller.initCNFpane(actualCNFText);
-
         //doSomething
     }
 
@@ -211,6 +215,7 @@ public class View extends Application{
         controller.initCNFpane(previousCNFText);
         tree = controller.getTreeStep(++step);
         controller.initCNFpane(actualCNFText);
+        controller.initInfobox(infoboxCNFText);
     }
 
     private void initButton() {

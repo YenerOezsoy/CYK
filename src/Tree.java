@@ -43,6 +43,14 @@ public class Tree {
         return true;
     }
 
+    public String getName() {
+        return input.getName();
+    }
+
+    public String getChange() {
+        return input.getChange();
+    }
+
     private boolean processProduction(String root) {
         if (temp.containsKey(root)) {
             actualRoot = temp.get(root);
