@@ -126,12 +126,14 @@ public class CNF {
     private void inspectChildren(Node node, int rule) {
         for (int i = 0; i < node.getNodeList().size(); i++) {
             if (rule == 0 && node.getNodeList().get(i).getType() == Type.Terminal) {
-                change.mark(actualRoot.getString() + "," + node.getNodeList().get(i).getString());
+                change.mark(actualRoot.getString());
+                change.highlight(node.getNodeList().get(i).getString(), i);
                 replaceNonTerminal(node.getNodeList().get(i), node.getNodeList(), i);
             }
             else if(rule == 2) {
                 if (node.getNodeList().get(i).getString().equals("/Eps")) {
-                    change.mark(actualRoot.getString() + ",/Eps");
+                    change.mark(actualRoot.getString());
+                    change.highlight(node.getNodeList().get(i).getString(), i);
                     epsilonStern.clear();
                     removeEpsilon(node, i);
                 }
@@ -197,15 +199,20 @@ public class CNF {
 
             change.addTo(actualRoot.getString() + "," + list.get(i).getString());
             change.addTo(actualRoot.getString() + "," + name);
+            if (i > 1)change.highlight(list.get(i).getString(), i);
             change.add(name);
-            change.highlight(name);
+            //change.highlight(name);
             actualRoot = newElem;
         }
         actualNode.addElement(list.get(size - 2));
         actualNode.addElement(list.get(size - 1));
 
+
         change.addTo(actualRoot.getString() + "," + list.get(size - 2).getString());
         change.addTo(actualRoot.getString() + "," + list.get(size - 1).getString());
+
+        change.highlight(list.get(size - 1).getString(), size - 1);
+        change.highlight(list.get(size - 2).getString(), size - 2);
     }
 
 
@@ -235,7 +242,7 @@ public class CNF {
                 Elem nonTerminal = map.get(list.get(j));
                 if (nonTerminal.hasOnlyChildren(elem.getString()) && !epsilonStern.contains(nonTerminal)) {
                     epsilonStern.add(nonTerminal);
-                    change.highlight(nonTerminal.getString());
+                    change.highlightAll(nonTerminal.getString());
                 }
             }
         }

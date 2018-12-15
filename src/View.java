@@ -31,8 +31,9 @@ public class View extends Application{
     private boolean startButton = false;
     private Timer timer;
     private Controller controller;
-    private int step = 0;
+    private int step = 1;
     private Tree tree;
+    private boolean stopNext = false;
 
 
     private GridPane pane;
@@ -134,6 +135,7 @@ public class View extends Application{
         cnfPane.setVisible(true);
         initButton();
         initcnfPane();
+
     }
 
     @FXML
@@ -191,31 +193,42 @@ public class View extends Application{
     @FXML
     protected void cnfPrevious() {
         System.out.println("previous");
+        //stepChange(false);
     }
 
     @FXML
     protected void cnfNext() {
         System.out.println("next");
-        if (!controller.writeInfobox(infoboxCNFText, previousCNFText)) {
+        //if(!stopNext) stepChange(true);
+        controller.viewControllerNext();
+    }
+
+    /*private void stepChange(boolean next) {
+        if (!controller.writeInfobox(next, infoboxCNFText, previousCNFText)) {
             controller.initCNFpane(previousCNFText);
-            tree = controller.getTreeStep(++step);
+            if(next) tree = controller.getTreeStep(++step);
+            else tree = controller.getTreeStep(--step);
             if (tree == null) {
-                tree = controller.getTreeStep(--step);
+                stopNext = true;
+                if (next) tree = controller.getTreeStep(--step);
+                else tree = controller.getTreeStep(++step);
             }
             else {
                 controller.initCNFpane(actualCNFText);
-                controller.writeInfobox(infoboxCNFText, previousCNFText);
+                controller.writeInfobox(next, infoboxCNFText, previousCNFText);
             }
         }
-        //doSomething
-    }
+    }*/
 
     private void initcnfPane() {
-        tree = controller.getTreeStep(++step);
+        /*tree = controller.getTreeStep(++step);
         controller.initCNFpane(previousCNFText);
         tree = controller.getTreeStep(++step);
         controller.initCNFpane(actualCNFText);
         controller.initInfobox(infoboxCNFText);
+        tree = controller.getTreeStep(step);*/
+        tree = controller.getTreeStep(step);
+        controller.initViewController(actualCNFText, previousCNFText, infoboxCNFText, tree);
     }
 
     private void initButton() {

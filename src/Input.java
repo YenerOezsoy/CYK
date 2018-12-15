@@ -98,12 +98,12 @@ public class Input {
 
     public String getChange() {
 
-        String expression = "/grammatik/change[" + String.valueOf(Integer.parseInt(path) - 1) + "]";
+        String expression = "/grammatik/change[" + path + "]";
         return (String) read(expression, stringType);
     }
 
     public String getName() {
-        String expression = "/grammatik/name[" + path + "]";
+        String expression = "/grammatik/name[" + String.valueOf(Integer.parseInt(path) + 1)  + "]";
         return (String) read(expression, stringType);
     }
 

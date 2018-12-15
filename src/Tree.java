@@ -13,6 +13,7 @@ public class Tree {
     private Node node;
     private ArrayList<String> toProcess;
     private HashMap<String, Elem> temp;
+    private int step;
 
     public Tree(String path) {
         input = new Input(path);
@@ -32,8 +33,13 @@ public class Tree {
 
 
     public void setActiveStep(int step) {
+        this.step = step;
         input.setActiveStep(step);
         buildTree();
+    }
+
+    public int getActiveStep() {
+        return step;
     }
 
     private boolean process(ArrayList<String> toProcess) {

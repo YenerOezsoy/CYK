@@ -56,9 +56,19 @@ public class Change {
         changes += "mark(" + change + ")";
     }
 
+    public void highlight(String change, int i) {
+        seperator();
+        changes += "highlight(" + change + "," + i + ")";
+    }
+
     public void highlight(String change) {
         seperator();
         changes += "highlight(" + change + ")";
+    }
+
+    public void highlightAll(String change) {
+        seperator();
+        changes += "highlightAll(" + change +")";
     }
 
     public void test () {

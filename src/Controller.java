@@ -1,8 +1,6 @@
-import javafx.scene.control.TextArea;
 import javafx.scene.text.TextFlow;
 
 import java.io.File;
-import java.nio.file.Files;
 
 /**
  * Created by yenerozsoy on 21.03.18.
@@ -10,6 +8,7 @@ import java.nio.file.Files;
 public class Controller {
     private Model model;
     private File file;
+    private ViewControllerCNF vc;
 
     public Controller() {
         model = new Model();
@@ -35,15 +34,26 @@ public class Controller {
         return model.getStep(step);
     }
 
-    public void initCNFpane(TextFlow flow) {
+    /*public void initCNFpane(TextFlow flow) {
         model.initPane(flow);
     }
 
-    public boolean writeInfobox(TextFlow infobox, TextFlow previousCNFText) {
-         return model.writeInfobox(infobox, previousCNFText);
+    public boolean writeInfobox(boolean next, TextFlow infobox, TextFlow previousCNFText) {
+        return model.writeNextInfobox(next, infobox, previousCNFText);
+
     }
 
     public void initInfobox(TextFlow infobox) {
         model.initInfobox(infobox);
+    }*/
+
+    public void initViewController(TextFlow nextPane, TextFlow previousPane,TextFlow infoBox, Tree tree) {
+        vc = new ViewControllerCNF(nextPane, previousPane, infoBox, tree);
     }
+
+    public boolean viewControllerNext() {
+         return vc.next();
+    }
+
+
 }
