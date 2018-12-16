@@ -51,9 +51,11 @@ public class Controller {
         vc = new ViewControllerCNF(nextPane, previousPane, infoBox, tree);
     }
 
-    public boolean viewControllerNext() {
+    public boolean viewControllerCNFNext() {
          return vc.next();
     }
 
-
+    public void viewControllerCNFPrevious() {
+         vc.previous();
+    }
 }

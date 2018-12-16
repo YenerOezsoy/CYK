@@ -20,6 +20,36 @@ public class ViewControllerCNF {
     private static final String LENGTHRULE = "lengthRule";
     private static final String EPSILONRULE = "epsilonRule";
     private static final String CHAINRULE = "chainRule";
+    private static final String ADDTOROOT = "Füge der Wurzel ";
+    private static final String DEPICT = " in Abbildung ";
+    private static final String ELEMENT = " das Element ";
+    private static final String ADDSTRING = " hinzu.\n";
+    private static final String CREATEROOT = "Erstelle die Wurzel ";
+    private static final String LINEENDSTRING = ".\n";
+    private static final String LINEEND = "\n";
+    private static final String DELETEDEPICT = "Lösche die Abbildung ";
+    private static final String FROMROOT = " von der Wurzel ";
+    private static final String DELETEROOT = "Lösche die Wurzel ";
+    private static final String DELETEELEMENT = "Lösche das Element ";
+    private static final String REPLACEELEMET = "Ersetze das Element ";
+    private static final String REPLACEINROOT = "Ersetze in Wurzel ";
+    private static final String WITHELEMENT = " mit dem Element ";
+    private static final String WITHNEWELEMENT = " mit dem neuen Element ";
+    private static final String MARK = "mark";
+    private static final String HIGHLIGHT = "highlight";
+    private static final String HIGHLIGHTALL = "highlightAll";
+    private static final String ADDTO = "addTo";
+    private static final String ADD = "add";
+    private static final String ADDNODE = "addNode";
+    private static final String DELETE = "delete";
+    private static final String DELETENODE = "deleteNode";
+    private static final String REPLACE = "replace";
+    private static final String COMMA = ",";
+    private static final String SPACE = " ";
+    private static final String SEMICOLON = ";";
+    private static final String OPENBRACKET = "(";
+    private static final String CLOSEBRACKET = ")";
+
 
 
     private TextFlow nextPane;
@@ -27,6 +57,7 @@ public class ViewControllerCNF {
     private TextFlow infoBox;
     private int changeIterator = 0;
     private int step = 1;
+    private int previousChangeMark = 0;
     private Tree tree;
     private String[] change;
     private boolean firstMark = false;
@@ -72,7 +103,7 @@ public class ViewControllerCNF {
             ArrayList<Text> innerList = new ArrayList<>();
             for (Elem children: node.getNodeList()) {
                 innerList.add(new Text(children.getString()));
-                innerList.add(new Text(" "));
+                innerList.add(new Text(SPACE));
             }
             list.add(innerList);
         }
@@ -102,7 +133,7 @@ public class ViewControllerCNF {
                 pane.getChildren().add(new Text(SEPARATOR));
             }
             pane.getChildren().remove(pane.getChildren().size() - 1);
-            pane.getChildren().add(new Text("\n"));
+            pane.getChildren().add(new Text(LINEEND));
         }
     }
 
@@ -151,22 +182,6 @@ public class ViewControllerCNF {
         infoBox.getChildren().clear();
     }
 
-   /* public void setNextStepPane(TextFlow nextPane) {
-        this.nextPane = nextPane;
-    }
-
-    public void setPreviousTextPane(TextFlow previousPane) {
-        this.previousPane = previousPane;
-    }
-
-    public void setinfoBox(TextFlow infoBox) {
-        this.infoBox = infoBox;
-    }*/
-
-    /*private void initPane(Tree tree) {
-        this.tree = tree;
-    }*/
-
     public boolean next() {
         if (hasNextStep()) {
             initInfoBox();
@@ -182,7 +197,13 @@ public class ViewControllerCNF {
     }
 
     public void previous() {
-
+        if (hasPreviousStep()) {
+            initAllPanes();
+            doUndoSteps();
+        }
+        else if (hasPreviousRule()) {
+            doUndoSteps();
+        }
     }
 
     private void mark(String change) {
@@ -194,12 +215,6 @@ public class ViewControllerCNF {
             getItem(change, rootTextList).setFill(Color.RED);
             actualRoot = change;
         }
-        /*else {
-            String[] splitted = change.split(",");
-            getItem(splitted[0], rootTextList).setFill(Color.RED);
-            getItem(splitted[1], childListMap.get(splitted[0]));
-            actualRoot = splitted[0];
-        }*/
     }
 
     private void doChangeInPane() {
@@ -245,7 +260,7 @@ public class ViewControllerCNF {
     }
 
     private boolean hasNextRule() {
-        if (step < 6) {
+        if (step < 4) {
             step++;
             initAllPanes();
             return true;
@@ -253,33 +268,71 @@ public class ViewControllerCNF {
         return false;
     }
 
+    private boolean hasPreviousStep() {
+        return changeIterator != 0;
+    }
+
+    private boolean hasPreviousRule() {
+        if (step > 1) {
+            step--;
+            initAllPanes();
+            changeIterator = 0;
+            previousChangeMark = change.length - 1;
+            //findPreviousMark();
+            return true;
+        }
+        return false;
+    }
+
+    /*private void findPreviousMark() {
+        boolean iterator = true;
+        while (iterator) {
+            if (change[previousChangeMark].contains("mark")) {
+                iterator = false;
+            }
+            else if (previousChangeMark == 0) {
+                iterator = false;
+            }
+            else previousChangeMark--;
+        }
+    }*/
+
+    private void doUndoSteps() {
+        int lastMark = previousChangeMark;
+        while (changeIterator != lastMark && changeIterator != -1) {
+            next();
+        }
+    }
+
     private void getStep(int step) {
         tree.setActiveStep(step);
         changeIterator = 0;
         tree.printTree();
-        change = tree.getChange().split(";");
+        change = tree.getChange().split(SEMICOLON);
     }
 
     private void doNextSteps() {
         boolean retrieveChanges = true;
+        previousChangeMark = changeIterator;
         while (retrieveChanges) {
             if (changeIterator < change.length) {
                 retrieveChanges = doChange(change[changeIterator]);
             }
             else {
                 changeIterator = -1;
+                firstMark = false;
                 retrieveChanges = false;
             }
         }
     }
 
     private boolean doChange(String change) {
-        if (change.contains("mark") && !firstMark) {
+        if (change.contains(MARK) && !firstMark) {
             firstMark = true;
 
             //return true;
         }
-        else if (change.contains("mark") && firstMark) {
+        else if (change.contains(MARK) && firstMark) {
             firstMark = false;
             return firstMark;
         }
@@ -289,44 +342,43 @@ public class ViewControllerCNF {
     }
 
     private void setChange(String change) {
-        int begin = change.indexOf('(') + 1;
-        int end = change.indexOf(')');
-        if(change.contains("mark")) {
+        int begin = change.indexOf(OPENBRACKET) + 1;
+        int end = change.indexOf(CLOSEBRACKET);
+        if(change.contains(MARK)) {
             change = change.substring(begin,end);
             mark(change);
         }
-        else if (change.contains("highlightAll")) {
+        else if (change.contains(HIGHLIGHTALL)) {
             change = change.substring(begin, end);
             highlightAll(change);
         }
-        else if(change.contains("highlight")) {
+        else if(change.contains(HIGHLIGHT)) {
             change = change.substring(begin,end);
-            //highlightChainRule.add(change);
             highlight(change);
         }
-        else if(change.contains("addNode")) {
+        else if(change.contains(ADDNODE)) {
             change = change.substring(begin,end);
             addNode(change, infoBox);
         }
-        else if(change.contains("addTo")) {
+        else if(change.contains(ADDTO)) {
             change = change.substring(begin,end);
             addTo(change, infoBox);
         }
-        else if(change.contains("add")) {
+        else if(change.contains(ADD)) {
             change = change.substring(begin,end);
             add(change, infoBox);
         }
-        else if(change.contains("deleteNode")) {
+        else if(change.contains(DELETENODE)) {
             change = change.substring(begin,end);
             deleteNode(change, infoBox);
             changedItems.add(change);
         }
-        else if(change.contains("delete")) {
+        else if(change.contains(DELETE)) {
             change = change.substring(begin,end);
             delete(change, infoBox);
             changedItems.add(change);
         }
-        else if(change.contains("replace")) {
+        else if(change.contains(REPLACE)) {
             change = change.substring(begin,end);
             replace(change, infoBox);
             changedItems.add(change);
@@ -334,8 +386,8 @@ public class ViewControllerCNF {
     }
 
     private void highlight(String element) {
-        String[] split = element.split(",");
-        if (split.length == 0) {
+        String[] split = element.split(COMMA);
+        if (split.length == 1) {
             highlightFromRootList(element);
         }
         else {
@@ -360,7 +412,7 @@ public class ViewControllerCNF {
                 else if (children.getText().equals(actualRoot) && ruleName.equals(CHAINRULE)) {
                     children.setFill(Color.RED);
                 }
-                if  (children.getText().equalsIgnoreCase(" ")) count++;
+                if  (children.getText().equalsIgnoreCase(SPACE)) count++;
             }
         }
     }
@@ -369,6 +421,9 @@ public class ViewControllerCNF {
         for (ArrayList<Text> node : childListMap.get(root)) {
             for (Text children : node) {
                 if (children.getText().equals(element)) {
+                    children.setFill(Color.DARKGOLDENROD);
+                }
+                else if(children.getText().equals(actualRoot) && ruleName.equals(EPSILONRULE)) {
                     children.setFill(Color.DARKGOLDENROD);
                 }
             }
@@ -385,38 +440,36 @@ public class ViewControllerCNF {
 
 
     private void addNode(String change, TextFlow infoBox) {
-        String[] split = change.split(",");
+        String[] split = change.split(COMMA);
         int value = Integer.parseInt(split[2]) + 1;
-        infoBox.getChildren().add(new Text("Füge der Wurzel " + split[0] + " in Abbildung " + value + " das Element " + split[1] + " hinzu.\n"));
+        infoBox.getChildren().add(new Text(ADDTOROOT + split[0] + DEPICT + value + ELEMENT + split[1] + ADDSTRING));
     }
 
     private void addTo(String change, TextFlow infoBox) {
-        String[] split = change.split(",");
-        infoBox.getChildren().add(new Text("Füge der Wurzel " + split[0] + " das Element " + split[1] + " hinzu.\n"));
+        String[] split = change.split(COMMA);
+        infoBox.getChildren().add(new Text(ADDTOROOT + split[0] + ELEMENT + split[1] + ADDSTRING));
     }
 
     private void add(String change, TextFlow infoBox) {
-        infoBox.getChildren().add(new Text("Erstelle die Wurzel " + change + ".\n"));
+        infoBox.getChildren().add(new Text(CREATEROOT + change + LINEENDSTRING));
     }
 
     private void deleteNode(String change, TextFlow infoBox) {
-        String[] split = change.split(",");
+        String[] split = change.split(COMMA);
         int value = Integer.parseInt(split[1]) + 1;
-        infoBox.getChildren().add(new Text("Lösche die Abbildung " + value  + " von der Wurzel " + split[0] + ".\n"));
+        infoBox.getChildren().add(new Text(DELETEDEPICT + value  + FROMROOT + split[0] + LINEENDSTRING));
     }
 
     private void delete(String change, TextFlow infoBox) {
-        String[] split = change.split(",");
-        if (split.length == 1) infoBox.getChildren().add(new Text("Lösche die Wurzel " + split[0] + ".\n"));
-        else infoBox.getChildren().add(new Text("Lösche das Element " + split[1] + " von der Wurzel " + split[0] + ".\n"));
+        String[] split = change.split(COMMA);
+        if (split.length == 1) infoBox.getChildren().add(new Text(DELETEROOT + split[0] + LINEENDSTRING));
+        else infoBox.getChildren().add(new Text(DELETEELEMENT + split[1] + FROMROOT+ split[0] + LINEENDSTRING));
 
     }
 
     private void replace(String change, TextFlow infoBox) {
-        String[] split = change.split(",");
-        if (split.length == 2) infoBox.getChildren().add(new Text("Ersetze das Element " + split[0] + " mit dem Element " + split[1] + ".\n"));
-        else infoBox.getChildren().add(new Text("Ersetze in Wurzel " + split[0] + " das Element " + split[1] + " mit dem neuen Element " + split[2] + ".\n"));
+        String[] split = change.split(COMMA);
+        if (split.length == 2) infoBox.getChildren().add(new Text(REPLACEELEMET + split[1] + WITHELEMENT + split[0] + LINEENDSTRING));
+        else infoBox.getChildren().add(new Text(REPLACEINROOT + split[0] + ELEMENT + split[1] + WITHNEWELEMENT + split[2] + LINEENDSTRING));
     }
-
-
 }

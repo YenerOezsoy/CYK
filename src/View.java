@@ -194,13 +194,14 @@ public class View extends Application{
     protected void cnfPrevious() {
         System.out.println("previous");
         //stepChange(false);
+        controller.viewControllerCNFPrevious();
     }
 
     @FXML
     protected void cnfNext() {
         System.out.println("next");
         //if(!stopNext) stepChange(true);
-        controller.viewControllerNext();
+        controller.viewControllerCNFNext();
     }
 
     /*private void stepChange(boolean next) {
