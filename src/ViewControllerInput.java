@@ -93,7 +93,9 @@ public class ViewControllerInput {
             right = split[1].split(",");
             output.initLine(left, right);
         }
+    }
 
-
+    public Tree getTree() {
+        return tree;
     }
 }

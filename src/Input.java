@@ -102,6 +102,7 @@ public class Input {
         return (String) read(expression, stringType);
     }
 
+
     public String getName() {
         String expression = "/grammatik/name[" + String.valueOf(Integer.parseInt(path) + 1)  + "]";
         return (String) read(expression, stringType);

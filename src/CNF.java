@@ -341,15 +341,17 @@ public class CNF {
     }
 
     private void copyNodes(Elem root) {
-        change.mark(root.getString());
+        if (possibleCycle.size() != 1) {
+            change.mark(root.getString());
+        }
         possibleCycle.remove(root);
         for (int i = 0; i < possibleCycle.size(); i++) {
             change.highlight(possibleCycle.get(i).getString());
             for (int j = 0; j < possibleCycle.get(i).getList().size(); j++) {
                 root.addNode(possibleCycle.get(i).getList().get(j));
                 change.addNode(root.getString() + "," + possibleCycle.get(i).getString() + "," + j);
-                change.delete(possibleCycle.get(i).getString());
             }
+            change.delete(possibleCycle.get(i).getString());
             delete.add(possibleCycle.get(i));
         }
         replaceElement(root);

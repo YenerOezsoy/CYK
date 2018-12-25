@@ -2,6 +2,7 @@ public class Change {
 
     private Output output;
     String changes;
+    String cleanUp;
 
     public Change(Output output) {
         this.output = output;
@@ -9,6 +10,10 @@ public class Change {
 
     public void createNewChangeSet() {
         changes = "";
+    }
+
+    public void createNewCleanUpSet() {
+        cleanUp = "";
     }
 
     public void add(String change) {
@@ -74,11 +79,6 @@ public class Change {
     public void test () {
         System.out.println(changes);
     }
-
-    /*public void write() {
-        output.createChangeTag();
-        output.addChange(changes);
-    }*/
 
     public String getChanges() {
         return changes;

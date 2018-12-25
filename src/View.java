@@ -193,41 +193,16 @@ public class View extends Application{
     @FXML
     protected void cnfPrevious() {
         System.out.println("previous");
-        //stepChange(false);
         controller.viewControllerCNFPrevious();
     }
 
     @FXML
     protected void cnfNext() {
         System.out.println("next");
-        //if(!stopNext) stepChange(true);
         controller.viewControllerCNFNext();
     }
 
-    /*private void stepChange(boolean next) {
-        if (!controller.writeInfobox(next, infoboxCNFText, previousCNFText)) {
-            controller.initCNFpane(previousCNFText);
-            if(next) tree = controller.getTreeStep(++step);
-            else tree = controller.getTreeStep(--step);
-            if (tree == null) {
-                stopNext = true;
-                if (next) tree = controller.getTreeStep(--step);
-                else tree = controller.getTreeStep(++step);
-            }
-            else {
-                controller.initCNFpane(actualCNFText);
-                controller.writeInfobox(next, infoboxCNFText, previousCNFText);
-            }
-        }
-    }*/
-
     private void initcnfPane() {
-        /*tree = controller.getTreeStep(++step);
-        controller.initCNFpane(previousCNFText);
-        tree = controller.getTreeStep(++step);
-        controller.initCNFpane(actualCNFText);
-        controller.initInfobox(infoboxCNFText);
-        tree = controller.getTreeStep(step);*/
         tree = controller.getTreeStep(step);
         controller.initViewController(actualCNFText, previousCNFText, infoboxCNFText, tree);
     }

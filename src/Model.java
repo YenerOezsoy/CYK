@@ -33,9 +33,9 @@ public class Model {
             return false;
         }
         output.addToFile();
+        tree = vcInput.getTree();
         cnf = new CNF(tree, output);
         cnf.startCNF();
-        tree = new Tree(path);
         //vc.setTree(tree);
         return true;
     }
@@ -43,8 +43,6 @@ public class Model {
     public boolean userInput(String nonTerminal, String terminal, String startsymbol, String production) {
         return vcInput.userInput(nonTerminal, terminal, startsymbol, production);
     }
-
-
 
     public Tree getStep(int step) {
         tree.setActiveStep(step);

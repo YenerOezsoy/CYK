@@ -38,9 +38,6 @@ public class Tree {
         buildTree();
     }
 
-    public int getActiveStep() {
-        return step;
-    }
 
     private boolean process(ArrayList<String> toProcess) {
         for (int i = 0; i < toProcess.size(); i++) {

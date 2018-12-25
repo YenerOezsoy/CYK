@@ -65,6 +65,7 @@ public class Output {
         return element;
     }
 
+
     public void  addChange(Element element, String change) {
         element.appendChild(doc.createTextNode(change));
     }
@@ -141,6 +142,7 @@ public class Output {
         addChange(element, nonTerminals);
     }
 
+    //Fehler in Matrix
     private void createTerminals(HashMap<String, Elem> map) {
         element = doc.createElement("t");
         String terminals = "";
@@ -197,9 +199,7 @@ public class Output {
     private void write() {
         try {
             TransformerFactory transformerFactory = TransformerFactory.newInstance();
-            Transformer transformer = null;
-
-            transformer = transformerFactory.newTransformer();
+            Transformer transformer = transformerFactory.newTransformer();
 
             //for pretty print
             transformer.setOutputProperty(OutputKeys.INDENT, "yes");
