@@ -68,6 +68,12 @@ public class ViewControllerCYK {
     private void highlight(int x, int y) {
         int childNumber = transform(x,y);
         doColoring((Label) pane.getChildren().get(childNumber), "#F0E68C");
+        String value = cyk.getRoot();
+        if(value != null) {
+            String textInLabel = ((Label) pane.getChildren().get(childNumber)).getText();
+            if (textInLabel.length() != 0) value = textInLabel + "," + value;
+            ((Label) pane.getChildren().get(childNumber)).setText(value);
+        }
     }
 
     private void mark(int x, int y) {

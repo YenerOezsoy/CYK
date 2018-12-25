@@ -13,6 +13,7 @@ public class CYK {
     private int counter = 0;
     private HashMap<Integer, ArrayList<String>[]> pyramid;
     private HashMap<String, Elem> map;
+    private String rootValue = null;
 
 
     public void initialize(String w) {
@@ -32,16 +33,12 @@ public class CYK {
     }
 
     public String getRoot() {
-        String value = null;
-        if (pyramid.get(stage).length != 0) {
-            //value = pyramid.get(stage)
-        }
-        return value;
+        return rootValue;
     }
 
 
     public int[] nextStep() {
-        if (i == stage) {
+        if (i == stage && stage != 0) {
             stage--;
             initLoop();
         }
@@ -86,6 +83,8 @@ public class CYK {
 
     private int[] initializeStage(int stage, int i) {
         int[] analyze;
+        boolean changed = true;
+        int actualIndex = i;
         if (stage == size) {
             checkColumn(stage, i);
             analyze = initAnalyze(stage, i);
@@ -100,11 +99,44 @@ public class CYK {
             stageCounter--;
             stageCounter2++;
             offset++;
-            if (stageCounter > stage) this.i--;
+            if (stageCounter > stage) {
+                this.i--;
+                changed = false;
+            }
             else initInnerLoop();
         }
+        setRootValue(actualIndex);
         this.i++;
+        checkCounter(changed);
         return analyze;
+    }
+    private void checkCounter(boolean changed) {
+        if (changed) counter = 0;
+    }
+
+    private void setRootValue(int actualIndex) {
+        if (pyramid.get(stage)[actualIndex].isEmpty()) {
+            rootValue = null;
+            counter = 0; //??necessary?
+        }
+        else {
+            if (stage > size - 2) {
+                concatRootValues(pyramid.get(stage)[actualIndex]);
+            }
+            else {
+                rootValue = pyramid.get(stage)[actualIndex].get(counter);
+                counter++;
+            }
+
+        }
+    }
+
+    private void concatRootValues(ArrayList<String> list) {
+        rootValue = "";
+        for (String values : list) {
+            rootValue += values + ",";
+        }
+        rootValue = rootValue.substring(0, rootValue.length() - 1);
     }
 
     private int[] initAnalyze(int row, int column) {
