@@ -13,17 +13,13 @@ public class Model {
 
     public void readFile(String path) {
         this.path = path;
-        //vc.setPath(path);
         tree = new Tree(path);
-       // vc.setTree(tree);
     }
 
     public void writeFile(String path) {
         System.out.println(path);
         this.path = path;
         output = new Output(path);
-        //vc.setOutput(output);
-        //vc.setPath(path);
         output.newFile();
     }
 
@@ -36,7 +32,6 @@ public class Model {
         tree = vcInput.getTree();
         cnf = new CNF(tree, output);
         cnf.startCNF();
-        //vc.setTree(tree);
         return true;
     }
 
@@ -48,17 +43,4 @@ public class Model {
         tree.setActiveStep(step);
         return tree;
     }
-/*
-    public void initPane(TextFlow flow) {
-        vc.initPane(flow);
-    }
-
-    public void initInfobox(TextFlow infobox) {
-        vc.initInfobox(infobox);
-    }
-
-    public boolean writeNextInfobox(boolean next, TextFlow infobox, TextFlow previousCNFText) {
-        return vc.writeNextInfobox(next, infobox, previousCNFText);
-    }*/
-
 }

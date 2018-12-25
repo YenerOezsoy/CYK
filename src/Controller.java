@@ -1,3 +1,4 @@
+import javafx.scene.layout.Pane;
 import javafx.scene.text.TextFlow;
 
 import java.io.File;
@@ -8,7 +9,8 @@ import java.io.File;
 public class Controller {
     private Model model;
     private File file;
-    private ViewControllerCNF vc;
+    private ViewControllerCNF viewControllerCNF;
+    ViewControllerCYK viewControllerCYK;
 
     public Controller() {
         model = new Model();
@@ -34,28 +36,25 @@ public class Controller {
         return model.getStep(step);
     }
 
-    /*public void initCNFpane(TextFlow flow) {
-        model.initPane(flow);
+    public void initViewControllerCYK(String word, Tree tree, File file, Pane pane) {
+        this.file = file;
+        model.readFile(file.getPath());
+        viewControllerCYK = new ViewControllerCYK(model.getStep(4), word, pane);
     }
-
-    public boolean writeInfobox(boolean next, TextFlow infobox, TextFlow previousCNFText) {
-        return model.writeNextInfobox(next, infobox, previousCNFText);
-
-    }
-
-    public void initInfobox(TextFlow infobox) {
-        model.initInfobox(infobox);
-    }*/
 
     public void initViewController(TextFlow nextPane, TextFlow previousPane,TextFlow infoBox, Tree tree) {
-        vc = new ViewControllerCNF(nextPane, previousPane, infoBox, tree);
+        viewControllerCNF = new ViewControllerCNF(nextPane, previousPane, infoBox, tree);
     }
 
     public boolean viewControllerCNFNext() {
-         return vc.next();
+         return viewControllerCNF.next();
     }
 
     public void viewControllerCNFPrevious() {
-         vc.previous();
+         viewControllerCNF.previous();
+    }
+
+    public void viewControllerCYKNext() {
+        viewControllerCYK.next();
     }
 }

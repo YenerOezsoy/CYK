@@ -130,6 +130,7 @@ public class View extends Application{
 
     @FXML
     protected void cnfStart() {
+        controller.inputFile(file);
         selectionScreen.setVisible(false);
         title.setText("Chomsky Normalform");
         cnfPane.setVisible(true);
@@ -155,6 +156,7 @@ public class View extends Application{
             rowSize = base + 1;
             generateGrid();
             initButton();
+            controller.initViewControllerCYK(cykInputText.getText(), controller.getTreeStep(1), file, pane);
         }
     }
 
@@ -187,7 +189,8 @@ public class View extends Application{
     @FXML
     protected void cykNext() {
         System.out.println("next");
-        cykNextStep();
+        //cykNextStep();
+        controller.viewControllerCYKNext();
     }
 
     @FXML
@@ -227,7 +230,7 @@ public class View extends Application{
     }
 
     private void startTimer() {
-        Slider activeSlider = getActiveSlider();
+        /*Slider activeSlider = getActiveSlider();
         int period = (int) (activeSlider.getValue() * 1000);
         System.out.println(period);
         timer = new Timer();
@@ -239,7 +242,7 @@ public class View extends Application{
                 else cykNextStep();
             }
         }, 0, period);
-
+*/
     }
 
     private Slider getActiveSlider() {
@@ -270,12 +273,12 @@ public class View extends Application{
 
     private void generateGrid() {
         pane = new GridPane();
-        makeGrid(pane, cykInputText.getText());
+        makeGrid(pane);
         createSteps();
         cykVisual.getChildren().addAll(pane);
     }
 
-    private void makeGrid(GridPane pane, String word) {
+    private void makeGrid(GridPane pane) {
         for (int i = 0; i < rowSize; i++) {
             for (int j = 0; j < base ; j++) {
                 Label label = new Label();
@@ -308,9 +311,4 @@ public class View extends Application{
         //label.setStyle("-fx-background-color: lightgrey;");
         label.setStyle("-fx-border-color: black;");
     }
-
-    private void cnfNextStep() {
-
-    }
-
 }

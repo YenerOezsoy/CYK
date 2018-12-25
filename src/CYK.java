@@ -10,6 +10,7 @@ public class CYK {
     private int offset;
     private int stageCounter2;
     private int i;
+    private int counter = 0;
     private HashMap<Integer, ArrayList<String>[]> pyramid;
     private HashMap<String, Elem> map;
 
@@ -26,6 +27,19 @@ public class CYK {
         initLoop();
     }
 
+    public int getSize() {
+        return size;
+    }
+
+    public String getRoot() {
+        String value = null;
+        if (pyramid.get(stage).length != 0) {
+            //value = pyramid.get(stage)
+        }
+        return value;
+    }
+
+
     public int[] nextStep() {
         if (i == stage) {
             stage--;
@@ -37,15 +51,19 @@ public class CYK {
         else return doLoop();
     }
 
+    public HashMap<Integer, ArrayList<String>[]> getPyramid() {
+        return pyramid;
+    }
+
     private void initLoop() {
         initInnerLoop();
         i = 0;
     }
 
     private void initInnerLoop() {
-        stageCounter = stage + 1;
-        stageCounter2 = size;
-        offset = stage;
+        stageCounter = size;
+        stageCounter2 = stage + 1;
+        offset = 1;
     }
 
     private int[] doLoop() {
@@ -77,12 +95,13 @@ public class CYK {
             analyze = initAnalyze(stage, i,stage + 1, i, i + 1);
         }
         else {
-            checkColumn(stage,i, stageCounter, i, stageCounter2, i + offset - 1);
-            analyze = initAnalyze(stage,i, stageCounter, i, stageCounter2, i + offset - 1);
-            stageCounter++;
-            stageCounter2--;
-            offset--;
-            if (stageCounter < size) this.i--;
+            checkColumn(stage,i, stageCounter, i, stageCounter2, i + offset);
+            analyze = initAnalyze(stage,i, stageCounter, i, stageCounter2, i + offset);
+            stageCounter--;
+            stageCounter2++;
+            offset++;
+            if (stageCounter > stage) this.i--;
+            else initInnerLoop();
         }
         this.i++;
         return analyze;
