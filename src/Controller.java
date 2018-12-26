@@ -39,7 +39,7 @@ public class Controller {
     public void initViewControllerCYK(String word, Tree tree, File file, Pane pane) {
         this.file = file;
         model.readFile(file.getPath());
-        viewControllerCYK = new ViewControllerCYK(model.getStep(4), word, pane);
+        viewControllerCYK = new ViewControllerCYK(model.getStep(5), word, pane);
     }
 
     public void initViewController(TextFlow nextPane, TextFlow previousPane,TextFlow infoBox, Tree tree) {
@@ -56,5 +56,9 @@ public class Controller {
 
     public void viewControllerCYKNext() {
         viewControllerCYK.next();
+    }
+
+    public void viewControllerCYKPrevious() {
+        viewControllerCYK.previous();
     }
 }

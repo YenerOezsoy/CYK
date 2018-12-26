@@ -41,6 +41,7 @@ public class View extends Application{
     @FXML Button chooseGrammar;
     @FXML Button cykConfirm;
     @FXML Button cykNextButton;
+    @FXML Button cykPreviousButton;
     @FXML Button cykPlayButton;
     @FXML Button cnfStepBack;
     @FXML Button cnfPlayButton;
@@ -136,7 +137,6 @@ public class View extends Application{
         cnfPane.setVisible(true);
         initButton();
         initcnfPane();
-
     }
 
     @FXML
@@ -156,7 +156,7 @@ public class View extends Application{
             rowSize = base + 1;
             generateGrid();
             initButton();
-            controller.initViewControllerCYK(cykInputText.getText(), controller.getTreeStep(1), file, pane);
+            controller.initViewControllerCYK(cykInputText.getText(), controller.getTreeStep(5), file, pane);
         }
     }
 
@@ -194,6 +194,13 @@ public class View extends Application{
     }
 
     @FXML
+    protected void cykPrevious() {
+        System.out.println("previous");
+        //cykNextStep();
+        controller.viewControllerCYKPrevious();
+    }
+
+    @FXML
     protected void cnfPrevious() {
         System.out.println("previous");
         controller.viewControllerCNFPrevious();
@@ -213,6 +220,8 @@ public class View extends Application{
     private void initButton() {
         cykPlayButton.setGraphic(new ImageView(playImage));
         cykNextButton.setGraphic(new ImageView(nextImage));
+        cykPreviousButton.setGraphic(new ImageView(previousImage));
+        cykPreviousButton.toFront();
         cykPlayButton.toFront();
         cykNextButton.toFront();
         cykSlider.toFront();

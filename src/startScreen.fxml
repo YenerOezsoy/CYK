@@ -130,6 +130,7 @@
                   </Text>
                   <Button fx:id="cykNextButton" layoutX="554.0" layoutY="12.0" mnemonicParsing="false" onAction="#cykNext" />
                   <Button fx:id="cykPlayButton" layoutX="504.0" layoutY="12.0" mnemonicParsing="false" onAction="#play" />
+                  <Button fx:id="cykPreviousButton" layoutX="454.0" layoutY="12.0" mnemonicParsing="false" onAction="#cykPrevious" />
                </children></Pane>
          </children>
       </Pane>

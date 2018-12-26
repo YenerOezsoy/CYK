@@ -3,6 +3,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 
 public class ViewControllerCYK {
@@ -16,6 +17,7 @@ public class ViewControllerCYK {
     private Pane pane;
     private HashMap<Integer, ArrayList<String>[]> pyramid;
     private int size;
+    private int[] marker;
 
 
     public ViewControllerCYK(Tree tree, String word, Pane pane) {
@@ -30,11 +32,49 @@ public class ViewControllerCYK {
     }
 
     public void next() {
-        int[] marker = cyk.nextStep();
+        marker = cyk.nextStep();
         if (marker != null) {
             unmark();
             doMarking(marker);
         }
+    }
+
+    public void previous() {
+        deleteContent();
+        marker = cyk.previousStep();
+        if (marker != null) {
+            unmark();
+            doMarking(marker);
+        }
+    }
+
+    private void deleteContent() {
+        if (marker != null) {
+            int childNumber = transform(marker[1], marker[0]);
+            Label label = (Label) pane.getChildren().get(childNumber);
+            deleteLastEdits(label, childNumber);
+        }
+    }
+
+    private void deleteLastEdits(Label label, int childNumber) {
+        String text = label.getText();
+        String[] split = text.split(",");
+        if (split.length > 2 && childNumber > (size * 3) - 1) {
+            int length = split.length - 2;
+            text = shrinkArray(split, length);
+            //text = "" + Arrays.toString(split);
+        }
+        else text = "";
+        label.setText(text);
+    }
+
+    private String shrinkArray(String[] split, int length) {
+        String value = "";
+        for (int i = 0; i < length; i++) {
+            if (value.length() > 1) value += ",";
+            value += split[i];
+        }
+        return value;
     }
 
     private void doMarking(int[] marker) {
@@ -71,7 +111,7 @@ public class ViewControllerCYK {
         String value = cyk.getRoot();
         if(value != null) {
             String textInLabel = ((Label) pane.getChildren().get(childNumber)).getText();
-            if (textInLabel.length() != 0) value = textInLabel + "," + value;
+            if (textInLabel.length() != 0 && childNumber > (size * 3) - 1) value = textInLabel + "," + value;
             ((Label) pane.getChildren().get(childNumber)).setText(value);
         }
     }

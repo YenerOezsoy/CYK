@@ -7,6 +7,7 @@ public class CYK {
     private int size;
     private int stage;
     private int stageCounter;
+    private int previousStageCounter;
     private int offset;
     private int stageCounter2;
     private int i;
@@ -25,7 +26,7 @@ public class CYK {
             word[i] = String.valueOf(w.charAt(i));
         }
         buildPyramide(size);
-        initLoop();
+        initLoop(true);
     }
 
     public int getSize() {
@@ -40,27 +41,55 @@ public class CYK {
     public int[] nextStep() {
         if (i == stage && stage != 0) {
             stage--;
-            initLoop();
+            initLoop(true);
         }
         if(stage == 0) {
             return null;
         }
-        else return doLoop();
+        return doLoop();
+    }
+
+    public int[] previousStep() {
+        if (i == 1 && stage != size && stageCounter == size) {
+            stage++;
+            initLoop(false);
+        }
+        if (i > 1) {
+            if (previousStageCounter != size) {
+                stageCounter = previousStageCounter + 1;
+                stageCounter2--;
+                offset--;
+            }
+            else i -= 2;
+            return doLoop();
+        }
+        return null;
+
+
     }
 
     public HashMap<Integer, ArrayList<String>[]> getPyramid() {
         return pyramid;
     }
 
-    private void initLoop() {
-        initInnerLoop();
-        i = 0;
+    private void initLoop(boolean next) {
+        initInnerLoop(next);
+        if (next) i = 0;
+        else i = stage - 1;
     }
 
-    private void initInnerLoop() {
-        stageCounter = size;
-        stageCounter2 = stage + 1;
-        offset = 1;
+    private void initInnerLoop(boolean next) {
+        if(next) {
+            stageCounter = size;
+            stageCounter2 = stage + 1;
+            offset = 1;
+        }
+        else {
+            stageCounter = stage - 1;
+            stageCounter2 = size;
+            offset = size - stage;
+        }
+
     }
 
     private int[] doLoop() {
@@ -85,6 +114,7 @@ public class CYK {
         int[] analyze;
         boolean changed = true;
         int actualIndex = i;
+        previousStageCounter = stageCounter;
         if (stage == size) {
             checkColumn(stage, i);
             analyze = initAnalyze(stage, i);
@@ -103,7 +133,7 @@ public class CYK {
                 this.i--;
                 changed = false;
             }
-            else initInnerLoop();
+            else initInnerLoop(true);
         }
         setRootValue(actualIndex);
         this.i++;
