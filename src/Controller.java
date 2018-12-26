@@ -54,8 +54,8 @@ public class Controller {
          viewControllerCNF.previous();
     }
 
-    public void viewControllerCYKNext() {
-        viewControllerCYK.next();
+    public boolean viewControllerCYKNext() {
+        return viewControllerCYK.next();
     }
 
     public void viewControllerCYKPrevious() {

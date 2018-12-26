@@ -1,4 +1,5 @@
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -17,6 +18,9 @@ import javafx.stage.Stage;
 import java.io.File;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 public class View extends Application{
 
@@ -35,7 +39,10 @@ public class View extends Application{
     private Controller controller;
     private int step = 1;
     private Tree tree;
-    private boolean stopNext = false;
+    private int activePane = -1;
+
+    private boolean loop;
+    private ScheduledExecutorService service;
 
 
     private GridPane pane;
@@ -149,6 +156,7 @@ public class View extends Application{
 
     @FXML
     protected void cnfStart() {
+        activePane = 1;
         controller.inputFile(file);
         selectionScreen.setVisible(false);
         title.setText("Chomsky Normalform");
@@ -172,6 +180,7 @@ public class View extends Application{
     @FXML
     protected void cykConfirm() {
         if (checkWordInput(cykInputText.getText())) {
+            activePane = 2;
             cykInput.setVisible(false);
             cykVisual.setVisible(true);
             cykGrid.setVisible(true);
@@ -193,12 +202,12 @@ public class View extends Application{
     protected void play() {
         Button activeButton = getActivePlayButton();
         if (startButton) {
-            cykPlayButton.setGraphic(new ImageView(playImage));
+            activeButton.setGraphic(new ImageView(playImage));
             startButton = false;
             stopTimer();
         }
         else {
-            cykPlayButton.setGraphic(new ImageView(pauseImage));
+            activeButton.setGraphic(new ImageView(pauseImage));
             startButton = true;
             startTimer();
         }
@@ -211,10 +220,10 @@ public class View extends Application{
     }
 
     @FXML
-    protected void cykNext() {
+    protected boolean cykNext() {
         System.out.println("next");
         //cykNextStep();
-        controller.viewControllerCYKNext();
+        return controller.viewControllerCYKNext();
     }
 
     @FXML
@@ -231,9 +240,9 @@ public class View extends Application{
     }
 
     @FXML
-    protected void cnfNext() {
+    protected boolean cnfNext() {
         System.out.println("next");
-        controller.viewControllerCNFNext();
+        return controller.viewControllerCNFNext();
     }
 
     private void initcnfPane() {
@@ -276,6 +285,7 @@ public class View extends Application{
 
     @FXML
     protected void cnfBackToAlgorithm() {
+        activePane = -1;
         //stopTimer
         cnfPane.setVisible(false);
         selectionScreen.setVisible(true);
@@ -284,6 +294,7 @@ public class View extends Application{
     @FXML
     protected void cnfToCYK() {
         //stopTimer
+        cykInput();
         cnfPane.setVisible(false);
         cykAlgorithm.setVisible(true);
         cykInput.setVisible(true);
@@ -313,7 +324,43 @@ public class View extends Application{
                 else cykNextStep();
             }
         }, 0, period);
-*/
+        */
+
+        Runnable runnable = new Runnable() {
+            public void run() {
+                try {
+                    Platform.runLater(new Runnable() {
+                        @Override
+                        public void run() {
+                            System.out.println("Timer");
+                            doNext();
+                        }
+                    });
+                }
+                catch(Exception e) {
+                    e.printStackTrace();
+                }
+
+            }
+        };
+
+        service = Executors.newSingleThreadScheduledExecutor();
+        service.scheduleAtFixedRate(runnable, 0, 3, TimeUnit.SECONDS);
+    }
+
+    private void stopTimer() {
+        service.shutdown();
+    }
+
+    private void doNext() {
+        if (activePane == 1) loop = cnfNext();
+        else if (activePane == 2) loop = cykNext();
+        checkStatusOfTimer();
+    }
+
+    private void checkStatusOfTimer() {
+        if (!loop) service.shutdown();
+        //if (activePane == 1) cnfNext disable
     }
 
     private Slider getActiveSlider() {
@@ -321,16 +368,7 @@ public class View extends Application{
         return cykSlider;
     }
 
-    private void stopTimer() {
-        timer.cancel();
-        System.out.println("CANCELLED");
-    }
-    private void cykNextStep() {
-       /* int[] arr = cyk.nextStep();
-        for (int i = 0; i < arr.length; i++) {
-            System.out.println(arr[i]);
-        }*/
-    }
+
 
     private boolean checkWordInput(String word) {
         if (word.length() == 0) {

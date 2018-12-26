@@ -31,12 +31,14 @@ public class ViewControllerCYK {
         size = cyk.getSize();
     }
 
-    public void next() {
+    public boolean next() {
         marker = cyk.nextStep();
         if (marker != null) {
             unmark();
             doMarking(marker);
+            return true;
         }
+        return false;
     }
 
     public void previous() {
