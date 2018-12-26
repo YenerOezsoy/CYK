@@ -103,17 +103,21 @@ public class View extends Application{
     @FXML
     protected void fileChooser() {
         file = chooser.showOpenDialog(null);
-        startScreen.setVisible(false);
-        selectionScreen.setVisible(true);
-        controller.inputFile(file);
+        if (file != null) {
+            startScreen.setVisible(false);
+            selectionScreen.setVisible(true);
+            controller.inputFile(file);
+        }
     }
 
     @FXML
     protected void newFile() {
         file = chooser.showSaveDialog(null);
-        startScreen.setVisible(false);
-        grammarForm.setVisible(true);
-        controller.outputFile(file);
+        if (file != null) {
+            startScreen.setVisible(false);
+            grammarForm.setVisible(true);
+            controller.outputFile(file);
+        }
     }
 
     @FXML

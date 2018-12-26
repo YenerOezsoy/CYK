@@ -1,16 +1,19 @@
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Optional;
 
 public class CYK {
 
     private String[] word;
     private int size;
     private int stage;
+    private int previousStage;
     private int stageCounter;
     private int previousStageCounter;
     private int offset;
     private int stageCounter2;
     private int i;
+    private int previousI;
     private int counter = 0;
     private HashMap<Integer, ArrayList<String>[]> pyramid;
     private HashMap<String, Elem> map;
@@ -26,7 +29,7 @@ public class CYK {
             word[i] = String.valueOf(w.charAt(i));
         }
         buildPyramide(size);
-        initLoop(true);
+        initLoop();
     }
 
     public int getSize() {
@@ -39,9 +42,12 @@ public class CYK {
 
 
     public int[] nextStep() {
+        previousStageCounter = stageCounter;
+        previousStage = stage;
+        previousI = i;
         if (i == stage && stage != 0) {
             stage--;
-            initLoop(true);
+            initLoop();
         }
         if(stage == 0) {
             return null;
@@ -50,46 +56,31 @@ public class CYK {
     }
 
     public int[] previousStep() {
-        if (i == 1 && stage != size && stageCounter == size) {
-            stage++;
-            initLoop(false);
+        initLoop();
+        stage = size;
+        int tempPreviousStage = previousStage;
+        int tempPreviousStageCounter = previousStageCounter;
+        int tempI = previousI;
+        int[] returnValue = null;
+        while (stage != tempPreviousStage || stageCounter != tempPreviousStageCounter || i != tempI) {
+            returnValue = nextStep();
         }
-        if (i > 1) {
-            if (previousStageCounter != size) {
-                stageCounter = previousStageCounter + 1;
-                stageCounter2--;
-                offset--;
-            }
-            else i -= 2;
-            return doLoop();
-        }
-        return null;
-
-
+        return returnValue;
     }
 
     public HashMap<Integer, ArrayList<String>[]> getPyramid() {
         return pyramid;
     }
 
-    private void initLoop(boolean next) {
-        initInnerLoop(next);
-        if (next) i = 0;
-        else i = stage - 1;
+    private void initLoop() {
+        initInnerLoop();
+        i = 0;
     }
 
-    private void initInnerLoop(boolean next) {
-        if(next) {
-            stageCounter = size;
-            stageCounter2 = stage + 1;
-            offset = 1;
-        }
-        else {
-            stageCounter = stage - 1;
-            stageCounter2 = size;
-            offset = size - stage;
-        }
-
+    private void initInnerLoop() {
+        stageCounter = size;
+        stageCounter2 = stage + 1;
+        offset = 1;
     }
 
     private int[] doLoop() {
@@ -114,7 +105,6 @@ public class CYK {
         int[] analyze;
         boolean changed = true;
         int actualIndex = i;
-        previousStageCounter = stageCounter;
         if (stage == size) {
             checkColumn(stage, i);
             analyze = initAnalyze(stage, i);
@@ -133,7 +123,7 @@ public class CYK {
                 this.i--;
                 changed = false;
             }
-            else initInnerLoop(true);
+            else initInnerLoop();
         }
         setRootValue(actualIndex);
         this.i++;
@@ -154,8 +144,10 @@ public class CYK {
                 concatRootValues(pyramid.get(stage)[actualIndex]);
             }
             else {
-                rootValue = pyramid.get(stage)[actualIndex].get(counter);
-                counter++;
+                if (pyramid.get(stage)[actualIndex].size() > counter) {
+                    rootValue = pyramid.get(stage)[actualIndex].get(counter);
+                    counter++;
+                }
             }
 
         }
