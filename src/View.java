@@ -28,6 +28,8 @@ public class View extends Application{
     private Image pauseImage;// = new Image(getClass().getResourceAsStream("pause.svg"));
     private Image nextImage;// = new Image(getClass().getResourceAsStream("next.svg"));
     private Image previousImage;
+    private Image backArrow;
+    private Image forwardArrow;
     private boolean startButton = false;
     private Timer timer;
     private Controller controller;
@@ -46,7 +48,10 @@ public class View extends Application{
     @FXML Button cnfStepBack;
     @FXML Button cnfPlayButton;
     @FXML Button cnfStepForward;
-
+    @FXML Button algorithmBackButton;
+    @FXML Button cykBackButton;
+    @FXML Button cnfForwardButton;
+    @FXML Button cnfBackButton;
     @FXML Pane startScreen;
     @FXML Pane selectionScreen;
     @FXML Pane grammarForm;
@@ -58,12 +63,14 @@ public class View extends Application{
     @FXML Pane previousCNF;
     @FXML Pane actualCNF;
     @FXML Pane cnfInfoboxPane;
+    @FXML Pane cykGrid;
     @FXML TextFlow previousCNFText;
     @FXML TextFlow actualCNFText;
     @FXML TextFlow infoboxCNFText;
     @FXML TextArea production;
     @FXML Text title;
     @FXML Text errorText;
+    @FXML Text cykSliderInfo;
     @FXML TextField cykInputText;
     @FXML TextField nonTerminals;
     @FXML TextField terminals;
@@ -77,6 +84,8 @@ public class View extends Application{
         pauseImage = new Image(getClass().getResourceAsStream("pause.png"));
         previousImage = new Image(getClass().getResourceAsStream("previous.png"));
         nextImage = new Image(getClass().getResourceAsStream("next.png"));
+        backArrow = new Image(getClass().getResourceAsStream("back.png"));
+        forwardArrow = new Image(getClass().getResourceAsStream("forward.png"));
         chooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("XML Datei", "*.xml"));
     }
 
@@ -93,8 +102,6 @@ public class View extends Application{
             primaryStage.setTitle("CYK Algorithmus");
             primaryStage.setScene(new Scene(root,1024, 768));
             primaryStage.show();
-
-
         } catch(Exception e) {
             e.printStackTrace();
         }
@@ -107,6 +114,7 @@ public class View extends Application{
             startScreen.setVisible(false);
             selectionScreen.setVisible(true);
             controller.inputFile(file);
+            initBackButton();
         }
     }
 
@@ -131,6 +139,12 @@ public class View extends Application{
         grammarForm.setVisible(false);
         selectionScreen.setVisible(true);
         controller.writeFile(nonTerminals.getText(), terminals.getText(), root.getText(), production.getText());
+        initBackButton();
+    }
+
+    private void initBackButton() {
+        algorithmBackButton.setGraphic(new ImageView(backArrow));
+        algorithmBackButton.setText("Menü");
     }
 
     @FXML
@@ -145,10 +159,14 @@ public class View extends Application{
 
     @FXML
     protected void cykInput() {
+        initButton();
         selectionScreen.setVisible(false);
         title.setText("CYK Algorithmus");
         cykAlgorithm.setVisible(true);
         cykInput.setVisible(true);
+        cykVisual.setVisible(false);
+        cykGrid.setVisible(false);
+        cykIteratButtonVisibility(false);
     }
 
     @FXML
@@ -156,11 +174,13 @@ public class View extends Application{
         if (checkWordInput(cykInputText.getText())) {
             cykInput.setVisible(false);
             cykVisual.setVisible(true);
+            cykGrid.setVisible(true);
             base = cykInputText.getText().length();
             rowSize = base + 1;
             generateGrid();
-            initButton();
+
             controller.initViewControllerCYK(cykInputText.getText(), controller.getTreeStep(5), file, pane);
+            cykIteratButtonVisibility(true);
         }
     }
 
@@ -225,6 +245,8 @@ public class View extends Application{
         cykPlayButton.setGraphic(new ImageView(playImage));
         cykNextButton.setGraphic(new ImageView(nextImage));
         cykPreviousButton.setGraphic(new ImageView(previousImage));
+        cykBackButton.setGraphic(new ImageView(backArrow));
+        cykBackButton.setText("CNF");
         cykPreviousButton.toFront();
         cykPlayButton.toFront();
         cykNextButton.toFront();
@@ -232,6 +254,10 @@ public class View extends Application{
         cnfStepBack.setGraphic(new ImageView(previousImage));
         cnfPlayButton.setGraphic(new ImageView(playImage));
         cnfStepForward.setGraphic(new ImageView(nextImage));
+        cnfForwardButton.setGraphic(new ImageView(forwardArrow));
+        cnfForwardButton.setContentDisplay(ContentDisplay.RIGHT);
+        cnfBackButton.setGraphic(new ImageView(backArrow));
+        cnfBackButton.setText("Auswahl");
     }
 
     @FXML
@@ -240,6 +266,38 @@ public class View extends Application{
             stopTimer();
             startTimer();
         }
+    }
+
+    @FXML
+    protected void algorithmToMenu() {
+        selectionScreen.setVisible(false);
+        startScreen.setVisible(true);
+    }
+
+    @FXML
+    protected void cnfBackToAlgorithm() {
+        //stopTimer
+        cnfPane.setVisible(false);
+        selectionScreen.setVisible(true);
+    }
+
+    @FXML
+    protected void cnfToCYK() {
+        //stopTimer
+        cnfPane.setVisible(false);
+        cykAlgorithm.setVisible(true);
+        cykInput.setVisible(true);
+    }
+
+    @FXML
+    protected void cykToCNF() {
+        //stopTimer
+        cykAlgorithm.setVisible(false);
+        cykVisual.setVisible(false);
+        cykInput.setVisible(false);
+        cykGrid.setVisible(false);
+        cnfPane.setVisible(true);
+        cnfStart();
     }
 
     private void startTimer() {
@@ -288,7 +346,8 @@ public class View extends Application{
         pane = new GridPane();
         makeGrid(pane);
         createSteps();
-        cykVisual.getChildren().addAll(pane);
+        cykGrid.getChildren().clear();
+        cykGrid.getChildren().addAll(pane);
     }
 
     private void makeGrid(GridPane pane) {
@@ -296,7 +355,7 @@ public class View extends Application{
             for (int j = 0; j < base ; j++) {
                 Label label = new Label();
                 pane.add(label,j,i);
-                label.setMinSize(845 / base, 660 /(base + 1));
+                label.setMinSize(845 / base, 598 /(base + 1));
                 label.setStyle("-fx-alignment: center; -fx-font-size: 20;");
             }
         }
@@ -323,5 +382,12 @@ public class View extends Application{
         Label label = (Label) pane.getChildren().get(i * base + j);
         //label.setStyle("-fx-background-color: lightgrey;");
         label.setStyle("-fx-border-color: black;");
+    }
+
+    private void cykIteratButtonVisibility(boolean visibility) {
+        cykNextButton.setVisible(visibility);
+        cykPreviousButton.setVisible(visibility);
+        cykSlider.setVisible(visibility);
+        cykSliderInfo.setVisible(visibility);
     }
 }

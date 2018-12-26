@@ -420,6 +420,7 @@ public class ViewControllerCNF {
         else {
             while (changeIterator != -1) {
                 next();
+                cleanUpRoutine = 0;
             }
         }
     }
