@@ -157,6 +157,7 @@ public class ViewControllerCNF {
         initMaps();
         initPane(previousPane);
         initInfoBox();
+        cleanUpRoutine = 0;
     }
 
     private void initInfoBox() {
@@ -203,12 +204,13 @@ public class ViewControllerCNF {
     }
 
     public void previous() {
+        int tempCleanUpRoutine = cleanUpRoutine;
         if (hasPreviousStep()) {
             initAllPanes();
-            doUndoSteps();
+            doUndoSteps(tempCleanUpRoutine);
         }
         else if (hasPreviousRule()) {
-            doUndoSteps();
+            doUndoSteps(0);
         }
     }
 
@@ -398,11 +400,11 @@ public class ViewControllerCNF {
         return false;
     }
 
-    private void doUndoSteps() {
+    private void doUndoSteps(int tempCleanUpRoutines) {
         int lastMark = previousChangeMark;
-        if (cleanUpRoutine != 0) {
-            cleanUpRoutine--;
-            doUndoStepsForCleaner();
+        if (tempCleanUpRoutines != 0) {
+            tempCleanUpRoutines--;
+            doUndoStepsForCleaner(tempCleanUpRoutines);
         }
         else {
             while (changeIterator != lastMark && changeIterator != -1) {
@@ -411,9 +413,10 @@ public class ViewControllerCNF {
         }
     }
 
-    private void doUndoStepsForCleaner() {
-        if (cleanUpRoutine == 1) {
-            while(cleanUpRoutine != 1) {
+    //previousCleanUpRoutines einspeichern und so lange while next ausführen bis changeiterator && previouscleanuproutines passen!
+    private void doUndoStepsForCleaner(int tempCleanUpRoutines) {
+        if (tempCleanUpRoutines != 1) {
+            while(cleanUpRoutine != tempCleanUpRoutines) {
                 next();
             }
         }

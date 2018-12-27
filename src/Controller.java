@@ -36,7 +36,7 @@ public class Controller {
         return model.getStep(step);
     }
 
-    public void initViewControllerCYK(String word, Tree tree, File file, Pane pane) {
+    public void initViewControllerCYK(String word, File file, Pane pane) {
         this.file = file;
         model.readFile(file.getPath());
         viewControllerCYK = new ViewControllerCYK(model.getStep(5), word, pane);

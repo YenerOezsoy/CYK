@@ -8,16 +8,14 @@ import javafx.scene.control.*;
 
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
-
 import java.io.File;
-import java.util.Timer;
-import java.util.TimerTask;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -35,15 +33,14 @@ public class View extends Application{
     private Image backArrow;
     private Image forwardArrow;
     private boolean startButton = false;
-    private Timer timer;
     private Controller controller;
     private int step = 1;
     private Tree tree;
-    private int activePane = -1;
-
+    private int activePaneIndex = -1;
     private boolean loop;
     private ScheduledExecutorService service;
 
+    private Pane activePane;
 
     private GridPane pane;
 
@@ -55,10 +52,8 @@ public class View extends Application{
     @FXML Button cnfStepBack;
     @FXML Button cnfPlayButton;
     @FXML Button cnfStepForward;
-    @FXML Button algorithmBackButton;
     @FXML Button cykBackButton;
     @FXML Button cnfForwardButton;
-    @FXML Button cnfBackButton;
     @FXML Pane startScreen;
     @FXML Pane selectionScreen;
     @FXML Pane grammarForm;
@@ -84,6 +79,8 @@ public class View extends Application{
     @FXML TextField root;
     @FXML Slider cykSlider;
     @FXML Slider cnfSlider;
+    @FXML MenuItem fileChooseMenuItem;
+    @FXML MenuItem algorithmChooseMenuItem;
 
     public View() {
         controller = new Controller();
@@ -115,13 +112,31 @@ public class View extends Application{
     }
 
     @FXML
+    protected void menuItemChooseFile() {
+       changePane(startScreen);
+    }
+
+    @FXML
+    protected void menuItemChooseAlgorithm() {
+        changePane(selectionScreen);
+    }
+
+    private void changePane(Pane pane) {
+        if (activePane != null) activePane.setVisible(false);
+        activePane = pane;
+        pane.setVisible(true);
+        activePaneIndex = -1;
+    }
+
+    @FXML
     protected void fileChooser() {
         file = chooser.showOpenDialog(null);
         if (file != null) {
             startScreen.setVisible(false);
             selectionScreen.setVisible(true);
+            activePane = selectionScreen;
             controller.inputFile(file);
-            initBackButton();
+            algorithmChooseMenuItem.setDisable(false);
         }
     }
 
@@ -131,6 +146,7 @@ public class View extends Application{
         if (file != null) {
             startScreen.setVisible(false);
             grammarForm.setVisible(true);
+            activePane = grammarForm;
             controller.outputFile(file);
         }
     }
@@ -139,28 +155,27 @@ public class View extends Application{
     protected void cancel() {
         grammarForm.setVisible(false);
         startScreen.setVisible(true);
+        activePane = startScreen;
     }
 
     @FXML
     protected void userInput() {
         grammarForm.setVisible(false);
         selectionScreen.setVisible(true);
+        activePane = selectionScreen;
         controller.writeFile(nonTerminals.getText(), terminals.getText(), root.getText(), production.getText());
-        initBackButton();
+        algorithmChooseMenuItem.setDisable(false);
     }
 
-    private void initBackButton() {
-        algorithmBackButton.setGraphic(new ImageView(backArrow));
-        algorithmBackButton.setText("Menü");
-    }
 
     @FXML
     protected void cnfStart() {
-        activePane = 1;
+        activePaneIndex = 1;
         controller.inputFile(file);
         selectionScreen.setVisible(false);
         title.setText("Chomsky Normalform");
         cnfPane.setVisible(true);
+        activePane = cnfPane;
         initButton();
         initcnfPane();
     }
@@ -172,6 +187,7 @@ public class View extends Application{
         title.setText("CYK Algorithmus");
         cykAlgorithm.setVisible(true);
         cykInput.setVisible(true);
+        activePane = cykInput;
         cykVisual.setVisible(false);
         cykGrid.setVisible(false);
         cykIteratButtonVisibility(false);
@@ -180,15 +196,15 @@ public class View extends Application{
     @FXML
     protected void cykConfirm() {
         if (checkWordInput(cykInputText.getText())) {
-            activePane = 2;
+            activePaneIndex = 2;
             cykInput.setVisible(false);
             cykVisual.setVisible(true);
             cykGrid.setVisible(true);
+            activePane = cykVisual;
             base = cykInputText.getText().length();
             rowSize = base + 1;
             generateGrid();
-
-            controller.initViewControllerCYK(cykInputText.getText(), controller.getTreeStep(5), file, pane);
+            controller.initViewControllerCYK(cykInputText.getText(), file, pane);
             cykIteratButtonVisibility(true);
         }
     }
@@ -211,7 +227,6 @@ public class View extends Application{
             startButton = true;
             startTimer();
         }
-
     }
 
     private Button getActivePlayButton() {
@@ -222,21 +237,21 @@ public class View extends Application{
     @FXML
     protected boolean cykNext() {
         System.out.println("next");
-        //cykNextStep();
         return controller.viewControllerCYKNext();
     }
 
     @FXML
     protected void cykPrevious() {
         System.out.println("previous");
-        //cykNextStep();
         controller.viewControllerCYKPrevious();
+        cykNextButton.setDisable(false);
     }
 
     @FXML
     protected void cnfPrevious() {
         System.out.println("previous");
         controller.viewControllerCNFPrevious();
+        cnfStepForward.setDisable(false);
     }
 
     @FXML
@@ -255,7 +270,6 @@ public class View extends Application{
         cykNextButton.setGraphic(new ImageView(nextImage));
         cykPreviousButton.setGraphic(new ImageView(previousImage));
         cykBackButton.setGraphic(new ImageView(backArrow));
-        cykBackButton.setText("CNF");
         cykPreviousButton.toFront();
         cykPlayButton.toFront();
         cykNextButton.toFront();
@@ -265,8 +279,6 @@ public class View extends Application{
         cnfStepForward.setGraphic(new ImageView(nextImage));
         cnfForwardButton.setGraphic(new ImageView(forwardArrow));
         cnfForwardButton.setContentDisplay(ContentDisplay.RIGHT);
-        cnfBackButton.setGraphic(new ImageView(backArrow));
-        cnfBackButton.setText("Auswahl");
     }
 
     @FXML
@@ -274,26 +286,13 @@ public class View extends Application{
         if (startButton) {
             stopTimer();
             startTimer();
+            getActivePlayButton().setGraphic(new ImageView(playImage));
         }
     }
 
     @FXML
-    protected void algorithmToMenu() {
-        selectionScreen.setVisible(false);
-        startScreen.setVisible(true);
-    }
-
-    @FXML
-    protected void cnfBackToAlgorithm() {
-        activePane = -1;
-        //stopTimer
-        cnfPane.setVisible(false);
-        selectionScreen.setVisible(true);
-    }
-
-    @FXML
     protected void cnfToCYK() {
-        //stopTimer
+        stopTimer();
         cykInput();
         cnfPane.setVisible(false);
         cykAlgorithm.setVisible(true);
@@ -302,7 +301,7 @@ public class View extends Application{
 
     @FXML
     protected void cykToCNF() {
-        //stopTimer
+        stopTimer();
         cykAlgorithm.setVisible(false);
         cykVisual.setVisible(false);
         cykInput.setVisible(false);
@@ -312,19 +311,8 @@ public class View extends Application{
     }
 
     private void startTimer() {
-        /*Slider activeSlider = getActiveSlider();
-        int period = (int) (activeSlider.getValue() * 1000);
-        System.out.println(period);
-        timer = new Timer();
-        timer.scheduleAtFixedRate(new TimerTask() {
-            @Override
-            public void run() {
-                System.out.println("I would be called every " + period + " milliseconds");
-                if(cnfPane.isVisible()) cnfNextStep();
-                else cykNextStep();
-            }
-        }, 0, period);
-        */
+        Slider activeSlider = getActiveSlider();
+        int period = (int) activeSlider.getValue();
 
         Runnable runnable = new Runnable() {
             public void run() {
@@ -345,22 +333,29 @@ public class View extends Application{
         };
 
         service = Executors.newSingleThreadScheduledExecutor();
-        service.scheduleAtFixedRate(runnable, 0, 3, TimeUnit.SECONDS);
+        service.scheduleAtFixedRate(runnable, 0, period, TimeUnit.SECONDS);
     }
 
     private void stopTimer() {
+        System.out.println("Stop");
         service.shutdown();
+        getActivePlayButton().setGraphic(new ImageView(playImage));
     }
 
     private void doNext() {
-        if (activePane == 1) loop = cnfNext();
-        else if (activePane == 2) loop = cykNext();
+        if (activePaneIndex == 1) loop = cnfNext();
+        else if (activePaneIndex == 2) loop = cykNext();
         checkStatusOfTimer();
     }
 
     private void checkStatusOfTimer() {
-        if (!loop) service.shutdown();
-        //if (activePane == 1) cnfNext disable
+        if (!loop) {
+            service.shutdown();
+            getActivePlayButton().setGraphic(new ImageView(playImage));
+            if (activePaneIndex == 1) cnfStepForward.setDisable(true);
+            else if (activePaneIndex == 2) cykNextButton.setDisable(true);
+        }
+
     }
 
     private Slider getActiveSlider() {
@@ -418,7 +413,6 @@ public class View extends Application{
 
     private void colorGrey(int i, int j) {
         Label label = (Label) pane.getChildren().get(i * base + j);
-        //label.setStyle("-fx-background-color: lightgrey;");
         label.setStyle("-fx-border-color: black;");
     }
 

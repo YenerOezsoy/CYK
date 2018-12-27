@@ -2,6 +2,9 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.Slider?>
 <?import javafx.scene.control.TextArea?>
@@ -45,10 +48,6 @@
                   <Font name="Arial" size="19.0" />
                </font>
             </Button>
-            <Button fx:id="algorithmBackButton" layoutX="31.0" layoutY="125.0" mnemonicParsing="false" onAction="#algorithmToMenu">
-               <font>
-                  <Font name="Arial" size="13.0" />
-               </font></Button>
          </children>
       </Pane>
       <Pane fx:id="grammarForm" prefHeight="768.0" prefWidth="1024.0" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
@@ -126,7 +125,7 @@
             </Pane>
             <Pane fx:id="cykVisual" layoutX="90.0" prefHeight="58.0" prefWidth="845.0">
                <children>
-                  <Slider fx:id="cykSlider" blockIncrement="1.0" layoutX="730.0" layoutY="18.0" max="10.0" min="0.5" onMouseReleased="#sliderEvent" prefHeight="15.0" prefWidth="101.0" value="2.0" />
+                  <Slider fx:id="cykSlider" blockIncrement="1.0" layoutX="730.0" layoutY="18.0" max="10.0" min="1.0" onMouseDragged="#sliderEvent" prefHeight="15.0" prefWidth="101.0" value="2.0" />
                   <Text fx:id="cykSliderInfo" layoutX="622.0" layoutY="30.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Geschwindigkeit:">
                      <font>
                         <Font name="Arial" size="13.0" />
@@ -137,7 +136,7 @@
                   <Button fx:id="cykPreviousButton" layoutX="454.0" layoutY="12.0" mnemonicParsing="false" onAction="#cykPrevious" />
                </children></Pane>
             <Pane fx:id="cykGrid" layoutX="90.0" layoutY="58.0" prefHeight="598.0" prefWidth="845.0" visible="false" />
-            <Button fx:id="cykBackButton" layoutX="31.0" layoutY="16.0" mnemonicParsing="false" onAction="#cykToCNF">
+            <Button fx:id="cykBackButton" layoutX="31.0" layoutY="16.0" mnemonicParsing="false" onAction="#cykToCNF" text="CNF">
                <font>
                   <Font name="Arial" size="13.0" />
                </font></Button>
@@ -221,16 +220,22 @@
                   <Font name="Arial" size="13.0" />
                </font>
             </Text>
-            <Slider fx:id="cnfSlider" layoutX="800.0" layoutY="21.0" max="10.0" min="0.5" prefHeight="16.0" prefWidth="120.0" value="2.0" />
-            <Button fx:id="cnfBackButton" layoutX="31.0" layoutY="16.0" mnemonicParsing="false" onAction="#cnfBackToAlgorithm">
-               <font>
-                  <Font name="Arial" size="13.0" />
-               </font></Button>
+            <Slider fx:id="cnfSlider" layoutX="800.0" layoutY="21.0" max="10.0" min="1.0" onMouseReleased="#sliderEvent" prefHeight="16.0" prefWidth="120.0" value="2.0" />
             <Button fx:id="cnfForwardButton" layoutX="950.0" layoutY="15.0" mnemonicParsing="false" onAction="#cnfToCYK" text="CYK">
                <font>
                   <Font name="Arial" size="13.0" />
                </font></Button>
          </children>
       </Pane>
+      <MenuBar prefHeight="29.0" prefWidth="1024.0">
+        <menus>
+          <Menu mnemonicParsing="false" text="Menü">
+            <items>
+              <MenuItem fx:id="fileChooseMenuItem" mnemonicParsing="false" onAction="#menuItemChooseFile" text="Datei Auswahl" />
+                  <MenuItem fx:id="algorithmChooseMenuItem" disable="true" mnemonicParsing="false" onAction="#menuItemChooseAlgorithm" text="Algorithmus Auswahl" />
+            </items>
+          </Menu>
+        </menus>
+      </MenuBar>
    </children>
 </AnchorPane>
