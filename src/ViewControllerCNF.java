@@ -75,6 +75,8 @@ public class ViewControllerCNF {
     private String ruleName;
     private int deleted;
     private int cleanUpRoutine = 0;
+    private int previousCleanUp;
+    private  boolean changesFound = true;
 
 
     public ViewControllerCNF(TextFlow nextPane, TextFlow previousPane, TextFlow infoBox, Tree tree) {
@@ -158,6 +160,7 @@ public class ViewControllerCNF {
         initPane(previousPane);
         initInfoBox();
         cleanUpRoutine = 0;
+        changesFound = true;
     }
 
     private void initInfoBox() {
@@ -186,14 +189,16 @@ public class ViewControllerCNF {
     }
 
     public boolean next() {
+        previousCleanUp = cleanUpRoutine;
         if (hasNextStep()) {
             initInfoBox();
             doNextSteps();
             return true;
         }
-        else if (!hasNextStep() && cleanUpRoutine != 0) {
+        else if (!hasNextStep() && cleanUpRoutine != 0 && changesFound) {
             if (cleanUpRoutine == 1) initCleanUp();
             else doCleanUp();
+            return true;
         }
         else {
             if (hasNextRule()) {
@@ -204,10 +209,10 @@ public class ViewControllerCNF {
     }
 
     public void previous() {
-        int tempCleanUpRoutine = cleanUpRoutine;
         if (hasPreviousStep()) {
+            int tempCleanUpBeforeReset = previousCleanUp;
             initAllPanes();
-            doUndoSteps(tempCleanUpRoutine);
+            doUndoSteps(tempCleanUpBeforeReset);
         }
         else if (hasPreviousRule()) {
             doUndoSteps(0);
@@ -400,30 +405,16 @@ public class ViewControllerCNF {
         return false;
     }
 
-    private void doUndoSteps(int tempCleanUpRoutines) {
+    private void doUndoSteps(int tempCleanUpBeforeReset) {
         int lastMark = previousChangeMark;
-        if (tempCleanUpRoutines != 0) {
-            tempCleanUpRoutines--;
-            doUndoStepsForCleaner(tempCleanUpRoutines);
+        if (tempCleanUpBeforeReset != 0) {
+            while(cleanUpRoutine != tempCleanUpBeforeReset) {
+                next();
+            }
         }
         else {
             while (changeIterator != lastMark && changeIterator != -1) {
                 next();
-            }
-        }
-    }
-
-    //previousCleanUpRoutines einspeichern und so lange while next ausführen bis changeiterator && previouscleanuproutines passen!
-    private void doUndoStepsForCleaner(int tempCleanUpRoutines) {
-        if (tempCleanUpRoutines != 1) {
-            while(cleanUpRoutine != tempCleanUpRoutines) {
-                next();
-            }
-        }
-        else {
-            while (changeIterator != -1) {
-                next();
-                cleanUpRoutine = 0;
             }
         }
     }
@@ -676,7 +667,7 @@ public class ViewControllerCNF {
     }
 
     private void doCleanUp() {
-        boolean changesFound = true;
+        changesFound = true;
         while(changesFound) {
             removeAllRedMarked();
             for (String root : mapKeySet) {

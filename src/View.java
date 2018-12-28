@@ -257,7 +257,9 @@ public class View extends Application{
     @FXML
     protected boolean cnfNext() {
         System.out.println("next");
-        return controller.viewControllerCNFNext();
+        boolean value = controller.viewControllerCNFNext();
+        if(!value) cnfStepForward.setDisable(true);
+        return value;
     }
 
     private void initcnfPane() {
