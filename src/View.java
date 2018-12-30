@@ -66,6 +66,8 @@ public class View extends Application{
     @FXML Pane actualCNF;
     @FXML Pane cnfInfoboxPane;
     @FXML Pane cykGrid;
+    @FXML Pane nextAnchorPane;
+    @FXML Pane previousAnchorPane;
     @FXML TextFlow previousCNFText;
     @FXML TextFlow actualCNFText;
     @FXML TextFlow infoboxCNFText;

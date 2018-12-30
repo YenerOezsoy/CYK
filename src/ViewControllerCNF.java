@@ -1,8 +1,8 @@
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
 
-import java.lang.reflect.Array;
 import java.util.*;
 
 public class ViewControllerCNF {
@@ -77,6 +77,7 @@ public class ViewControllerCNF {
     private int cleanUpRoutine = 0;
     private int previousCleanUp;
     private  boolean changesFound = true;
+    private Graph graph = new Graph();
 
 
     public ViewControllerCNF(TextFlow nextPane, TextFlow previousPane, TextFlow infoBox, Tree tree) {
@@ -130,6 +131,7 @@ public class ViewControllerCNF {
 
     private void initPane(TextFlow pane) {
         rootTextList.clear();
+        graph.setAnchorPane((AnchorPane) pane.getParent());
         for (String elementName : mapKeySet) {
             Text rootElementText = new Text(elementName);
             pane.getChildren().add(rootElementText);
@@ -142,6 +144,8 @@ public class ViewControllerCNF {
             pane.getChildren().remove(pane.getChildren().size() - 1);
             pane.getChildren().add(new Text(LINEEND));
         }
+        graph.setTextAccess(rootTextList, childListMap);
+        graph.generateGraph();
     }
 
     private void iterateOverNode(ArrayList<Text> Node, TextFlow pane) {
