@@ -1,37 +1,32 @@
+import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.shape.Shape;
 
-public class RectangleFigure {
+public class RectangleFigure extends Figure {
 
     private int height = 20;
     private int width = 20;
-    private int x;
-    private int y;
+
     private Rectangle rectangle;
 
     public RectangleFigure(int x, int y) {
         this.x = x;
         this.y = y;
-        createRectangle();
+        createObject();
     }
 
-
-    private void createRectangle() {
+    @Override
+    public void createObject() {
         rectangle = new Rectangle();
         rectangle.setX(x);
         rectangle.setY(y);
         rectangle.setHeight(height);
         rectangle.setWidth(width);
+        rectangle.setFill(Color.BLACK);
     }
 
-    public Rectangle getRectangleObject() {
+    @Override
+    public Shape getObject() {
         return rectangle;
-    }
-
-    public int getX() {
-        return x;
-    }
-
-    public int getY() {
-        return y;
     }
 }

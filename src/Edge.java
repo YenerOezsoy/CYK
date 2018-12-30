@@ -6,12 +6,12 @@ public class Edge {
 
     public Edge(RectangleFigure source, CircleFigure target) {
         line = new Line();
-        setEdgeEnds(source.getX(), source.getY(), target.getX(), target.getY());
+        setEdgeEnds(source.getX() + 10, source.getY() + 20, target.getX() + 20 , target.getY());
     }
 
     public Edge(CircleFigure source, RectangleFigure target) {
         line = new Line();
-        setEdgeEnds(source.getX(), source.getY(), target.getX(), target.getY());
+        setEdgeEnds(source.getX() + 20 , source.getY() + 40, target.getX() + 10, target.getY());
     }
 
     private void setEdgeEnds(int xStart, int yStart, int xEnd, int yEnd) {
