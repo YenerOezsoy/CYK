@@ -167,7 +167,7 @@
                <children>
                   <ScrollPane layoutX="-1.0" prefHeight="455.0" prefWidth="512.0">
                     <content>
-                      <AnchorPane fx:id="previousAnchorPane" minHeight="0.0" minWidth="0.0">
+                      <AnchorPane fx:id="previousAnchorPane" minHeight="0.0" minWidth="0.0" onMouseClicked="#previousAnchorPaneToggle">
                            <children>
                               <TextFlow fx:id="previousCNFText">
                                  <padding>
@@ -183,7 +183,7 @@
                <children>
                   <ScrollPane prefHeight="455.0" prefWidth="512.0">
                     <content>
-                      <AnchorPane fx:id="nextAnchorPane" minHeight="0.0" minWidth="0.0">
+                      <AnchorPane fx:id="nextAnchorPane" minHeight="0.0" minWidth="0.0" onMouseClicked="#nextAnchorPaneToggle">
                            <children>
                               <TextFlow fx:id="actualCNFText">
                                  <padding>

@@ -26,9 +26,9 @@ public class View extends Application{
     private File file;
     private int base;
     private int rowSize;
-    private Image playImage;// = new Image(getClass().getResourceAsStream("play.svg"));
-    private Image pauseImage;// = new Image(getClass().getResourceAsStream("pause.svg"));
-    private Image nextImage;// = new Image(getClass().getResourceAsStream("next.svg"));
+    private Image playImage;
+    private Image pauseImage;
+    private Image nextImage;
     private Image previousImage;
     private Image backArrow;
     private Image forwardArrow;
@@ -428,4 +428,19 @@ public class View extends Application{
         cykSlider.setVisible(visibility);
         cykSliderInfo.setVisible(visibility);
     }
+
+    @FXML
+    protected void nextAnchorPaneToggle() {
+        boolean toggle = actualCNFText.isVisible();
+        nextAnchorPane.getChildren().get(1).setVisible(toggle);
+        actualCNFText.setVisible(!toggle);
+    }
+
+    @FXML
+    protected void previousAnchorPaneToggle() {
+        boolean toggle = previousCNFText.isVisible();
+        previousAnchorPane.getChildren().get(1).setVisible(toggle);
+        previousCNFText.setVisible(!toggle);
+    }
+
 }

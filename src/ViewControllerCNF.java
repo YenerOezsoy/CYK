@@ -144,8 +144,13 @@ public class ViewControllerCNF {
             pane.getChildren().remove(pane.getChildren().size() - 1);
             pane.getChildren().add(new Text(LINEEND));
         }
+        initGraph();
+    }
+
+    private void initGraph() {
         graph.setTextAccess(rootTextList, childListMap);
         graph.generateGraph();
+        initGraphPaneVisibility();
     }
 
     private void iterateOverNode(ArrayList<Text> Node, TextFlow pane) {
@@ -197,11 +202,13 @@ public class ViewControllerCNF {
         if (hasNextStep()) {
             initInfoBox();
             doNextSteps();
+            initGraph();
             return true;
         }
         else if (!hasNextStep() && cleanUpRoutine != 0 && changesFound) {
             if (cleanUpRoutine == 1) initCleanUp();
             else doCleanUp();
+            initGraph();
             return true;
         }
         else {
@@ -231,7 +238,6 @@ public class ViewControllerCNF {
         initPane(previousPane);
         getItem(change, rootTextList).setFill(Color.RED);
         actualRoot = change;
-
     }
 
     private void doChangeInPane() {
@@ -709,5 +715,17 @@ public class ViewControllerCNF {
 
     private void removeAllRedMarked() {
         doChangeInPane();
+    }
+
+    private void initGraphPaneVisibility() {
+        AnchorPane pane;
+        if(previousPane.isVisible()) {
+            pane = ((AnchorPane) previousPane.getParent());
+            if (pane.getChildren().size() > 1) pane.getChildren().get(1).setVisible(false);
+        }
+        if (nextPane.isVisible()){
+            pane = ((AnchorPane) nextPane.getParent());
+            if(pane.getChildren().size() > 1) pane.getChildren().get(1).setVisible(false);
+        }
     }
 }

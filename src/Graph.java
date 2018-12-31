@@ -1,5 +1,6 @@
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
+import javafx.scene.paint.Paint;
 import javafx.scene.text.Text;
 
 import java.util.ArrayList;
@@ -29,6 +30,7 @@ public class Graph {
     }
 
     public void setTextAccess(List<Text> rootTextList, Map<String, ArrayList<ArrayList<Text>>> childListMap) {
+        deleteOldGraph();
         this.rootTextList = rootTextList;
         this.childListMap = childListMap;
         figureMap = new HashMap<>();
@@ -39,6 +41,12 @@ public class Graph {
         yOffset = 100;
         xDepictOffset = 0;
         visited = new ArrayList<>();
+    }
+
+    private void deleteOldGraph() {
+        if (anchorPane.getChildren().size() > 1) {
+            anchorPane.getChildren().remove(1);
+        }
     }
 
     public void generateGraph() {
@@ -107,12 +115,22 @@ public class Graph {
 
     private CircleFigure createCircle(Text rootName, int x, int y) {
         CircleFigure circleFigure;
-        if (rootName.getFill().equals(Color.BLACK)) {
+        Paint paint = getColor(rootName);
+        if (paint.equals(Color.DARKGOLDENROD) || paint.equals(Color.RED)) {
+            circleFigure = new CircleFigure(rootName.getText(), x, y, paint);
+        }
+        else {
             circleFigure = new CircleFigure(rootName.getText(), x, y);
         }
-        else circleFigure = new CircleFigure(rootName.getText(), x, y, rootName.getFill());
         graphPane.getChildren().add(circleFigure.getPane());
         return circleFigure;
+    }
+
+    private Paint getColor(Text text) {
+        for (Text root : rootTextList) {
+            if (root.getText().equals(text.getText())) return root.getFill();
+        }
+        return text.getFill();
     }
 
 
@@ -216,8 +234,8 @@ public class Graph {
             return false;
         }
         for (Integer xcoordinate : coordinateMap.get(coordinateY)) {
-           if (xcoordinate < coordinateX && xcoordinate + 40 > coordinateX) return true;
-           else if (xcoordinate > coordinateX && xcoordinate - 40 < coordinateX) return true;
+           if (xcoordinate <= coordinateX && xcoordinate + 40 > coordinateX) return true;
+           else if (xcoordinate >= coordinateX && xcoordinate - 40 < coordinateX) return true;
         }
         xCoordinates.add(coordinateX + toAdd);
         return false;
