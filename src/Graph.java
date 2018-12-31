@@ -19,7 +19,7 @@ public class Graph {
     private int xOffset = 50;
     private int yOffset = 100;
     private int xOutOfWindow = 0;
-    private HashMap<ArrayList,Figure> figureMap;
+    private HashMap<Figure,ArrayList> figureMap;
     private HashMap<Integer, ArrayList<Integer>> coordinateMap;
     private ArrayList<String> visited;
 
@@ -44,20 +44,20 @@ public class Graph {
     public void generateGraph() {
         graphPane = new Pane();
         CircleFigure circleFigure = createCircle(rootTextList.get(0), x, y);
-        figureMap.put(childListMap.get(rootTextList.get(0).getText()), circleFigure);
+        figureMap.put(circleFigure, childListMap.get(rootTextList.get(0).getText()));
         visited.add(rootTextList.get(0).getText());
-        ArrayList<ArrayList<ArrayList<Text>>> toProcess = new ArrayList<>();
-        toProcess.add(childListMap.get(rootTextList.get(0).getText()));
+        ArrayList<CircleFigure> toProcess = new ArrayList<>();
+        toProcess.add(circleFigure);
         doNextRowDepicts(toProcess);
         anchorPane.getChildren().add(graphPane);
         if (xOutOfWindow < 0) relocateAllElements();
     }
 
-    private void doNextRowDepicts(ArrayList<ArrayList<ArrayList<Text>>> toProcess) {
-        ArrayList<ArrayList<Text>> toProcessDepicts = new ArrayList<>();
+    private void doNextRowDepicts(ArrayList<CircleFigure> toProcess) {
+        ArrayList<RectangleFigure> toProcessDepicts = new ArrayList<>();
         initNextRowStartPositionsDepicts(toProcess);
-        for (ArrayList<ArrayList<Text>> list : toProcess) {
-            CircleFigure circleFigure = (CircleFigure) figureMap.get(list);
+        for (CircleFigure circleFigure : toProcess) {
+            ArrayList<ArrayList<Text>> list = figureMap.get(circleFigure);
             x = circleFigure.getX() - getStartingPosition(list);
             checkIfCoordinatesAreUsed(true, list.size());
             createRectangles(circleFigure, list, toProcessDepicts);
@@ -65,22 +65,22 @@ public class Graph {
         if (!toProcessDepicts.isEmpty()) doNextRowElements(toProcessDepicts);
     }
 
-    private void createRectangles(CircleFigure circleFigure, ArrayList<ArrayList<Text>> list, ArrayList<ArrayList<Text>> toProcessDepicts) {
+    private void createRectangles(CircleFigure circleFigure, ArrayList<ArrayList<Text>> list, ArrayList<RectangleFigure> toProcessDepicts) {
         for (ArrayList<Text> innerList : list) {
             RectangleFigure rectangleFigure = new RectangleFigure(x, y);
             x += xDepictOffset;
             Edge edge = new Edge(circleFigure, rectangleFigure);
             graphPane.getChildren().addAll(rectangleFigure.getObject(), edge.getLine());
-            toProcessDepicts.add(innerList);
-            figureMap.put(innerList, rectangleFigure);
+            toProcessDepicts.add(rectangleFigure);
+            figureMap.put(rectangleFigure, innerList);
         }
     }
 
-    private void doNextRowElements(ArrayList<ArrayList<Text>> toProcessDepicts) {
+    private void doNextRowElements(ArrayList<RectangleFigure> toProcessDepicts) {
         ArrayList<String> tempVisited = new ArrayList<>();
-        ArrayList<ArrayList<ArrayList<Text>>> toProcess = new ArrayList<>();
-        for (ArrayList<Text> list : toProcessDepicts) {
-            RectangleFigure rectangleFigure = (RectangleFigure) figureMap.get(list);
+        ArrayList<CircleFigure> toProcess = new ArrayList<>();
+        for (RectangleFigure rectangleFigure : toProcessDepicts) {
+            ArrayList<Text> list = figureMap.get(rectangleFigure);
             initNextRowStartPositionsElements(list, rectangleFigure.getX(), rectangleFigure.getY());
             checkIfCoordinatesAreUsed(false, getElementSize(list));
             for (Text text : list) {
@@ -98,10 +98,10 @@ public class Graph {
         if (!toProcess.isEmpty()) doNextRowDepicts(toProcess);
     }
 
-    private void checkProcessAvailability(Text text, ArrayList<ArrayList<ArrayList<Text>>> toProcess, CircleFigure circleFigure) {
+    private void checkProcessAvailability(Text text, ArrayList<CircleFigure> toProcess, CircleFigure circleFigure) {
         if (childListMap.get(text.getText()) != null && !visited.contains(text.getText())) {
-            toProcess.add(childListMap.get(text.getText()));
-            figureMap.put(childListMap.get(text.getText()), circleFigure);
+            toProcess.add(circleFigure);
+            figureMap.put(circleFigure, childListMap.get(text.getText()));
         }
     }
 
@@ -130,7 +130,7 @@ public class Graph {
         return value;
     }
 
-    private void initNextRowStartPositionsDepicts(ArrayList<ArrayList<ArrayList<Text>>> list) {
+    private void initNextRowStartPositionsDepicts(ArrayList<CircleFigure> list) {
         y += yOffset;
         if (list != null) {
             int size = getBiggestChildNumber(list);
@@ -140,10 +140,10 @@ public class Graph {
         if (x < xOutOfWindow) xOutOfWindow = x;
     }
 
-    private int getBiggestChildNumber(ArrayList<ArrayList<ArrayList<Text>>> list) {
+    private int getBiggestChildNumber(ArrayList<CircleFigure> list) {
         int number = 0;
-        for (ArrayList<ArrayList<Text>> innerList : list) {
-            for (ArrayList<Text> depicts : innerList) {
+        for (CircleFigure circleFigure : list) {
+            for (ArrayList<Text> depicts : (ArrayList<ArrayList<Text>>) figureMap.get(circleFigure)) {
                 int size = getElementSize(depicts);
                 if (size > number) number = size;
             }
@@ -180,8 +180,8 @@ public class Graph {
         while (value != size) {
             if (coordinateMap.containsKey(coordinateY)) {
                 if (coordinateMap.get(coordinateY).contains(coordinateX + toAdd)) {
-                    x -= 20;
-                    y += 20;
+                    x -= 40;
+                    y += 40;
                     coordinateX = x;
                     coordinateY = y;
                     value = -1;
