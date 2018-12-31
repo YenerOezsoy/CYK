@@ -118,7 +118,7 @@ public class Graph {
 
     private void initNextRowStartPositionsElements(ArrayList root, int x, int y) {
         this.y = y + yOffset;
-        this.x = x - xOffset * (getElementSize(root) / 2);
+        this.x = x - (xOffset * (getElementSize(root) / 2)) - 10;
         if (x < xOutOfWindow) xOutOfWindow = x;
     }
 
@@ -186,8 +186,8 @@ public class Graph {
             if (foundTouchingElements) {
                 toAdd = 0;
                 value = 0;
-                x -= 40;
-                y += 40;
+                if (isDepict) x -= 40;
+                y += 55;
                 coordinateX = x;
                 coordinateY = y;
             }
