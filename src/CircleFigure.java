@@ -1,26 +1,33 @@
+import javafx.scene.layout.Pane;
+import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Shape;
+import javafx.scene.text.Text;
 
 public class CircleFigure extends Figure {
 
 
     private int radius = 20;
     private Paint color;
+    private StackPane pane;
     private Circle circle;
+    private String name;
 
-    public CircleFigure(int x, int y) {
+    public CircleFigure(String name, int x, int y) {
         this.x = x;
         this.y = y;
-        color = Color.WHITE;
+        this.name = name;
+        color = Color.BLACK;
         createObject();
     }
 
-    public CircleFigure(int x, int y, Paint color) {
+    public CircleFigure(String name, int x, int y, Paint color) {
         this.x = x;
         this.y = y;
         this.color = color;
+        this.name = name;
         createObject();
     }
 
@@ -31,9 +38,20 @@ public class CircleFigure extends Figure {
         circle.setRadius(radius);
         circle.setStroke(Color.BLACK);
         circle.setFill(Color.TRANSPARENT);
+        Text text = new Text(name);
+        text.setFill(color);
+        pane = new StackPane();
+        pane.getChildren().addAll(circle, text);
+        pane.setLayoutX(x);
+        pane.setLayoutY(y);
     }
 
     @Override
     public Shape getObject() {
-        return circle;    }
+        return circle;
+    }
+
+    public StackPane getPane() {
+        return pane;
+    }
 }

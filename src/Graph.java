@@ -1,5 +1,4 @@
 import javafx.scene.layout.Pane;
-import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 
@@ -20,7 +19,8 @@ public class Graph {
     private int xOffset = 50;
     private int yOffset = 100;
     private int xOutOfWindow = 0;
-    private HashMap<ArrayList,Figure> figureMap = new HashMap<>();
+    private HashMap<ArrayList,Figure> figureMap;
+    private HashMap<Integer, ArrayList<Integer>> coordinateMap;
     private ArrayList<String> visited;
 
 
@@ -31,6 +31,8 @@ public class Graph {
     public void setTextAccess(List<Text> rootTextList, Map<String, ArrayList<ArrayList<Text>>> childListMap) {
         this.rootTextList = rootTextList;
         this.childListMap = childListMap;
+        figureMap = new HashMap<>();
+        coordinateMap = new HashMap<>();
         x = 256;
         y = 10;
         xOffset = 50;
@@ -56,7 +58,8 @@ public class Graph {
         initNextRowStartPositionsDepicts(toProcess);
         for (ArrayList<ArrayList<Text>> list : toProcess) {
             CircleFigure circleFigure = (CircleFigure) figureMap.get(list);
-            x = circleFigure.getX() - (xDepictOffset * (list.size() / 2));
+            x = circleFigure.getX() - getStartingPosition(list);
+            checkIfCoordinatesAreUsed(true, list.size());
             createRectangles(circleFigure, list, toProcessDepicts);
         }
         if (!toProcessDepicts.isEmpty()) doNextRowElements(toProcessDepicts);
@@ -79,6 +82,7 @@ public class Graph {
         for (ArrayList<Text> list : toProcessDepicts) {
             RectangleFigure rectangleFigure = (RectangleFigure) figureMap.get(list);
             initNextRowStartPositionsElements(list, rectangleFigure.getX(), rectangleFigure.getY());
+            checkIfCoordinatesAreUsed(false, getElementSize(list));
             for (Text text : list) {
                 if (!text.getText().equals(" ")) {
                     CircleFigure circleFigure = createCircle(text, x, y);
@@ -102,32 +106,36 @@ public class Graph {
     }
 
     private CircleFigure createCircle(Text rootName, int x, int y) {
-        StackPane stack = new StackPane();
-        stack.setLayoutX(x);
-        stack.setLayoutY(y);
         CircleFigure circleFigure;
         if (rootName.getFill().equals(Color.BLACK)) {
-            circleFigure = new CircleFigure(x, y);
+            circleFigure = new CircleFigure(rootName.getText(), x, y);
         }
-        else circleFigure = new CircleFigure(x, y, rootName.getFill());
-        Text text = new Text(rootName.getText());
-        stack.getChildren().addAll(circleFigure.getObject(), text);
-        graphPane.getChildren().add(stack);
+        else circleFigure = new CircleFigure(rootName.getText(), x, y, rootName.getFill());
+        graphPane.getChildren().add(circleFigure.getPane());
         return circleFigure;
     }
 
 
     private void initNextRowStartPositionsElements(ArrayList root, int x, int y) {
         this.y = y + yOffset;
-        this.x = x - xOffset * (root.size() / 2);
+        this.x = x - xOffset * (getElementSize(root) / 2);
         if (x < xOutOfWindow) xOutOfWindow = x;
+    }
+
+    private int getElementSize(ArrayList<Text> list) {
+        int value = 0;
+        for (Text text : list) {
+            if (!text.getText().equals(" ")) value++;
+        }
+        return value;
     }
 
     private void initNextRowStartPositionsDepicts(ArrayList<ArrayList<ArrayList<Text>>> list) {
         y += yOffset;
         if (list != null) {
             int size = getBiggestChildNumber(list);
-            xDepictOffset = xOffset * (size / 2);
+            //xDepictOffset = xOffset * (size / 2);
+            xDepictOffset = xOffset * size;
         }
         if (x < xOutOfWindow) xOutOfWindow = x;
     }
@@ -136,7 +144,7 @@ public class Graph {
         int number = 0;
         for (ArrayList<ArrayList<Text>> innerList : list) {
             for (ArrayList<Text> depicts : innerList) {
-                int size = depicts.size();
+                int size = getElementSize(depicts);
                 if (size > number) number = size;
             }
         }
@@ -148,5 +156,44 @@ public class Graph {
         for (javafx.scene.Node node : graphPane.getChildren()) {
             node.setLayoutX(node.getLayoutX() + relocateValue);
         }
+    }
+
+    private int getStartingPosition(ArrayList<ArrayList<Text>> list) {
+        int size;
+        if (list.size() % 2 == 0) {
+            size = xDepictOffset * (list.size() / 2) - (xDepictOffset / 2);
+        }
+        else {
+            size = xDepictOffset * ((list.size() - 1) / 2);
+        }
+        return size;
+    }
+
+    private void checkIfCoordinatesAreUsed(boolean isDepict, int size) {
+        int value = 0;
+        int offset = xOffset;
+        int coordinateX = x;
+        int coordinateY = y;
+        int toAdd = 0;
+        if (isDepict) offset = xDepictOffset;
+        ArrayList<Integer> xCoordinates = new ArrayList<>();
+        while (value != size) {
+            if (coordinateMap.containsKey(coordinateY)) {
+                if (coordinateMap.get(coordinateY).contains(coordinateX + toAdd)) {
+                    x -= 20;
+                    y += 20;
+                    coordinateX = x;
+                    coordinateY = y;
+                    value = -1;
+                    toAdd = 0 - offset;
+                }
+                else xCoordinates.add(coordinateX+toAdd);
+            }
+            else xCoordinates.add(coordinateX+toAdd);
+            toAdd += offset;
+            value++;
+        }
+        if (coordinateMap.containsKey(y)) coordinateMap.get(y).addAll(xCoordinates);
+        else coordinateMap.put(y, xCoordinates);
     }
 }

@@ -342,8 +342,10 @@ public class View extends Application{
 
     private void stopTimer() {
         System.out.println("Stop");
-        service.shutdown();
-        getActivePlayButton().setGraphic(new ImageView(playImage));
+        if (service != null) {
+            service.shutdown();
+            getActivePlayButton().setGraphic(new ImageView(playImage));
+        }
     }
 
     private void doNext() {
