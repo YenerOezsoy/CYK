@@ -177,23 +177,49 @@ public class Graph {
         int toAdd = 0;
         if (isDepict) offset = xDepictOffset;
         ArrayList<Integer> xCoordinates = new ArrayList<>();
+        boolean foundTouchingElements;
         while (value != size) {
-            if (coordinateMap.containsKey(coordinateY)) {
-                if (coordinateMap.get(coordinateY).contains(coordinateX + toAdd)) {
-                    x -= 40;
-                    y += 40;
-                    coordinateX = x;
-                    coordinateY = y;
-                    value = -1;
-                    toAdd = 0 - offset;
-                }
-                else xCoordinates.add(coordinateX+toAdd);
-            }
-            else xCoordinates.add(coordinateX+toAdd);
+            if (isDepict) foundTouchingElements = checkRectanglesTouching(coordinateX, coordinateY,toAdd, xCoordinates);
+            else foundTouchingElements = checkCirclesTouching(coordinateX, coordinateY,toAdd, xCoordinates);
             toAdd += offset;
             value++;
+            if (foundTouchingElements) {
+                toAdd = 0;
+                value = 0;
+                x -= 40;
+                y += 40;
+                coordinateX = x;
+                coordinateY = y;
+            }
         }
         if (coordinateMap.containsKey(y)) coordinateMap.get(y).addAll(xCoordinates);
         else coordinateMap.put(y, xCoordinates);
+    }
+
+    private boolean checkRectanglesTouching(int coordinateX, int coordinateY, int toAdd, ArrayList<Integer> xCoordinates) {
+        if (coordinateMap.containsKey(coordinateY)) {
+            if (coordinateMap.get(coordinateY).contains(coordinateX + toAdd)) {
+                return true;
+            }
+            else {
+                xCoordinates.add(coordinateX + toAdd);
+                return false;
+            }
+        }
+        else xCoordinates.add(coordinateX + toAdd);
+        return false;
+    }
+
+    private boolean checkCirclesTouching(int coordinateX, int coordinateY, int toAdd, ArrayList<Integer> xCoordinates) {
+        if (!coordinateMap.containsKey(coordinateY)) {
+            xCoordinates.add(coordinateX);
+            return false;
+        }
+        for (Integer xcoordinate : coordinateMap.get(coordinateY)) {
+           if (xcoordinate < coordinateX && xcoordinate + 40 > coordinateX) return true;
+           else if (xcoordinate > coordinateX && xcoordinate - 40 < coordinateX) return true;
+        }
+        xCoordinates.add(coordinateX + toAdd);
+        return false;
     }
 }
