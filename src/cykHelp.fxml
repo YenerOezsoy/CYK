@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+
+<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="View">
+    <children>
+        <ScrollPane prefHeight="400.0" prefWidth="600.0">
+            <content>
+                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="450.0" prefWidth="577.0">
+                    <children>
+                        <Text layoutX="228.0" layoutY="28.0" strokeType="OUTSIDE" strokeWidth="0.0" text="CYK Algorithmus">
+                            <font>
+                                <Font name="Arial" size="16.0" />
+                            </font>
+                        </Text>
+                        <Text layoutX="14.0" layoutY="66.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Definition:">
+                            <font>
+                                <Font name="Arial Bold" size="13.0" />
+                            </font>
+                        </Text>
+                        <Text layoutX="14.0" layoutY="92.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Der Cocke-Younger-Kasami-Algorithmus (CYK-Algorithmus) ist ein Algorithmus für &#10;kontextfreie Sprachen, mit dem das Wortproblem für ein gegebenes Wort lösen lässt.&#10;Dabei wird nach dem Prinzip der dynamischen Programmierung, die kleinsten Teilwörter &#10;berechnet und abgespeichert, um diese in nächstgrößeren Teilwörtern zu verwenden.&#10;Die kleinsten Teilwörter sind die einzelnen Buchstaben.">
+                            <font>
+                                <Font name="Arial" size="13.0" />
+                            </font>
+                        </Text>
+                        <Text layoutX="14.0" layoutY="191.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Anleitung:">
+                            <font>
+                                <Font name="Arial Bold" size="13.0" />
+                            </font>
+                        </Text>
+                        <Text layoutX="16.0" layoutY="217.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Klicken Sie auf den &quot;nächster Schritt&quot; Button      um die nächste Iteration anzuzeigen.&#10;Mit dem &quot;vorheriger Schritt&quot; Button      gelangen Sie zur vorherigen Iteration.&#10;Mit dem &quot;Wiedergabe/Pause&quot; Button      können Sie die nächsten Iterationen automatisch&#10;anzeigen lassen. Bewegen Sie hierzu den Slider, um die passende Abspielgeschwindigkeit&#10;einzustellen. ">
+                            <font>
+                                <Font name="Arial" size="13.0" />
+                            </font>
+                        </Text>
+                        <ImageView fitHeight="18.0" fitWidth="18.0" layoutX="271.0" layoutY="205.0" pickOnBounds="true" preserveRatio="true">
+                            <image>
+                                <Image url="@forward.png" />
+                            </image>
+                        </ImageView>
+                        <ImageView fitHeight="18.0" fitWidth="18.0" layoutX="215.0" layoutY="220.0" pickOnBounds="true" preserveRatio="true">
+                            <image>
+                                <Image url="@back.png" />
+                            </image>
+                        </ImageView>
+                        <ImageView fitHeight="18.0" fitWidth="18.0" layoutX="227.0" layoutY="235.0" pickOnBounds="true" preserveRatio="true">
+                            <image>
+                                <Image url="@next.png" />
+                            </image>
+                        </ImageView>
+                        <Text layoutX="14.0" layoutY="314.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Anzeige:">
+                            <font>
+                                <Font name="Arial Bold" size="13.0" />
+                            </font>
+                        </Text>
+                        <Text layoutX="16.0" layoutY="338.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Die einzelnen Felder der umgedrehten Treppenstufe stellen die Schritte des CYK-Algorithmus &#10;dar. In jeder Iteration werden mit rot die aktuell zu betrachtenden Teilworte&#10;markiert. Das gelbe Feld stellt das Wurzelelement für diese Teilworte dar. Sind Nicht-&#10;terminalsymbole vorhanden, die auf die rot markierten Felder abbilden, so werden &#10;diese in das gelbe Feld eingetragen. Treffen mehrere Elemente zu, so werden diese &#10;kommegetrennt angegeben.">
+                            <font>
+                                <Font name="Arial" size="13.0" />
+                            </font>
+                        </Text>
+                    </children>
+                </AnchorPane>
+            </content>
+        </ScrollPane>
+    </children>
+
+</AnchorPane>

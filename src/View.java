@@ -8,13 +8,15 @@ import javafx.scene.control.*;
 
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
 import javafx.stage.FileChooser;
+import javafx.stage.Popup;
 import javafx.stage.Stage;
+import javafx.stage.Window;
+
 import java.io.File;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -443,4 +445,28 @@ public class View extends Application{
         previousCNFText.setVisible(!toggle);
     }
 
+    @FXML
+    protected void cnfHelp() {
+        createPopUp("cnfHelp.fxml");
+    }
+
+    @FXML
+    protected void cykHelp() {
+        createPopUp("cykHelp.fxml");
+    }
+
+    private void createPopUp(String fileName) {
+        Stage popup = new Stage();
+        Parent root = null;
+        try {
+            root = FXMLLoader.load(getClass().getResource(fileName));
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+        if (root != null) {
+            popup.setScene(new Scene(root,600, 400));
+            popup.show();
+        }
+    }
 }

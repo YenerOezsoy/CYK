@@ -235,6 +235,12 @@
                   <MenuItem fx:id="algorithmChooseMenuItem" disable="true" mnemonicParsing="false" onAction="#menuItemChooseAlgorithm" text="Algorithmus Auswahl" />
             </items>
           </Menu>
+            <Menu mnemonicParsing="false" text="Hilfe">
+              <items>
+                <MenuItem mnemonicParsing="false" onAction="#cnfHelp" text="CNF" />
+                  <MenuItem mnemonicParsing="false" onAction="#cykHelp" text="CYK" />
+              </items>
+            </Menu>
         </menus>
       </MenuBar>
    </children>
