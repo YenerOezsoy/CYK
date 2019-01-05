@@ -30,7 +30,6 @@ public class Graph {
     }
 
     public void setTextAccess(List<Text> rootTextList, Map<String, ArrayList<ArrayList<Text>>> childListMap) {
-        deleteOldGraph();
         this.rootTextList = rootTextList;
         this.childListMap = childListMap;
         figureMap = new HashMap<>();
@@ -43,11 +42,6 @@ public class Graph {
         visited = new ArrayList<>();
     }
 
-    private void deleteOldGraph() {
-        if (anchorPane.getChildren().size() > 1) {
-            anchorPane.getChildren().remove(1);
-        }
-    }
 
     public void generateGraph() {
         graphPane = new Pane();
@@ -57,7 +51,7 @@ public class Graph {
         ArrayList<CircleFigure> toProcess = new ArrayList<>();
         toProcess.add(circleFigure);
         doNextRowDepicts(toProcess);
-        anchorPane.getChildren().add(graphPane);
+        //anchorPane.getChildren().add(graphPane);
         if (xOutOfWindow < 0) relocateAllElements();
     }
 
@@ -239,5 +233,9 @@ public class Graph {
         }
         xCoordinates.add(coordinateX + toAdd);
         return false;
+    }
+
+    public Pane getPane() {
+        return graphPane;
     }
 }

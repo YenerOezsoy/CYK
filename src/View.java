@@ -432,17 +432,13 @@ public class View extends Application{
     }
 
     @FXML
-    protected void nextAnchorPaneToggle() {
-        boolean toggle = actualCNFText.isVisible();
-        nextAnchorPane.getChildren().get(1).setVisible(toggle);
-        actualCNFText.setVisible(!toggle);
+    protected void nextPaneToggle() {
+        controller.viewControllerCNFToggleNextGraphView();
     }
 
     @FXML
-    protected void previousAnchorPaneToggle() {
-        boolean toggle = previousCNFText.isVisible();
-        previousAnchorPane.getChildren().get(1).setVisible(toggle);
-        previousCNFText.setVisible(!toggle);
+    protected void previousPaneToggle() {
+        controller.viewControllerCNFTogglePreviousGraphView();
     }
 
     @FXML

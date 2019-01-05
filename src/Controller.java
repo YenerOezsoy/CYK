@@ -61,4 +61,12 @@ public class Controller {
     public void viewControllerCYKPrevious() {
         viewControllerCYK.previous();
     }
+
+    public void viewControllerCNFTogglePreviousGraphView() {
+        viewControllerCNF.togglePreviousGraphView();
+    }
+
+    public void viewControllerCNFToggleNextGraphView() {
+        viewControllerCNF.toggleNextPaneGraphView();
+    }
 }

@@ -1,4 +1,5 @@
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
@@ -78,6 +79,8 @@ public class ViewControllerCNF {
     private int previousCleanUp;
     private  boolean changesFound = true;
     private Graph graph = new Graph();
+    private Pane nextGraphPane;
+    private Pane previousGraphPane;
 
 
     public ViewControllerCNF(TextFlow nextPane, TextFlow previousPane, TextFlow infoBox, Tree tree) {
@@ -129,7 +132,7 @@ public class ViewControllerCNF {
         mapKeySet = sortedList;
     }
 
-    private void initPane(TextFlow pane) {
+    private void initPane(TextFlow pane, boolean paneIsNextPane) {
         rootTextList.clear();
         graph.setAnchorPane((AnchorPane) pane.getParent());
         for (String elementName : mapKeySet) {
@@ -144,13 +147,14 @@ public class ViewControllerCNF {
             pane.getChildren().remove(pane.getChildren().size() - 1);
             pane.getChildren().add(new Text(LINEEND));
         }
-        initGraph();
+        initGraph(paneIsNextPane);
     }
 
-    private void initGraph() {
+    private void initGraph(boolean paneIsNextPane) {
         graph.setTextAccess(rootTextList, childListMap);
         graph.generateGraph();
-        initGraphPaneVisibility();
+        saveGraph(graph.getPane(), paneIsNextPane);
+        showGraph();
     }
 
     private void iterateOverNode(ArrayList<Text> Node, TextFlow pane) {
@@ -163,10 +167,10 @@ public class ViewControllerCNF {
         clearAllPanes();
         tree.setActiveStep(++step);
         initMaps();
-        initPane(nextPane);
+        initPane(nextPane, true);
         tree.setActiveStep(--step);
         initMaps();
-        initPane(previousPane);
+        initPane(previousPane, false);
         initInfoBox();
         cleanUpRoutine = 0;
         changesFound = true;
@@ -202,13 +206,13 @@ public class ViewControllerCNF {
         if (hasNextStep()) {
             initInfoBox();
             doNextSteps();
-            initGraph();
+            initGraph(false);
             return true;
         }
         else if (!hasNextStep() && cleanUpRoutine != 0 && changesFound) {
             if (cleanUpRoutine == 1) initCleanUp();
             else doCleanUp();
-            initGraph();
+            initGraph(false);
             return true;
         }
         else {
@@ -235,7 +239,7 @@ public class ViewControllerCNF {
         unmark();
         doChangeInPane();
         previousPane.getChildren().clear();
-        initPane(previousPane);
+        initPane(previousPane, false);
         getItem(change, rootTextList).setFill(Color.RED);
         actualRoot = change;
     }
@@ -624,7 +628,7 @@ public class ViewControllerCNF {
         boolean returnValue = false;
         doChangeInPane();
         previousPane.getChildren().clear();
-        initPane(previousPane);
+        initPane(previousPane, false);
         cleanUpRoutine++;
         unmark();
         initInfoBox();
@@ -688,7 +692,7 @@ public class ViewControllerCNF {
                 childListMap.put(root,toAdd);
             }
             previousPane.getChildren().clear();
-            initPane(previousPane);
+            initPane(previousPane, false);
             changesFound = initCleanUp();
         }
     }
@@ -717,15 +721,49 @@ public class ViewControllerCNF {
         doChangeInPane();
     }
 
-    private void initGraphPaneVisibility() {
-        AnchorPane pane;
-        if(previousPane.isVisible()) {
-            pane = ((AnchorPane) previousPane.getParent());
-            if (pane.getChildren().size() > 1) pane.getChildren().get(1).setVisible(false);
+    private void saveGraph(Pane pane, boolean paneIsNextPane) {
+        if (paneIsNextPane) {
+            nextGraphPane = pane;
         }
-        if (nextPane.isVisible()){
-            pane = ((AnchorPane) nextPane.getParent());
-            if(pane.getChildren().size() > 1) pane.getChildren().get(1).setVisible(false);
+        else {
+            previousGraphPane = pane;
+        }
+    }
+
+    private void showGraph() {
+        if (!previousPane.isVisible()) {
+            enableGraph((AnchorPane) previousPane.getParent(), false);
+        }
+        else if (!nextPane.isVisible()) {
+            enableGraph((AnchorPane) nextPane.getParent(), true);
+        }
+    }
+
+    private void enableGraph(AnchorPane pane, boolean isNextPane) {
+        if (pane.getChildren().size() > 1) {
+            pane.getChildren().remove(1);
+        }
+        if (isNextPane) pane.getChildren().add(nextGraphPane);
+        else pane.getChildren().add(previousGraphPane);
+    }
+
+    public void toggleNextPaneGraphView() {
+        toggleGraphView(nextPane, true);
+    }
+
+    public void togglePreviousGraphView() {
+        toggleGraphView(previousPane, false);
+    }
+
+    private void toggleGraphView(Pane pane, boolean isNextPane) {
+        if (pane.isVisible()) {
+            pane.setVisible(false);
+            enableGraph((AnchorPane) pane.getParent(), isNextPane);
+        }
+        else {
+            AnchorPane parent = (AnchorPane) pane.getParent();
+            if (parent.getChildren().size() > 1) parent.getChildren().remove(1);
+            pane.setVisible(true);
         }
     }
 }
