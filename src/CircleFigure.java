@@ -1,4 +1,3 @@
-import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
@@ -14,23 +13,30 @@ public class CircleFigure extends Figure {
     private StackPane pane;
     private Circle circle;
     private String name;
+    private Graph graph;
 
-    public CircleFigure(String name, int x, int y) {
+    public CircleFigure(String name, double x, double y, Graph graph) {
         this.x = x;
         this.y = y;
         this.name = name;
         color = Color.BLACK;
+        this.graph = graph;
         createObject();
     }
 
-    public CircleFigure(String name, int x, int y, Paint color) {
+    public CircleFigure(String name, double x, double y, Paint color, Graph graph) {
         this.x = x;
         this.y = y;
         this.color = color;
         this.name = name;
+        this.graph = graph;
         createObject();
     }
 
+    @Override
+    protected Graph getGraph() {
+        return graph;
+    }
 
     @Override
     public void createObject() {
@@ -44,6 +50,7 @@ public class CircleFigure extends Figure {
         pane.getChildren().addAll(circle, text);
         pane.setLayoutX(x);
         pane.setLayoutY(y);
+        initDragAndDrop(pane);
     }
 
     @Override

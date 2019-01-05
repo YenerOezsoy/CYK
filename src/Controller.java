@@ -10,7 +10,7 @@ public class Controller {
     private Model model;
     private File file;
     private ViewControllerCNF viewControllerCNF;
-    ViewControllerCYK viewControllerCYK;
+    private ViewControllerCYK viewControllerCYK;
 
     public Controller() {
         model = new Model();
@@ -68,5 +68,9 @@ public class Controller {
 
     public void viewControllerCNFToggleNextGraphView() {
         viewControllerCNF.toggleNextPaneGraphView();
+    }
+
+    public boolean hasObjectMoved() {
+        return viewControllerCNF.hasObjectMoved();
     }
 }

@@ -1,6 +1,8 @@
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
+import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 
 import java.util.ArrayList;
@@ -12,22 +14,18 @@ public class Graph {
 
     private Map<String, ArrayList<ArrayList<Text>>> childListMap;
     private List<Text> rootTextList;
-    private Pane anchorPane;
     private Pane graphPane;
-    private int x = 256;
-    private int y = 10;
-    private int xDepictOffset = 0;
-    private int xOffset = 50;
-    private int yOffset = 100;
-    private int xOutOfWindow = 0;
+    private double x = 256;
+    private double y = 10;
+    private double xDepictOffset = 0;
+    private double xOffset = 50;
+    private double yOffset = 100;
+    private double xOutOfWindow = 0;
     private HashMap<Figure,ArrayList> figureMap;
-    private HashMap<Integer, ArrayList<Integer>> coordinateMap;
+    private HashMap<Double, ArrayList<Double>> coordinateMap;
     private ArrayList<String> visited;
+    private boolean hasObjectMoved = false;
 
-
-    public void setAnchorPane(Pane anchorPane) {
-        this.anchorPane = anchorPane;
-    }
 
     public void setTextAccess(List<Text> rootTextList, Map<String, ArrayList<ArrayList<Text>>> childListMap) {
         this.rootTextList = rootTextList;
@@ -42,6 +40,17 @@ public class Graph {
         visited = new ArrayList<>();
     }
 
+    public boolean hasObjectMoved() {
+        if (hasObjectMoved) {
+            hasObjectMoved = false;
+            return true;
+        }
+        return hasObjectMoved;
+    }
+
+    public void setHasObjectMoved(boolean hasObjectMoved) {
+        this.hasObjectMoved = hasObjectMoved;
+    }
 
     public void generateGraph() {
         graphPane = new Pane();
@@ -51,7 +60,6 @@ public class Graph {
         ArrayList<CircleFigure> toProcess = new ArrayList<>();
         toProcess.add(circleFigure);
         doNextRowDepicts(toProcess);
-        //anchorPane.getChildren().add(graphPane);
         if (xOutOfWindow < 0) relocateAllElements();
     }
 
@@ -69,9 +77,10 @@ public class Graph {
 
     private void createRectangles(CircleFigure circleFigure, ArrayList<ArrayList<Text>> list, ArrayList<RectangleFigure> toProcessDepicts) {
         for (ArrayList<Text> innerList : list) {
-            RectangleFigure rectangleFigure = new RectangleFigure(x, y);
+            RectangleFigure rectangleFigure = new RectangleFigure(x, y, this);
             x += xDepictOffset;
             Edge edge = new Edge(circleFigure, rectangleFigure);
+            //doBinding(circleFigure.getPane(), (Rectangle) rectangleFigure.getObject(), edge);
             graphPane.getChildren().addAll(rectangleFigure.getObject(), edge.getLine());
             toProcessDepicts.add(rectangleFigure);
             figureMap.put(rectangleFigure, innerList);
@@ -90,6 +99,7 @@ public class Graph {
                     CircleFigure circleFigure = createCircle(text, x, y);
                     x += xOffset;
                     Edge edge = new Edge(rectangleFigure, circleFigure);
+                   // doBinding((Rectangle) rectangleFigure.getObject(), circleFigure.getPane(), edge);
                     graphPane.getChildren().add(edge.getLine());
                     tempVisited.add(text.getText());
                     checkProcessAvailability(text, toProcess, circleFigure);
@@ -107,14 +117,14 @@ public class Graph {
         }
     }
 
-    private CircleFigure createCircle(Text rootName, int x, int y) {
+    private CircleFigure createCircle(Text rootName, double x, double y) {
         CircleFigure circleFigure;
         Paint paint = getColor(rootName);
         if (paint.equals(Color.DARKGOLDENROD) || paint.equals(Color.RED)) {
-            circleFigure = new CircleFigure(rootName.getText(), x, y, paint);
+            circleFigure = new CircleFigure(rootName.getText(), x, y, paint, this);
         }
         else {
-            circleFigure = new CircleFigure(rootName.getText(), x, y);
+            circleFigure = new CircleFigure(rootName.getText(), x, y, this);
         }
         graphPane.getChildren().add(circleFigure.getPane());
         return circleFigure;
@@ -128,7 +138,7 @@ public class Graph {
     }
 
 
-    private void initNextRowStartPositionsElements(ArrayList root, int x, int y) {
+    private void initNextRowStartPositionsElements(ArrayList root, double x, double y) {
         this.y = y + yOffset;
         this.x = x - (xOffset * (getElementSize(root) / 2)) - 10;
         if (x < xOutOfWindow) xOutOfWindow = x;
@@ -164,14 +174,14 @@ public class Graph {
     }
 
     private void relocateAllElements() {
-        int relocateValue = Math.abs(xOutOfWindow) + 10;
+        double relocateValue = Math.abs(xOutOfWindow) + 10;
         for (javafx.scene.Node node : graphPane.getChildren()) {
-            node.setLayoutX(node.getLayoutX() + relocateValue);
+            if (node instanceof StackPane || node instanceof Rectangle) node.setLayoutX(node.getLayoutX() + relocateValue);
         }
     }
 
-    private int getStartingPosition(ArrayList<ArrayList<Text>> list) {
-        int size;
+    private double getStartingPosition(ArrayList<ArrayList<Text>> list) {
+        double size;
         if (list.size() % 2 == 0) {
             size = xDepictOffset * (list.size() / 2) - (xDepictOffset / 2);
         }
@@ -181,14 +191,14 @@ public class Graph {
         return size;
     }
 
-    private void checkIfCoordinatesAreUsed(boolean isDepict, int size) {
+    private void checkIfCoordinatesAreUsed(boolean isDepict, double size) {
         int value = 0;
-        int offset = xOffset;
-        int coordinateX = x;
-        int coordinateY = y;
-        int toAdd = 0;
+        double offset = xOffset;
+        double coordinateX = x;
+        double coordinateY = y;
+        double toAdd = 0;
         if (isDepict) offset = xDepictOffset;
-        ArrayList<Integer> xCoordinates = new ArrayList<>();
+        ArrayList<Double> xCoordinates = new ArrayList<>();
         boolean foundTouchingElements;
         while (value != size) {
             if (isDepict) foundTouchingElements = checkRectanglesTouching(coordinateX, coordinateY,toAdd, xCoordinates);
@@ -208,7 +218,7 @@ public class Graph {
         else coordinateMap.put(y, xCoordinates);
     }
 
-    private boolean checkRectanglesTouching(int coordinateX, int coordinateY, int toAdd, ArrayList<Integer> xCoordinates) {
+    private boolean checkRectanglesTouching(double coordinateX, double coordinateY, double toAdd, ArrayList<Double> xCoordinates) {
         if (coordinateMap.containsKey(coordinateY)) {
             if (coordinateMap.get(coordinateY).contains(coordinateX + toAdd)) {
                 return true;
@@ -222,12 +232,12 @@ public class Graph {
         return false;
     }
 
-    private boolean checkCirclesTouching(int coordinateX, int coordinateY, int toAdd, ArrayList<Integer> xCoordinates) {
+    private boolean checkCirclesTouching(double coordinateX, double coordinateY, double toAdd, ArrayList<Double> xCoordinates) {
         if (!coordinateMap.containsKey(coordinateY)) {
             xCoordinates.add(coordinateX);
             return false;
         }
-        for (Integer xcoordinate : coordinateMap.get(coordinateY)) {
+        for (Double xcoordinate : coordinateMap.get(coordinateY)) {
            if (xcoordinate <= coordinateX && xcoordinate + 40 > coordinateX) return true;
            else if (xcoordinate >= coordinateX && xcoordinate - 40 < coordinateX) return true;
         }
@@ -238,4 +248,21 @@ public class Graph {
     public Pane getPane() {
         return graphPane;
     }
+
+    /*private void doBinding(StackPane pane, Rectangle rectangle,  Edge edge) {
+        edge.getLine().startXProperty().bind(pane.layoutXProperty());
+        edge.getLine().startYProperty().bind(pane.layoutYProperty());
+        edge.getLine().setTranslateX();
+
+        edge.getLine().endXProperty().bind(rectangle.layoutXProperty());
+        edge.getLine().endYProperty().bind(rectangle.layoutYProperty());
+    }
+
+    private void doBinding(Rectangle rectangle, StackPane pane, Edge edge) {
+        edge.getLine().startXProperty().bind(rectangle.layoutXProperty());
+        edge.getLine().startYProperty().bind(rectangle.layoutYProperty());
+
+        edge.getLine().endXProperty().bind(pane.layoutXProperty());
+        edge.getLine().endYProperty().bind(pane.layoutYProperty());
+    }*/
 }

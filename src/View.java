@@ -5,7 +5,6 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
@@ -13,10 +12,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
 import javafx.stage.FileChooser;
-import javafx.stage.Popup;
 import javafx.stage.Stage;
-import javafx.stage.Window;
-
 import java.io.File;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -41,9 +37,7 @@ public class View extends Application{
     private int activePaneIndex = -1;
     private boolean loop;
     private ScheduledExecutorService service;
-
     private Pane activePane;
-
     private GridPane pane;
 
     @FXML Button chooseGrammar;
@@ -433,12 +427,12 @@ public class View extends Application{
 
     @FXML
     protected void nextPaneToggle() {
-        controller.viewControllerCNFToggleNextGraphView();
+        if (!controller.hasObjectMoved()) controller.viewControllerCNFToggleNextGraphView();
     }
 
     @FXML
     protected void previousPaneToggle() {
-        controller.viewControllerCNFTogglePreviousGraphView();
+        if (!controller.hasObjectMoved()) controller.viewControllerCNFTogglePreviousGraphView();
     }
 
     @FXML

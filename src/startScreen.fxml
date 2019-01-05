@@ -163,7 +163,7 @@
       </Pane>
       <Pane fx:id="cnfPane" layoutY="108.0" prefHeight="660.0" prefWidth="1024.0" visible="false">
          <children>
-            <Pane fx:id="previousCNF" layoutY="45.0" onMouseClicked="#previousPaneToggle" prefHeight="455.0" prefWidth="512.0" style="-fx-border-color: black;">
+            <Pane fx:id="previousCNF" layoutY="45.0" onMouseClicked="#previousPaneToggle" prefHeight="455.0" prefWidth="512.0">
                <children>
                   <ScrollPane layoutX="-1.0" prefHeight="455.0" prefWidth="512.0">
                     <content>

@@ -78,7 +78,7 @@ public class ViewControllerCNF {
     private int cleanUpRoutine = 0;
     private int previousCleanUp;
     private  boolean changesFound = true;
-    private Graph graph = new Graph();
+    private Graph graph;
     private Pane nextGraphPane;
     private Pane previousGraphPane;
 
@@ -88,6 +88,7 @@ public class ViewControllerCNF {
         this.previousPane = previousPane;
         this.infoBox = infoBox;
         this.tree = tree;
+        graph = new Graph();
         initAllPanes();
     }
 
@@ -134,7 +135,6 @@ public class ViewControllerCNF {
 
     private void initPane(TextFlow pane, boolean paneIsNextPane) {
         rootTextList.clear();
-        graph.setAnchorPane((AnchorPane) pane.getParent());
         for (String elementName : mapKeySet) {
             Text rootElementText = new Text(elementName);
             pane.getChildren().add(rootElementText);
@@ -765,5 +765,9 @@ public class ViewControllerCNF {
             if (parent.getChildren().size() > 1) parent.getChildren().remove(1);
             pane.setVisible(true);
         }
+    }
+
+    public boolean hasObjectMoved() {
+        return graph.hasObjectMoved();
     }
 }

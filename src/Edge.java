@@ -6,19 +6,21 @@ public class Edge {
 
     public Edge(RectangleFigure source, CircleFigure target) {
         line = new Line();
-        setEdgeEnds(source.getX() + 10, source.getY() + 20, target.getX() + 20 , target.getY());
+        line.startXProperty().bind(source.getObject().layoutXProperty().add(10));
+        line.startYProperty().bind(source.getObject().layoutYProperty().add(20));
+
+        line.endXProperty().bind(target.getPane().layoutXProperty().add(20));
+        line.endYProperty().bind(target.getPane().layoutYProperty());
     }
 
     public Edge(CircleFigure source, RectangleFigure target) {
         line = new Line();
-        setEdgeEnds(source.getX() + 20 , source.getY() + 40, target.getX() + 10, target.getY());
-    }
 
-    private void setEdgeEnds(int xStart, int yStart, int xEnd, int yEnd) {
-        line.setStartX(xStart);
-        line.setStartY(yStart);
-        line.setEndX(xEnd);
-        line.setEndY(yEnd);
+        line.startXProperty().bind(source.getPane().layoutXProperty().add(20));
+        line.startYProperty().bind(source.getPane().layoutYProperty().add(40));
+
+        line.endXProperty().bind(target.getObject().layoutXProperty().add(10));
+        line.endYProperty().bind(target.getObject().layoutYProperty());
     }
 
     public Line getLine() {
