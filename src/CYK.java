@@ -1,5 +1,6 @@
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Optional;
 
 public class CYK {
@@ -155,7 +156,8 @@ public class CYK {
 
     private void concatRootValues(ArrayList<String> list) {
         rootValue = "";
-        for (String values : list) {
+        HashSet<String> set = new HashSet<>(list);
+        for (String values : set) {
             rootValue += values + ",";
         }
         rootValue = rootValue.substring(0, rootValue.length() - 1);

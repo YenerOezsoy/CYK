@@ -1,3 +1,4 @@
+import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
@@ -18,6 +19,7 @@ public class ViewControllerCYK {
     private HashMap<Integer, ArrayList<String>[]> pyramid;
     private int size;
     private int[] marker;
+    private Node node;
 
 
     public ViewControllerCYK(Tree tree, String word, Pane pane) {
@@ -38,6 +40,7 @@ public class ViewControllerCYK {
             doMarking(marker);
             return true;
         }
+        checkFinal();
         return false;
     }
 
@@ -113,15 +116,35 @@ public class ViewControllerCYK {
         String value = cyk.getRoot();
         if(value != null) {
             String textInLabel = ((Label) pane.getChildren().get(childNumber)).getText();
-            if (textInLabel.length() != 0 && childNumber > (size * 3) - 1) value = textInLabel + "," + value;
+            if (textInLabel.length() != 0 && childNumber > (size * 3) - 1) {
+                if (!labelContains(textInLabel, value)) value = textInLabel + "," + value;
+                else value = textInLabel;
+            }
             ((Label) pane.getChildren().get(childNumber)).setText(value);
         }
+        node = pane.getChildren().get(childNumber);
+    }
+
+    private boolean labelContains(String textInLabel, String value) {
+        String[] split = textInLabel.split(",");
+        for (String text : split) {
+            if (text.equals(value)) return true;
+        }
+        return false;
     }
 
     private void mark(int x, int y) {
         int childNumber = transform(x,y);
         doColoring((Label) pane.getChildren().get(childNumber), "#DC143C");
 
+    }
+
+    private void checkFinal() {
+        String text = ((Label) node).getText();
+        String[] splitted = text.split(",");
+        for (String root : splitted) {
+            if (root.equals(tree.getRootElem().getString())) doColoring((Label) node, "#00FF00");
+        }
     }
 
     private int transform(int x, int y) {
