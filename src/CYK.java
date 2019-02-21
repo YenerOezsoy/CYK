@@ -154,6 +154,17 @@ public class CYK {
         }
     }
 
+    public String previousContent() {
+        String content = "";
+        for (int j = 0; j < counter; j++) {
+            content += pyramid.get(stage)[i].get(j) + ",";
+        }
+        if (content.length() > 1) {
+            content = content.substring(0, content.length() - 1);
+        }
+        return content;
+    }
+
     private void concatRootValues(ArrayList<String> list) {
         rootValue = "";
         HashSet<String> set = new HashSet<>(list);

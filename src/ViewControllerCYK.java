@@ -45,32 +45,23 @@ public class ViewControllerCYK {
     }
 
     public void previous() {
-        deleteContent();
+
+        int oldmarker[] = marker;
         marker = cyk.previousStep();
         if (marker != null) {
             unmark();
             doMarking(marker);
         }
+        deleteContent(oldmarker);
+
     }
 
-    private void deleteContent() {
-        if (marker != null) {
-            int childNumber = transform(marker[1], marker[0]);
+    private void deleteContent(int[] oldMarker) {
+        if (oldMarker != null) {
+            int childNumber = transform(oldMarker[1], oldMarker[0]);
             Label label = (Label) pane.getChildren().get(childNumber);
-            deleteLastEdits(label, childNumber);
+            label.setText(cyk.previousContent());
         }
-    }
-
-    private void deleteLastEdits(Label label, int childNumber) {
-        String text = label.getText();
-        String[] split = text.split(",");
-        if (split.length > 2 && childNumber > (size * 3) - 1) {
-            int length = split.length - 2;
-            text = shrinkArray(split, length);
-            //text = "" + Arrays.toString(split);
-        }
-        else text = "";
-        label.setText(text);
     }
 
     private String shrinkArray(String[] split, int length) {
