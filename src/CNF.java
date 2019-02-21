@@ -201,7 +201,6 @@ public class CNF {
             change.addTo(actualRoot.getString() + "," + name);
             if (i > 1)change.highlight(list.get(i).getString(), i);
             change.add(name);
-            //change.highlight(name);
             actualRoot = newElem;
         }
         actualNode.addElement(list.get(size - 2));

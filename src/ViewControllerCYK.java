@@ -40,20 +40,21 @@ public class ViewControllerCYK {
             doMarking(marker);
             return true;
         }
+        unmark();
         checkFinal();
         return false;
     }
 
-    public void previous() {
-
+    public boolean previous() {
         int oldmarker[] = marker;
         marker = cyk.previousStep();
         if (marker != null) {
             unmark();
             doMarking(marker);
+            deleteContent(oldmarker);
+            return true;
         }
-        deleteContent(oldmarker);
-
+        return false;
     }
 
     private void deleteContent(int[] oldMarker) {
@@ -125,8 +126,12 @@ public class ViewControllerCYK {
         String text = ((Label) node).getText();
         String[] splitted = text.split(",");
         for (String root : splitted) {
-            if (root.equals(tree.getRootElem().getString())) doColoring((Label) node, "#00FF00");
+            if (root.equals(tree.getRootElem().getString())) {
+                doColoring((Label) node, "#00FF00");
+                return;
+            }
         }
+        doColoring((Label) node, "#DC143C");
     }
 
     private int transform(int x, int y) {

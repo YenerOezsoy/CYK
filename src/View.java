@@ -213,6 +213,8 @@ public class View extends Application{
             generateGrid();
             controller.initViewControllerCYK(cykInputText.getText(), file, pane);
             cykIteratButtonVisibility(true);
+            cykPreviousButton.setDisable(true);
+            cykNextButton.setDisable(false);
         }
     }
 
@@ -244,20 +246,25 @@ public class View extends Application{
     @FXML
     protected boolean cykNext() {
         System.out.println("next");
-        return controller.viewControllerCYKNext();
+        boolean value = controller.viewControllerCYKNext();
+        if(!value) cykNextButton.setDisable(true);
+        cykPreviousButton.setDisable(false);
+        return value;
     }
 
     @FXML
     protected void cykPrevious() {
         System.out.println("previous");
-        controller.viewControllerCYKPrevious();
+        boolean value = controller.viewControllerCYKPrevious();
+        if (!value) cykPreviousButton.setDisable(true);
         cykNextButton.setDisable(false);
     }
 
     @FXML
     protected void cnfPrevious() {
         System.out.println("previous");
-        controller.viewControllerCNFPrevious();
+        boolean value = controller.viewControllerCNFPrevious();
+        if (!value) cnfStepBack.setDisable(true);
         cnfStepForward.setDisable(false);
     }
 
@@ -266,12 +273,15 @@ public class View extends Application{
         System.out.println("next");
         boolean value = controller.viewControllerCNFNext();
         if(!value) cnfStepForward.setDisable(true);
+        cnfStepBack.setDisable(false);
         return value;
     }
 
     private void initcnfPane() {
         tree = controller.getTreeStep(step);
         controller.initViewController(actualCNFText, previousCNFText, infoboxCNFText, tree);
+        cnfStepBack.setDisable(true);
+        cnfStepForward.setDisable(false);
     }
 
     private void initButton() {
@@ -295,7 +305,7 @@ public class View extends Application{
         if (startButton) {
             stopTimer();
             startTimer();
-            getActivePlayButton().setGraphic(new ImageView(playImage));
+            getActivePlayButton().setGraphic(new ImageView(pauseImage));
         }
     }
 
@@ -382,7 +392,6 @@ public class View extends Application{
             errorText.setText("Bitte gültiges Wort eingeben");
             return false;
         }
-        generateGrid();
         return true;
     }
 

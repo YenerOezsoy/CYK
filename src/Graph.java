@@ -80,7 +80,6 @@ public class Graph {
             RectangleFigure rectangleFigure = new RectangleFigure(x, y, this);
             x += xDepictOffset;
             Edge edge = new Edge(circleFigure, rectangleFigure);
-            //doBinding(circleFigure.getPane(), (Rectangle) rectangleFigure.getObject(), edge);
             graphPane.getChildren().addAll(rectangleFigure.getObject(), edge.getLine());
             toProcessDepicts.add(rectangleFigure);
             figureMap.put(rectangleFigure, innerList);
@@ -99,7 +98,6 @@ public class Graph {
                     CircleFigure circleFigure = createCircle(text, x, y);
                     x += xOffset;
                     Edge edge = new Edge(rectangleFigure, circleFigure);
-                   // doBinding((Rectangle) rectangleFigure.getObject(), circleFigure.getPane(), edge);
                     graphPane.getChildren().add(edge.getLine());
                     tempVisited.add(text.getText());
                     checkProcessAvailability(text, toProcess, circleFigure);
@@ -156,7 +154,6 @@ public class Graph {
         y += yOffset;
         if (list != null) {
             int size = getBiggestChildNumber(list);
-            //xDepictOffset = xOffset * (size / 2);
             xDepictOffset = xOffset * size;
         }
         if (x < xOutOfWindow) xOutOfWindow = x;

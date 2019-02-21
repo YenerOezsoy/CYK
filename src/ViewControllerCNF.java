@@ -223,15 +223,18 @@ public class ViewControllerCNF {
         return false;
     }
 
-    public void previous() {
+    public boolean previous() {
         if (hasPreviousStep()) {
             int tempCleanUpBeforeReset = previousCleanUp;
             initAllPanes();
             doUndoSteps(tempCleanUpBeforeReset);
+            return true;
         }
         else if (hasPreviousRule()) {
             doUndoSteps(0);
+            return true;
         }
+        return false;
     }
 
     private void mark(String change) {

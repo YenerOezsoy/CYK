@@ -190,7 +190,6 @@ public class CYK {
     }
 
     private void checkColumn(int stage, int column) {
-        //pyramid.get(stage)[column].add(map.get(word[column]).getString());
         copy(pyramid.get(stage)[column], getNonTerminals(word[column]));
     }
 

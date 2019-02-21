@@ -125,7 +125,7 @@
             </Pane>
             <Pane fx:id="cykVisual" layoutX="90.0" prefHeight="58.0" prefWidth="845.0">
                <children>
-                  <Slider fx:id="cykSlider" blockIncrement="1.0" layoutX="730.0" layoutY="18.0" max="10.0" min="1.0" onMouseDragged="#sliderEvent" prefHeight="15.0" prefWidth="101.0" value="2.0" />
+                  <Slider fx:id="cykSlider" blockIncrement="1.0" layoutX="730.0" layoutY="18.0" max="10.0" min="1.0" onMouseReleased="#sliderEvent" prefHeight="15.0" prefWidth="101.0" value="2.0" />
                   <Text fx:id="cykSliderInfo" layoutX="622.0" layoutY="30.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Geschwindigkeit:">
                      <font>
                         <Font name="Arial" size="13.0" />

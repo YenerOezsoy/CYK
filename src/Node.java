@@ -23,30 +23,6 @@ public class Node {
         return elem;
     }
 
-    /*
-    private void createNewElement(String split) {
-        if(input.getType(split) == Type.NonTerminal) {
-            //wenn Elem schon vorhanden, nur linken
-            if (temp.containsKey(split)) {
-                list.add(temp.get(split));
-                System.out.println("Vorhandenes Nicht-Terminal: " + split);
-            }
-            else {
-                System.out.println("Neues Nicht-Terminal: " + split);
-                Elem element = new Elem(split, input.getType(split));
-                list.add(element);
-                temp.put(split, element);
-                toProcess.add(split);
-            }
-        }
-        else {
-            System.out.println("Terminal: " + split);
-            Elem element = new Elem(split, input.getType(split));
-            list.add(element);
-        }
-    }
-    */
-
     public ArrayList<Elem> getNodeList() {
         return list;
     }

@@ -28,7 +28,6 @@ public class Controller {
     }
 
     public void writeFile(String nonterminal, String terminal, String startsymbol, String production) {
-       // output = new Output(file.getPath());
         if(!model.writeIntoFile(nonterminal, terminal, startsymbol, production)) file.delete();
     }
 
@@ -50,16 +49,16 @@ public class Controller {
          return viewControllerCNF.next();
     }
 
-    public void viewControllerCNFPrevious() {
-         viewControllerCNF.previous();
+    public boolean viewControllerCNFPrevious() {
+         return viewControllerCNF.previous();
     }
 
     public boolean viewControllerCYKNext() {
         return viewControllerCYK.next();
     }
 
-    public void viewControllerCYKPrevious() {
-        viewControllerCYK.previous();
+    public boolean viewControllerCYKPrevious() {
+        return viewControllerCYK.previous();
     }
 
     public void viewControllerCNFTogglePreviousGraphView() {

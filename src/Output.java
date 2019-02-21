@@ -52,7 +52,6 @@ public class Output {
             writer.write("\n<grammatik>");
             writer.write("\n</grammatik>");
         } catch (IOException ex) {
-            // Report
         } finally {
             try {writer.close();} catch (Exception ex) {/*ignore*/}
         }
