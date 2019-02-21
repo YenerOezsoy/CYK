@@ -64,15 +64,6 @@ public class ViewControllerCYK {
         }
     }
 
-    private String shrinkArray(String[] split, int length) {
-        String value = "";
-        for (int i = 0; i < length; i++) {
-            if (value.length() > 1) value += ",";
-            value += split[i];
-        }
-        return value;
-    }
-
     private void doMarking(int[] marker) {
         highlight(marker[1],marker[0]);
         if(marker.length == 2) {

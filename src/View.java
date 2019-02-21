@@ -5,6 +5,11 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.MenuItem;
+import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
@@ -13,7 +18,10 @@ import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+
+import java.awt.*;
 import java.io.File;
+import java.net.URL;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -79,6 +87,7 @@ public class View extends Application{
     @FXML Slider cnfSlider;
     @FXML MenuItem fileChooseMenuItem;
     @FXML MenuItem algorithmChooseMenuItem;
+    @FXML MenuItem doku;
 
     public View() {
         controller = new Controller();
@@ -457,6 +466,18 @@ public class View extends Application{
         if (root != null) {
             popup.setScene(new Scene(root,600, 400));
             popup.show();
+        }
+    }
+
+    @FXML
+    protected void openDoku() {
+        try {
+            Desktop desktop = Desktop.getDesktop();
+            URL url = getClass().getResource("CYKDokumentation.pdf");
+            File file = new File(url.getPath());
+            desktop.open(file);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 }

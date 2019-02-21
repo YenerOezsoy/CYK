@@ -239,6 +239,7 @@
               <items>
                 <MenuItem mnemonicParsing="false" onAction="#cnfHelp" text="CNF" />
                   <MenuItem mnemonicParsing="false" onAction="#cykHelp" text="CYK" />
+                  <MenuItem fx:id="doku" mnemonicParsing="false" onAction="#openDoku" text="Dokumentation" />
               </items>
             </Menu>
         </menus>
