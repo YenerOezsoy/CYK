@@ -54,6 +54,8 @@ public class ViewControllerCYK {
             deleteContent(oldmarker);
             return true;
         }
+        unmark();
+        deleteContent(oldmarker);
         return false;
     }
 
