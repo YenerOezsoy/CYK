@@ -52,7 +52,7 @@
       </Pane>
       <Pane fx:id="grammarForm" prefHeight="768.0" prefWidth="1024.0" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
-            <Text layoutX="80.0" layoutY="270.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Nicht-terminal-Symbole:">
+            <Text layoutX="80.0" layoutY="270.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Nichtterminalsymbole:">
                <font>
                   <Font name="Arial" size="15.0" />
                </font>
@@ -62,12 +62,12 @@
                   <Font name="Arial Bold" size="19.0" />
                </font>
             </Text>
-            <Text layoutX="80.0" layoutY="218.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Hinweis: Geben Sie die Symbole Leerzeichen getrennt ein. Beispiel: A B CD">
+            <Text layoutX="80.0" layoutY="218.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Hinweis: Geben Sie die Symbole durch ein Leerzeichen getrennt ein. Beispiel: A B CD">
                <font>
                   <Font name="Arial" size="13.0" />
                </font>
             </Text>
-            <Text layoutX="80.0" layoutY="310.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Terminal-Symbole:">
+            <Text layoutX="80.0" layoutY="310.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Terminalsymbole:">
                <font>
                   <Font name="Arial" size="15.0" />
                </font>
