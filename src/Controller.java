@@ -27,8 +27,12 @@ public class Controller {
         model.writeFile(file.getPath());
     }
 
-    public void writeFile(String nonterminal, String terminal, String startsymbol, String production) {
-        if(!model.writeIntoFile(nonterminal, terminal, startsymbol, production)) file.delete();
+    public boolean writeFile(String nonterminal, String terminal, String startsymbol, String production) {
+        if(!model.writeIntoFile(nonterminal, terminal, startsymbol, production)) {
+            file.delete();
+            return false;
+        }
+        return true;
     }
 
     public Tree getTreeStep(int step) {

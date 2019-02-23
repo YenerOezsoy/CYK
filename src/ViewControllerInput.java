@@ -1,3 +1,6 @@
+import java.util.ArrayList;
+import java.util.List;
+
 public class ViewControllerInput {
 
     private String path;
@@ -27,6 +30,7 @@ public class ViewControllerInput {
         terminals = terminal.split("\\s+");
         if (isTerminalInNonterminal()) return false;//FEHLER
         if (!isStartsymbolNonterminal(startsymbol)) return false; //Fehler
+        if (!isTerminalDepict(terminals, production)) return false;
         writeInput(startsymbol, production);
         tree = new Tree(path);
         return true;
@@ -46,6 +50,25 @@ public class ViewControllerInput {
             if (nonTerminals[i].equals(startsymbol)) return true;
         }
         return false;
+    }
+
+    private boolean isTerminalDepict(String[] terminals, String production) {
+       List<String> depicts = getAllDepicts(production);
+       for (String terminal : terminals) {
+           if (depicts.contains(terminal)) return true;
+       }
+       return false;
+    }
+
+    private List<String> getAllDepicts(String production) {
+        List<String> list = new ArrayList<>();
+        String[] splitLine = production.split("\n");
+        for (String line : splitLine) {
+            if(line.split("->").length > 1) {
+                list.add(line.split("->")[0]);
+            }
+        }
+        return list;
     }
 
 

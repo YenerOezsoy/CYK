@@ -168,10 +168,17 @@ public class View extends Application{
     @FXML
     protected void userInput() {
         grammarForm.setVisible(false);
-        selectionScreen.setVisible(true);
-        activePane = selectionScreen;
-        controller.writeFile(nonTerminals.getText(), terminals.getText(), root.getText(), production.getText());
-        algorithmChooseMenuItem.setDisable(false);
+        boolean status = controller.writeFile(nonTerminals.getText(), terminals.getText(), root.getText(), production.getText());
+        if (status) {
+            selectionScreen.setVisible(true);
+            activePane = selectionScreen;
+            algorithmChooseMenuItem.setDisable(false);
+        } else {
+            startScreen.setVisible(true);
+            activePane = startScreen;
+             errorPane.setVisible(true);
+             errorText.setText("Eingabe fehlerhaft!");
+        }
     }
 
 
