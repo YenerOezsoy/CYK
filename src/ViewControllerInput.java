@@ -30,7 +30,7 @@ public class ViewControllerInput {
         terminals = terminal.split("\\s+");
         if (isTerminalInNonterminal()) return false;//FEHLER
         if (!isStartsymbolNonterminal(startsymbol)) return false; //Fehler
-        if (!isTerminalDepict(terminals, production)) return false;
+        if (isTerminalDepict(terminals, production)) return false;
         writeInput(startsymbol, production);
         tree = new Tree(path);
         return true;
