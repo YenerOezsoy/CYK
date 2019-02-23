@@ -9,9 +9,7 @@ import javax.xml.transform.*;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import java.io.*;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 public class Output {
 
@@ -145,9 +143,16 @@ public class Output {
     private void createTerminals(HashMap<String, Elem> map) {
         element = doc.createElement("t");
         String terminals = "";
-        List<String> list = new ArrayList<>(map.keySet());
-        for (int i = 0; i < list.size(); i++) {
-            if (!map.get(list.get(i)).getString().equals(list.get(i))) terminals += list.get(i) + ";";
+        HashSet<String> set = new HashSet<>();
+        for (String elem : map.keySet()) {
+            for(Node node : map.get(elem).getList()) {
+                for(Elem child : node.getNodeList()) {
+                    if (child.getType() == Type.Terminal) set.add(child.getString());
+                }
+            }
+        }
+        for(String terminal : set) {
+            terminals += terminal + ";";
         }
         terminals = terminals.substring(0, terminals.length() - 1);
         rootElement.appendChild(element);
