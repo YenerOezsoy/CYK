@@ -18,10 +18,10 @@ import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
-
 import java.awt.*;
 import java.io.File;
-import java.net.URL;
+import java.io.InputStream;
+import java.nio.file.*;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -481,10 +481,14 @@ public class View extends Application{
     @FXML
     protected void openDoku() {
         try {
-            Desktop desktop = Desktop.getDesktop();
-            URL url = getClass().getResource("CYKDokumentation.pdf");
-            File file = new File(url.getPath());
-            desktop.open(file);
+            String inputPdf = "CYKDokumentation.pdf";
+            Path tempOutput = Files.createTempFile("TempManual", ".pdf");
+            tempOutput.toFile().deleteOnExit();
+            System.out.println("tempOutput: " + tempOutput);
+            try (InputStream is = View.class.getClassLoader().getResourceAsStream(inputPdf)) {
+                Files.copy(is, tempOutput, StandardCopyOption.REPLACE_EXISTING);
+            }
+            Desktop.getDesktop().open(tempOutput.toFile());
         } catch (Exception e) {
             e.printStackTrace();
         }
